@@ -40,7 +40,7 @@ const AppNavigator = createStackNavigator(
     EditProfile: {screen: EditProfile},
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'Events',
     // headerMode: "none",
     /* The header config from HomeScreen is now here */
     defaultNavigationOptions: ({navigation}) => ({

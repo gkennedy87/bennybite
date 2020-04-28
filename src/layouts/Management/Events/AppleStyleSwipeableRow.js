@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {Animated, StyleSheet, Text, View, I18nManager} from 'react-native';
+import {
+  Animated,
+  StyleSheet,
+  Text,
+  View,
+  I18nManager,
+  TouchableOpacity,
+} from 'react-native';
 
 import {RectButton} from 'react-native-gesture-handler';
 
@@ -17,11 +24,11 @@ export default class AppleStyleSwipeableRow extends Component {
     };
     return (
       <Animated.View style={{flex: 1, transform: [{translateX: trans}]}}>
-        <RectButton
+        <TouchableOpacity
           style={[styles.rightAction, {backgroundColor: color}]}
           onPress={pressHandler}>
           <Text style={styles.actionText}>{text}</Text>
-        </RectButton>
+        </TouchableOpacity>
       </Animated.View>
     );
   };
