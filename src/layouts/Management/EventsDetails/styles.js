@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
   eventbackbtn: {
     ...ifIphoneX(
       {
-        paddingTop: 55,
+        paddingTop: 45,
       },
       {
         paddingTop: 25,
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   editbtn: {
     ...ifIphoneX(
       {
-        paddingTop: 55,
+        paddingTop: 45,
       },
       {
         paddingTop: 25,

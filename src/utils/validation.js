@@ -1,5 +1,5 @@
 export const REGEX = {
-  EMAIL: /^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i,
+  EMAIL: /^[a-zA-Z0-9_.+-]+@(?:(?:[a-zA-Z0-9-]+\.)?[a-zA-Z]+\.)?(susquehanna)\.com$/g,
   SPECIAL_CHARECTERS: /^[\w&.\-]+$/,
   ONLY_CHARECTERS: /^[A-Za-z\s]{1,}[\.]{0,1}[A-Za-z\s]{0,}$/,
   TITLE: /^[ A-Za-z0-9\,'-]*$/,

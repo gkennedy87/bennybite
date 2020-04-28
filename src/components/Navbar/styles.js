@@ -54,39 +54,6 @@ const styles = StyleSheet.create({
     fontSize: Font.FONTSIZE_24,
     color: Color.TXT_BLACK,
   },
-  centeredView: {
-    height: '100%',
-    backgroundColor: Color.BACK_WHITE,
-  },
-  profiletop: {
-    paddingTop: 45,
-    paddingLeft: 15,
-    paddingRight: 15,
-  },
-  profiletopview: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  closebtn: {
-    padding: 5,
-    fontSize: Font.FONTSIZE_24,
-    color: Color.TXT_BLACK,
-  },
-  settingtitle: {
-    position: 'relative',
-    top: 3,
-    fontSize: Font.FONTSIZE_16,
-    fontFamily: Font.MYRIAD_SEMIBOLD,
-    color: Color.TXT_BLACK,
-  },
-  edittxt: {
-    position: 'relative',
-    top: 3,
-    fontSize: Font.FONTSIZE_16,
-    fontFamily: Font.MYRIAD_SEMIBOLD,
-    color: Color.TXT_BLACK,
-  },
 });
 
 export default styles;

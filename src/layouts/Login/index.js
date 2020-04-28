@@ -43,10 +43,12 @@ export default class Login extends Component {
       // email.message = ErrorMsg.emailRequired // import
       password.message.push(ErrorMessage.EMPTY_PASS);
       password.isValid = false;
-    } else if (password.value.length < 8) {
-      password.message.push(ErrorMessage.WRONG_PASS);
-      password.isValid = false;
     }
+
+    // else if (password.value.length < 8) {
+    //   password.message.push(ErrorMessage.WRONG_PASS);
+    //   password.isValid = false;
+    // }
 
     this.setState({password});
   };
@@ -131,23 +133,23 @@ export default class Login extends Component {
               <View style={styles.loginbtnmain}>
                 <CustomButton
                   btnText="Login"
-                  mainStyle={styles.loginyellow}
-                  btnStyle={styles.withlogin}
-                  // mainStyle={[
-                  //   this.state.email.isValid && this.state.password.isValid
-                  //     ? styles.loginyellow
-                  //     : styles.logingray,
-                  //   styles.loginbtn,
-                  // ]}
-                  // btnStyle={
-                  //   this.state.email.isValid && this.state.password.isValid
-                  //     ? styles.withlogin
-                  //     : styles.withoutlogin
-                  // }
-                  // value={false}
-                  // disabled={
-                  //   !(this.state.email.isValid && this.state.password.isValid)
-                  // }
+                  // mainStyle={styles.loginyellow}
+                  // btnStyle={styles.withlogin}
+                  mainStyle={[
+                    this.state.email.isValid && this.state.password.isValid
+                      ? styles.loginyellow
+                      : styles.logingray,
+                    styles.loginbtn,
+                  ]}
+                  btnStyle={
+                    this.state.email.isValid && this.state.password.isValid
+                      ? styles.withlogin
+                      : styles.withoutlogin
+                  }
+                  value={false}
+                  disabled={
+                    !(this.state.email.isValid && this.state.password.isValid)
+                  }
                   onClick={() => {
                     // this.setState({isToastVisible: true});
                     // setTimeout(
