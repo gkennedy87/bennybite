@@ -17,11 +17,7 @@ import ResetPassword from './src/layouts/ResetPassword';
 import Events from './src/layouts/Management/Events';
 import EventsDetails from './src/layouts/Management/EventsDetails';
 import CreateEvent from './src/layouts/Management/CreateEvent';
-import UsersListing from './src/layouts/Management/UsersListing';
 import EditEvents from './src/layouts/Management/EditEvents';
-
-import Profile from './src/layouts/Profile';
-import Notification from './src/layouts/Notification';
 
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
@@ -38,19 +34,16 @@ const AppNavigator = createStackNavigator(
     EventsDetails: {screen: EventsDetails},
     CreateEvent: {screen: CreateEvent},
     EditEvents: {screen: EditEvents},
-    UsersListing: {screen: UsersListing},
-    Profile: {screen: Profile},
-    Notification: {screen: Notification},
     ChangePassword: {screen: ChangePassword},
     ResetPassword: {screen: ResetPassword},
   },
   {
-    initialRouteName: 'Events',
+    initialRouteName: 'Login',
     // headerMode: "none",
     /* The header config from HomeScreen is now here */
     defaultNavigationOptions: ({navigation}) => ({
       gesturesEnabled: false,
-      //headerTransparent: true,
+      headerTransparent: false,
       headerStyle: GlobalStyles.headerStyle,
       headerLeft: (
         <HeaderLeft iconName="back" onPress={() => navigation.goBack()} />

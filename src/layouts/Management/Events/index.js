@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import {View, FlatList, Text, Image} from 'react-native';
+import {View, FlatList, Text, Image, TouchableOpacity} from 'react-native';
 import Navbar from '../../../components/Navbar';
 import CustomButton from '../../../components/CustomButton';
 import Tabbutton from '../../../components/Tabbutton';
 import styles from './styles';
 import {Color} from '../../../utils/variable';
 
-import {RectButton, TouchableOpacity} from 'react-native-gesture-handler';
+import {RectButton} from 'react-native-gesture-handler';
 
 import AppleStyleSwipeableRow from './AppleStyleSwipeableRow';
 
@@ -86,34 +86,6 @@ const Eventlist = [
     upcomingtime: '1pm-3pm, 23/12/2020',
   },
 ];
-
-function Item({title, subtxt, evtaddress, evtstatus, upcomingtime}) {
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        this.props.navigation.navigate('EventsDetails');
-      }}
-      style={styles.listingspace}>
-      <View style={styles.listingborder}>
-        <View style={styles.listingtitle}>
-          <Text numberOfLines={1} style={styles.title}>
-            {title}
-          </Text>
-          <Text style={styles.upcomingtime}>{upcomingtime}</Text>
-        </View>
-        <Text style={styles.subtxt} numberOfLines={2}>
-          {subtxt}
-        </Text>
-        <View style={styles.row}>
-          <Text numberOfLines={1} style={styles.evtaddress}>
-            {evtaddress}
-          </Text>
-          <Text style={styles.evtstatus}>{evtstatus}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-}
 
 const Userlist = [
   {
@@ -207,6 +179,34 @@ export default class Events extends Component {
     header: null,
   };
 
+  renderItem(item) {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          this.props.navigation.navigate('EventsDetails');
+        }}
+        style={styles.listingspace}>
+        <View style={styles.listingborder}>
+          <View style={styles.listingtitle}>
+            <Text numberOfLines={1} style={styles.title}>
+              {item.title}
+            </Text>
+            <Text style={styles.upcomingtime}>{item.upcomingtime}</Text>
+          </View>
+          <Text style={styles.subtxt} numberOfLines={2}>
+            {item.subtxt}
+          </Text>
+          <View style={styles.row}>
+            <Text numberOfLines={1} style={styles.evtaddress}>
+              {item.evtaddress}
+            </Text>
+            <Text style={styles.evtstatus}>{item.evtstatus}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
   render() {
     const {navigate} = this.props.navigation;
     const {selected} = this.state;
@@ -258,16 +258,7 @@ export default class Events extends Component {
           <View style={{flex: 1}}>
             <FlatList
               data={Eventlist}
-              renderItem={({item}) => (
-                <Item
-                  title={item.title}
-                  subtxt={item.subtxt}
-                  evtaddress={item.evtaddress}
-                  evtstatus={item.evtstatus}
-                  upcomingtime={item.upcomingtime}
-                  id={item.id}
-                />
-              )}
+              renderItem={({item}) => this.renderItem(item)}
               keyExtractor={(item) => item.id}
             />
             <View style={styles.reatbtnview}>
@@ -286,7 +277,7 @@ export default class Events extends Component {
           <View style={{flex: 1}}>
             <FlatList
               data={Userlist}
-              ItemSeparatorComponent={() => <View style={styles.separator} />}
+              // ItemSeparatorComponent={() => }
               renderItem={({item, index}) => (
                 <SwipeableRow item={item} index={index} />
               )}

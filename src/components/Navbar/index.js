@@ -53,7 +53,7 @@ class Navbar extends Component {
                   source={require('../../assets/Images/user.png')}></Image>
               </TouchableOpacity>
             </View>
-            <View style={styles.notificationview}>
+            {/* <View style={styles.notificationview}>
               <TouchableOpacity
                 onPress={() => {
                   this.props.navigation.navigate('Notification');
@@ -64,7 +64,7 @@ class Navbar extends Component {
                   name="notification"
                 />
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
         </View>
       </View>

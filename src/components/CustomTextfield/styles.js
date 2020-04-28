@@ -1,5 +1,7 @@
 import {StyleSheet, Dimensions} from 'react-native';
 import {Color, Font} from '../../utils/variable';
+import {isIOS} from '../../utils/theme';
+
 const {width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -12,14 +14,16 @@ const styles = StyleSheet.create({
     fontFamily: Font.MYRIAD_REGULAR,
     paddingLeft: 15,
     paddingRight: 15,
-    paddingTop: 13,
-    paddingBottom: 11,
+    height: 48,
+    alignItems: 'center',
     borderRadius: 5,
   },
   error: {
     color: Color.TXT_RED,
     fontSize: Font.FONTSIZE_13,
     fontFamily: Font.MYRIAD_REGULAR,
+    position: 'relative',
+    top: isIOS() ? 2 : 0,
   },
   errorView: {
     backgroundColor: Color.BACK_WHITE,
@@ -28,10 +32,9 @@ const styles = StyleSheet.create({
     borderColor: Color.TXT_RED,
     paddingLeft: 15,
     paddingRight: 15,
-    paddingTop: 9,
-    paddingBottom: 6,
+    height: 38,
+    justifyContent: 'center',
   },
-
   showbtn: {
     height: 30,
     width: 30,

@@ -17,10 +17,9 @@ import {Color, Font} from '../../../utils/variable';
 export default class EventsDetails extends Component {
   constructor(props) {
     super(props);
-
     this.offset = 0;
-
     this.state = {
+      modalVisible: false,
       scrollOffset: new Animated.Value(0),
       titleWidth: 0,
     };
@@ -40,28 +39,18 @@ export default class EventsDetails extends Component {
     this.state.scrollOffset.setValue(offset);
   };
 
-  // state = {
-  //   modalVisible: false,
-  // };
-
-  // setModalVisible = (visible) => {
-  //   this.setState({modalVisible: visible});
-  // };
+  setModalVisible = (visible) => {
+    this.setState({modalVisible: visible});
+  };
 
   render() {
     const {navigate} = this.props.navigation;
-    //const {modalVisible} = this.state;
-
-    const {scrollOffset} = this.state;
+    const {modalVisible, scrollOffset} = this.state;
     const screenWidth = Dimensions.get('window').width;
 
     return (
       <View style={styles.container}>
-        {/* <Modal
-          animationType="slide"
-          transparent={true}
-          //visible={modalVisible}
-        >
+        <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <CustomTextfield
@@ -80,7 +69,12 @@ export default class EventsDetails extends Component {
                 placeholder="Start typing..."
                 editable={true}
                 inputmainstyle={{marginBottom: 20}}
-                inputstyle={{height: 150}}
+                inputstyle={{
+                  height: 150,
+                  paddingTop: 14,
+                  paddingBottom: 14,
+                  textAlignVertical: 'top',
+                }}
                 multiline={true}
                 //onChangeText={this.onEmailTextChange}
                 //value={email.value}
@@ -92,30 +86,39 @@ export default class EventsDetails extends Component {
                   btnText="Send"
                   mainStyle={styles.createvent}
                   btnStyle={styles.createventxt}
-                  // onClick={() => {
-                  //   this.setModalVisible(!modalVisible);
-                  // }}
+                  onClick={() => {
+                    this.setModalVisible(!modalVisible);
+                  }}
                 />
                 <CustomButton
                   width="48%"
                   btnText="Cancel"
                   mainStyle={styles.deleteevent}
                   btnStyle={styles.deleteeventxt}
-                  // onClick={() => {
-                  //   this.setModalVisible(!modalVisible);
-                  // }}
+                  onClick={() => {
+                    this.setModalVisible(!modalVisible);
+                  }}
                 />
               </View>
             </View>
           </View>
-        </Modal> */}
+        </Modal>
 
         <View style={styles.eventbackbtn}>
           <TouchableOpacity
             onPress={() => {
               this.props.navigation.navigate('Events');
             }}>
-            <CustomIcon style={styles.backbtnicon} name="back" />
+            <CustomIcon style={styles.backicon} name="back" />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.editbtn}>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate('EditEvents');
+            }}>
+            <CustomIcon style={styles.editicon} name="edit" />
           </TouchableOpacity>
         </View>
 
@@ -127,7 +130,7 @@ export default class EventsDetails extends Component {
               width: screenWidth,
               marginTop: scrollOffset.interpolate({
                 inputRange: [0, 200],
-                outputRange: [10, -10],
+                outputRange: [30, -5],
                 extrapolate: 'clamp',
               }),
             },
@@ -186,9 +189,9 @@ export default class EventsDetails extends Component {
                 btnText="Send notification"
                 mainStyle={styles.sendnotification}
                 btnStyle={styles.sendnotificationtxt}
-                // onClick={() => {
-                //   this.setModalVisible(true);
-                // }}
+                onClick={() => {
+                  this.setModalVisible(true);
+                }}
               />
             </View>
             <View>

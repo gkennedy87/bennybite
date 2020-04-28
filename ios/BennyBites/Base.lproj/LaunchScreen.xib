@@ -16,7 +16,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="SplashLogo" translatesAutoresizingMaskIntoConstraints="NO" id="Blx-KJ-dBT">
-                    <rect key="frame" x="78.751972942494604" y="419.76099210823008" width="256.00000000000006" height="57.999999999999886"/>
+                    <rect key="frame" x="79" y="420" width="256" height="58"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                 </imageView>
             </subviews>

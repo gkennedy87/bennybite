@@ -1,6 +1,8 @@
 import {StyleSheet, Dimensions} from 'react-native';
 import {Font, Color} from '../../../utils/variable';
 import {ifIphoneX} from 'react-native-iphone-x-helper';
+import {isIOS} from '../../../utils/theme';
+
 const {width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -76,16 +78,16 @@ const styles = StyleSheet.create({
   },
   createvent: {
     backgroundColor: Color.BACK_DARKYELLOW,
+    alignItems: 'center',
+    justifyContent: 'center',
     // paddingTop: 17,
     // paddingBottom: 13,
     ...ifIphoneX(
       {
-        paddingTop: 26,
-        paddingBottom: 25,
+        height: 70,
       },
       {
-        paddingTop: 17,
-        paddingBottom: 13,
+        height: 48,
       },
     ),
   },
@@ -93,6 +95,8 @@ const styles = StyleSheet.create({
     color: Color.TXT_WHITE,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
+    position: 'relative',
+    top: isIOS() ? 3 : 0,
   },
 
   /*********** Userlistong ************/
