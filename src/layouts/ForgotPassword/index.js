@@ -99,21 +99,7 @@ export class ForgotPassword extends Component {
                     // }
                     //value={false}
                     //disabled={!this.state.email.isValid}
-<<<<<<< HEAD
                     onClick={this.onResetPassword}
-=======
-                    onClick={() => {
-                      // this.setState({isToastVisible: true});
-                      // setTimeout(
-                      //   () =>
-                      //     this.setState({
-                      //       isToastVisible: false,
-                      //     }),
-                      //   2000,
-                      // );
-                      this.props.navigation.navigate('Events');
-                    }}
->>>>>>> Design-Integrations
                   />
                 </View>
               </View>
