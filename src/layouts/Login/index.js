@@ -1,13 +1,18 @@
-import React, {Component} from 'react';
-import {View, Image, SafeAreaView, Text} from 'react-native';
+import React, { Component } from 'react';
+import { connect } from "react-redux"
+import { View, Image, SafeAreaView, Text } from 'react-native';
+import { toLower } from "lodash"
+import AsyncStorage from "@react-native-community/async-storage"
+import { authOperations } from "./../../state/ducks/auth";
+
 import CustomTextfield from '../../components/CustomTextfield';
-import {REGEX} from '../../utils/validation';
-import {ErrorMessage} from '../../utils/message';
+import { REGEX } from '../../utils/validation';
+import { ErrorMessage } from '../../utils/message';
 import CustomButton from '../../components/CustomButton';
 
 import styles from './styles';
 
-export default class Login extends Component {
+export class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,7 +53,7 @@ export default class Login extends Component {
       password.isValid = false;
     }
 
-    this.setState({password});
+    this.setState({ password });
   };
 
   onEmailTextChange = (text) => {
@@ -66,13 +71,29 @@ export default class Login extends Component {
       email.message.push(ErrorMessage.EMAIL_VALID);
       email.isValid = false;
     }
-    this.setState({email});
+    this.setState({ email });
   };
+
   onPassVisi = () => {
     this.setState({
       passVisible: !this.state.passVisible,
     });
   };
+
+  onLogin = async () => {
+    try {
+      let { user, tokens } = await this.props.login({
+        email: toLower(this.state.email.value),
+        password: this.state.password.value
+      });
+      await AsyncStorage.setItem('isAuthenticated', 'true');
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+      await AsyncStorage.setItem('tokens', JSON.stringify(tokens));
+      this.props.navigation.navigate('Events');
+    } catch (err) {
+      alert(err.response.data.message)
+    }
+  }
 
   // onChangeValue = () => {
   //   this.setState({
@@ -81,8 +102,8 @@ export default class Login extends Component {
   // };
 
   render() {
-    const {email, password} = this.state;
-    const {navigate} = this.props.navigation;
+    const { email, password } = this.state;
+    const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.safeareaview}>
@@ -98,8 +119,8 @@ export default class Login extends Component {
               <CustomTextfield
                 placeholder="Email Id"
                 editable={true}
-                inputmainstyle={{marginBottom: 25}}
-                inputstyle={{paddingRight: 40}}
+                inputmainstyle={{ marginBottom: 25 }}
+                inputstyle={{ paddingRight: 40 }}
                 ifIcon={true}
                 iconname={'email'}
                 onChangeText={this.onEmailTextChange}
@@ -108,8 +129,8 @@ export default class Login extends Component {
 
               <CustomTextfield
                 placeholder="Password"
-                inputmainstyle={{marginBottom: 25}}
-                inputstyle={{paddingRight: 40}}
+                inputmainstyle={{ marginBottom: 25 }}
+                inputstyle={{ paddingRight: 40 }}
                 editable={true}
                 passwordField={true}
                 passVisible={this.state.passVisible}
@@ -148,17 +169,7 @@ export default class Login extends Component {
                   // disabled={
                   //   !(this.state.email.isValid && this.state.password.isValid)
                   // }
-                  onClick={() => {
-                    // this.setState({isToastVisible: true});
-                    // setTimeout(
-                    //   () =>
-                    //     this.setState({
-                    //       isToastVisible: false,
-                    //     }),
-                    //   2000,
-                    // );
-                    this.props.navigation.navigate('Events');
-                  }}
+                  onClick={this.onLogin}
                 />
               </View>
             </View>
@@ -168,3 +179,9 @@ export default class Login extends Component {
     );
   }
 }
+
+export const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = { login: authOperations.login };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

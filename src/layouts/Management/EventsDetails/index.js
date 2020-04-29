@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   ScrollView,
@@ -12,7 +12,7 @@ import CustomTextfield from '../../../components/CustomTextfield';
 import CustomButton from '../../../components/CustomButton';
 import CustomIcon from '../../../components/CustomIcon';
 import styles from './styles';
-import {Color, Font} from '../../../utils/variable';
+import { Color, Font } from '../../../utils/variable';
 
 export default class EventsDetails extends Component {
   constructor(props) {
@@ -31,7 +31,7 @@ export default class EventsDetails extends Component {
   };
 
   componentDidMount() {
-    this.state.scrollOffset.addListener(({value}) => (this.offset = value));
+    this.state.scrollOffset.addListener(({ value }) => (this.offset = value));
   }
 
   onScroll = (e) => {
@@ -49,10 +49,10 @@ export default class EventsDetails extends Component {
   // };
 
   render() {
-    const {navigate} = this.props.navigation;
+    const { navigate } = this.props.navigation;
     //const {modalVisible} = this.state;
 
-    const {scrollOffset} = this.state;
+    const { scrollOffset } = this.state;
     const screenWidth = Dimensions.get('window').width;
 
     return (
@@ -136,7 +136,7 @@ export default class EventsDetails extends Component {
             onLayout={(e) => {
               if (this.offset === 0 && this.state.titleWidth === 0) {
                 const titleWidth = e.nativeEvent.layout.width;
-                this.setState({titleWidth});
+                this.setState({ titleWidth });
               }
             }}
             style={[
@@ -163,8 +163,8 @@ export default class EventsDetails extends Component {
         </Animated.View>
 
         <ScrollView
-          style={{flex: 1, width: '100%'}}
-          contentContainerStyle={{width: '100%'}}
+          style={{ flex: 1, width: '100%' }}
+          contentContainerStyle={{ width: '100%' }}
           onScroll={this.onScroll}
           scrollEventThrottle={20}>
           <View style={styles.contentspacing}>
@@ -186,9 +186,9 @@ export default class EventsDetails extends Component {
                 btnText="Send notification"
                 mainStyle={styles.sendnotification}
                 btnStyle={styles.sendnotificationtxt}
-                // onClick={() => {
-                //   this.setModalVisible(true);
-                // }}
+              // onClick={() => {
+              //   this.setModalVisible(true);
+              // }}
               />
             </View>
             <View>

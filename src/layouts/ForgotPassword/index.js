@@ -1,13 +1,19 @@
-import React, {Component} from 'react';
-import {View, Image, SafeAreaView, Text} from 'react-native';
-import CustomTextfield from '../../components/CustomTextfield';
-import {REGEX} from '../../utils/validation';
-import {ErrorMessage} from '../../utils/message';
+
+import { toLower } from "lodash";
+import React, { Component } from 'react';
+import { connect } from "react-redux";
+import { View, Image, SafeAreaView, Text } from 'react-native';
+
+import { authOperations } from "./../../state/ducks/auth";
+
+import { REGEX } from '../../utils/validation';
+import { ErrorMessage } from '../../utils/message';
 import CustomButton from '../../components/CustomButton';
+import CustomTextfield from '../../components/CustomTextfield';
 
 import styles from './styles';
 
-export default class ForgotPassword extends Component {
+export class ForgotPassword extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,12 +42,20 @@ export default class ForgotPassword extends Component {
       email.message.push(ErrorMessage.EMAIL_VALID);
       email.isValid = false;
     }
-    this.setState({email});
+    this.setState({ email });
   };
 
+  onResetPassword = async () => {
+    try {
+      await this.props.forgotPassword({ email: toLower(this.state.email.value )})
+      this.props.navigation.navigate('Login');
+    } catch (err) {
+      alert(err.response.data.message)
+    }
+  }
+
   render() {
-    const {email} = this.state;
-    const {navigate} = this.props.navigation;
+    const { email } = this.state;
 
     return (
       <View style={styles.safeareaview}>
@@ -60,7 +74,7 @@ export default class ForgotPassword extends Component {
                 <CustomTextfield
                   placeholder="Email Id"
                   editable={true}
-                  inputstyle={{paddingRight: 40}}
+                  inputstyle={{ paddingRight: 40 }}
                   ifIcon={true}
                   iconname={'email'}
                   onChangeText={this.onEmailTextChange}
@@ -85,17 +99,7 @@ export default class ForgotPassword extends Component {
                     // }
                     //value={false}
                     //disabled={!this.state.email.isValid}
-                    onClick={() => {
-                      // this.setState({isToastVisible: true});
-                      // setTimeout(
-                      //   () =>
-                      //     this.setState({
-                      //       isToastVisible: false,
-                      //     }),
-                      //   2000,
-                      // );
-                      this.props.navigation.navigate('ResetPassword');
-                    }}
+                    onClick={this.onResetPassword}
                   />
                 </View>
               </View>
@@ -106,3 +110,9 @@ export default class ForgotPassword extends Component {
     );
   }
 }
+
+export const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = { forgotPassword: authOperations.forgotPassword };
+
+export default connect(mapStateToProps, mapDispatchToProps)(ForgotPassword);

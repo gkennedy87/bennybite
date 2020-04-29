@@ -1,93 +1,102 @@
-import React, {Component} from 'react';
-import {View, FlatList, Text, Image} from 'react-native';
-import Navbar from '../../../components/Navbar';
-import CustomButton from '../../../components/CustomButton';
-import Tabbutton from '../../../components/Tabbutton';
-import styles from './styles';
-import {Color} from '../../../utils/variable';
+import React, { Component } from 'react';
+import { connect } from "react-redux"
+import { View, FlatList, Text, Image } from 'react-native';
+import { RectButton, TouchableOpacity } from 'react-native-gesture-handler'
+import AsyncStorage from "@react-native-community/async-storage"
 
-import {RectButton, TouchableOpacity} from 'react-native-gesture-handler';
+import Navbar from '../../../components/Navbar';
+import Tabbutton from '../../../components/Tabbutton';
+import CustomButton from '../../../components/CustomButton';
+
+import styles from './styles';
+import { Color } from '../../../utils/variable';
 
 import AppleStyleSwipeableRow from './AppleStyleSwipeableRow';
+
+import { eventOperations } from "./../../../state/ducks/event";
+import { userOperations } from "./../../../state/ducks/user";
+import { authOperations } from "./../../../state/ducks/auth";
+
+import { safeJSONParser } from "./../../../utils/helper"
 
 const Eventlist = [
   {
     id: '1',
-    title: 'TEDx talks',
-    subtxt:
+    name: 'TEDx talks',
+    info:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
+    location: 'Ryder Avenue Seattle, WA 98109',
     evtstatus: 'On going',
     upcomingtime: '',
   },
   {
     id: '2',
-    title: 'College campus farmer’s dsd  ff f ds ss gsdg s',
-    subtxt:
+    name: 'College campus farmer’s dsd  ff f ds ss gsdg s',
+    info:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
+    location: 'Ryder Avenue Seattle, WA 98109',
     evtstatus: 'On going',
     upcomingtime: '',
   },
   {
     id: '3',
-    title: 'Community service events Community service events',
-    subtxt:
+    name: 'Community service events Community service events',
+    info:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
+    location: 'Ryder Avenue Seattle, WA 98109',
     evtstatus: 'Upcoming',
     upcomingtime: '1pm-3pm, 23/12/2020',
     upcomingtime: '',
   },
   {
     id: '4',
-    title: 'Craft workshops',
-    subtxt:
+    name: 'Craft workshops',
+    info:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
+    location: 'Ryder Avenue Seattle, WA 98109',
     evtstatus: 'Upcoming',
     upcomingtime: '1pm-3pm, 23/12/2020',
     upcomingtime: '',
   },
   {
     id: '1',
-    title: 'TEDx talks',
-    subtxt:
+    name: 'TEDx talks',
+    info:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
+    location: 'Ryder Avenue Seattle, WA 98109',
     evtstatus: 'On going',
     upcomingtime: '',
   },
   {
     id: '2',
-    title: 'College campus farmer’s',
-    subtxt:
+    name: 'College campus farmer’s',
+    info:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
+    location: 'Ryder Avenue Seattle, WA 98109',
     evtstatus: 'On going',
     upcomingtime: '',
   },
   {
     id: '3',
-    title: 'Community service events',
-    subtxt:
+    name: 'Community service events',
+    info:
       'Millennials love expressing their values online, but 80% of them feel it’s essential for people to come together in',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
+    location: 'Ryder Avenue Seattle, WA 98109',
     evtstatus: 'Upcoming',
     upcomingtime: '1pm-3pm, 23/12/2020',
   },
   {
     id: '4',
-    title: 'Craft workshops 123',
-    subtxt:
+    name: 'Craft workshops 123',
+    info:
       'Host a workshop where students can make their own dorm room décor — think plant hangers, terrariu...',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
+    location: 'Ryder Avenue Seattle, WA 98109',
     evtstatus: 'Upcoming',
     upcomingtime: '1pm-3pm, 23/12/2020',
   },
 ];
 
-function Item({title, subtxt, evtaddress, evtstatus, upcomingtime}) {
+function Item({ name, info, location, evtstatus, upcomingtime }) {
   return (
     <TouchableOpacity
       onPress={() => {
@@ -97,16 +106,16 @@ function Item({title, subtxt, evtaddress, evtstatus, upcomingtime}) {
       <View style={styles.listingborder}>
         <View style={styles.listingtitle}>
           <Text numberOfLines={1} style={styles.title}>
-            {title}
+            {name}
           </Text>
           <Text style={styles.upcomingtime}>{upcomingtime}</Text>
         </View>
         <Text style={styles.subtxt} numberOfLines={2}>
-          {subtxt}
+          {info}
         </Text>
         <View style={styles.row}>
           <Text numberOfLines={1} style={styles.evtaddress}>
-            {evtaddress}
+            {location}
           </Text>
           <Text style={styles.evtstatus}>{evtstatus}</Text>
         </View>
@@ -172,13 +181,13 @@ const Userlist = [
   },
 ];
 
-const Row = ({item}) => (
+const Row = ({ item }) => (
   <RectButton
     style={styles.userlistingspace}
-    //onPress={() => alert(item.userprofile, item.name, item.email)}
+  //onPress={() => alert(item.userprofile, item.name, item.email)}
   >
     <View style={styles.userlistingborder}>
-      <Image source={{uri: item.userprofile}} style={styles.userprofile} />
+      <Image source={{ uri: item.pic }} style={styles.userprofile} />
       <View style={styles.usremail}>
         <Text style={styles.usernametxt}>{item.name}</Text>
         <Text style={styles.usertxtemail}>{item.email}</Text>
@@ -187,7 +196,7 @@ const Row = ({item}) => (
   </RectButton>
 );
 
-const SwipeableRow = ({item, index}) => {
+const SwipeableRow = ({ item, index }) => {
   return (
     <AppleStyleSwipeableRow>
       <Row item={item} />
@@ -195,7 +204,7 @@ const SwipeableRow = ({item, index}) => {
   );
 };
 
-export default class Events extends Component {
+export class Events extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -203,17 +212,42 @@ export default class Events extends Component {
     };
   }
 
+  async componentDidMount() {
+    const isAuthenticated = safeJSONParser(await AsyncStorage.getItem('isAuthenticated'));
+    const user = safeJSONParser(await AsyncStorage.getItem('user'));
+    const tokens = safeJSONParser(await AsyncStorage.getItem('tokens'));
+    if (isAuthenticated) {
+      console.log(user, tokens)
+      this.props.initializeSession({ user, tokens });
+      this.props.fetchEventList();
+      this.props.fetchUserList();
+    }
+
+  }
+
   static navigationOptions = {
     header: null,
   };
 
+  getEventStatus = (startDate, endDate) => {
+    startDate = new Date(startDate).getTime();
+    endDate = new Date(endDate).getTime();
+    const current = new Date().getTime();
+    if (startDate > current)
+      return 'Upcoming'
+    else if (startDate < current && endDate > current)
+      return 'On going'
+    else
+      return 'Past'
+  }
+
   render() {
-    const {navigate} = this.props.navigation;
-    const {selected} = this.state;
-    const {children} = this.props;
+    const { navigate } = this.props.navigation;
+    const { selected } = this.state;
+    const { children } = this.props;
 
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Navbar />
 
         <View style={styles.tabmain}>
@@ -255,15 +289,15 @@ export default class Events extends Component {
           </View>
         </View>
         {selected === 'FoodonCampus' && (
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <FlatList
-              data={Eventlist}
-              renderItem={({item}) => (
+              data={this.props.events}
+              renderItem={({ item }) => (
                 <Item
-                  title={item.title}
-                  subtxt={item.subtxt}
-                  evtaddress={item.evtaddress}
-                  evtstatus={item.evtstatus}
+                  name={item.name}
+                  info={item.info}
+                  location={item.location}
+                  evtstatus={this.getEventStatus(item.startDate, item.endDate)}
                   upcomingtime={item.upcomingtime}
                   id={item.id}
                 />
@@ -283,11 +317,11 @@ export default class Events extends Component {
           </View>
         )}
         {selected === 'Users' && (
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <FlatList
-              data={Userlist}
+              data={this.props.users.filter(u => u.role == 'user')}
               ItemSeparatorComponent={() => <View style={styles.separator} />}
-              renderItem={({item, index}) => (
+              renderItem={({ item, index }) => (
                 <SwipeableRow item={item} index={index} />
               )}
               keyExtractor={(item, index) => `message ${index}`}
@@ -298,3 +332,19 @@ export default class Events extends Component {
     );
   }
 }
+
+
+const mapStateToProps = (state) => {
+  return {
+    users: state.user.list,
+    events: state.event.list
+  }
+};
+
+const mapDispatchToProps = {
+  fetchUserList: userOperations.fetchList,
+  fetchEventList: eventOperations.fetchList,
+  initializeSession: authOperations.initializeSession
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Events);
