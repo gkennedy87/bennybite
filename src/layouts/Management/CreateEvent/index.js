@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {SafeAreaView, View, Platform, ScrollView} from 'react-native';
 import DatePicker from 'react-native-datepicker';
-// import DateTimePicker from '@react-native-community/datetimepicker';
 import CustomTextfield from '../../../components/CustomTextfield';
 import CustomButton from '../../../components/CustomButton';
 import HeaderTitle from '../../../components/Header/HeaderTitle';

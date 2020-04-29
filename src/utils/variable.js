@@ -29,5 +29,6 @@ export const Font = {
   FONTSIZE_20: 20,
   FONTSIZE_22: 22,
   FONTSIZE_24: 24,
+  FONTSIZE_32: 32,
   FONTSIZE_34: 34,
 };

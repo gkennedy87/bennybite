@@ -13,34 +13,18 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		21F1FE174D414889BB374006 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E075706B184D4002827D9A53 /* FontAwesome5_Regular.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* BennyBitesTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* BennyBitesTests.m */; };
-		519489F506C548A68B66B291 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 63D3EC70B4DD43998AA048D3 /* EvilIcons.ttf */; };
-		53EADA59558F48A2A1C2ADC6 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 12243020FB56417CA96423CD /* Ionicons.ttf */; };
-		54119E73F2B9415B80A41C06 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47AEBFBF1FB14951A9EEB387 /* Zocial.ttf */; };
-		546127DC13574CF3B2977BD6 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A6A206C896484C319876C4FA /* Entypo.ttf */; };
-		56A924041BD74BEFAE7D4C5F /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 255DB09830724DDD94F8DB69 /* SimpleLineIcons.ttf */; };
-		57D449A5B98749E2A6F4CC9D /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7737C89224C948DAB966648F /* Octicons.ttf */; };
 		5C69AA60AE7E407DC981A05A /* libPods-BennyBites-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E027E8797243C7D924BF3842 /* libPods-BennyBites-tvOSTests.a */; };
-		62A5392EB68C48AE8E85A8D4 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7E29B81C2AB480EAC0C17E3 /* Foundation.ttf */; };
-		68C5569524504BDE006228F0 /* susquehanna.eot in Resources */ = {isa = PBXBuildFile; fileRef = 68C5568F24504BDE006228F0 /* susquehanna.eot */; };
-		68C5569624504BDE006228F0 /* susquehanna.woff in Resources */ = {isa = PBXBuildFile; fileRef = 68C5569024504BDE006228F0 /* susquehanna.woff */; };
-		68C5569824504BDE006228F0 /* susquehanna.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68C5569224504BDE006228F0 /* susquehanna.ttf */; };
-		68C5569924504BDE006228F0 /* susquehanna.svg in Resources */ = {isa = PBXBuildFile; fileRef = 68C5569324504BDE006228F0 /* susquehanna.svg */; };
-		68E1469E24515CDE00AD2662 /* MyriadPro-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68E1469C24515CDE00AD2662 /* MyriadPro-Semibold.ttf */; };
-		68E1469F24515CDE00AD2662 /* MyriadPro-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 68E1469D24515CDE00AD2662 /* MyriadPro-Regular.ttf */; };
+		6891061F2457FA2B007A587C /* MyriadPro-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 689106092457FA2B007A587C /* MyriadPro-Regular.ttf */; };
+		689106212457FA2B007A587C /* susquehanna.eot in Resources */ = {isa = PBXBuildFile; fileRef = 6891060B2457FA2B007A587C /* susquehanna.eot */; };
+		689106232457FA2B007A587C /* MyriadPro-Semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6891060D2457FA2B007A587C /* MyriadPro-Semibold.ttf */; };
+		689106252457FA2B007A587C /* susquehanna.woff in Resources */ = {isa = PBXBuildFile; fileRef = 6891060F2457FA2B007A587C /* susquehanna.woff */; };
+		6891062B2457FA2B007A587C /* susquehanna.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 689106152457FA2B007A587C /* susquehanna.ttf */; };
+		689106302457FA2B007A587C /* susquehanna.svg in Resources */ = {isa = PBXBuildFile; fileRef = 6891061A2457FA2B007A587C /* susquehanna.svg */; };
 		6C187D3EDDDC538F2208C760 /* libPods-BennyBites.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 204E046B6B0C3560B2779D21 /* libPods-BennyBites.a */; };
-		765659F9AED74F74AAE3DFE7 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4BDFA832A5D0459BB4AFC8A0 /* FontAwesome5_Brands.ttf */; };
-		B1197427007547CD89BA839A /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D5A6134C94A64C7A94D58F4D /* Feather.ttf */; };
-		BC6F49D7B85643AAB5B822B6 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A6AC3F3CA9148E0BE963552 /* FontAwesome.ttf */; };
-		CEB8A9AEDE674D60B0B4CC5C /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 804D86C8CCF64F8C9B17D3C9 /* AntDesign.ttf */; };
-		D6F8DA5BB2CF477E8014DF0D /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1719DDD0F7B1476386E2CDE4 /* FontAwesome5_Solid.ttf */; };
-		D994321BE4A041449B543F9C /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 90BA28E5EA11452886FA094D /* Fontisto.ttf */; };
-		F0E6376691164C4789B25066 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F1D362B4FE44E948E1BAEC4 /* MaterialCommunityIcons.ttf */; };
-		F3AA90EA30074EA4BEB19067 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8A1080370B2142D0B6339739 /* MaterialIcons.ttf */; };
 		FA4D569BCE0572D8F7558408 /* libPods-BennyBites-BennyBitesTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA5363F1BB9B7F9F7EA2B992 /* libPods-BennyBites-BennyBitesTests.a */; };
 /* End PBXBuildFile section */
 
@@ -85,12 +69,12 @@
 		4BDFA832A5D0459BB4AFC8A0 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
 		4F8842AD96543699D3374A80 /* Pods-BennyBites.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BennyBites.release.xcconfig"; path = "Target Support Files/Pods-BennyBites/Pods-BennyBites.release.xcconfig"; sourceTree = "<group>"; };
 		63D3EC70B4DD43998AA048D3 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
-		68C5568F24504BDE006228F0 /* susquehanna.eot */ = {isa = PBXFileReference; lastKnownFileType = file; path = susquehanna.eot; sourceTree = "<group>"; };
-		68C5569024504BDE006228F0 /* susquehanna.woff */ = {isa = PBXFileReference; lastKnownFileType = file; path = susquehanna.woff; sourceTree = "<group>"; };
-		68C5569224504BDE006228F0 /* susquehanna.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = susquehanna.ttf; sourceTree = "<group>"; };
-		68C5569324504BDE006228F0 /* susquehanna.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = susquehanna.svg; sourceTree = "<group>"; };
-		68E1469C24515CDE00AD2662 /* MyriadPro-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MyriadPro-Semibold.ttf"; sourceTree = "<group>"; };
-		68E1469D24515CDE00AD2662 /* MyriadPro-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MyriadPro-Regular.ttf"; sourceTree = "<group>"; };
+		689106092457FA2B007A587C /* MyriadPro-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MyriadPro-Regular.ttf"; sourceTree = "<group>"; };
+		6891060B2457FA2B007A587C /* susquehanna.eot */ = {isa = PBXFileReference; lastKnownFileType = file; path = susquehanna.eot; sourceTree = "<group>"; };
+		6891060D2457FA2B007A587C /* MyriadPro-Semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "MyriadPro-Semibold.ttf"; sourceTree = "<group>"; };
+		6891060F2457FA2B007A587C /* susquehanna.woff */ = {isa = PBXFileReference; lastKnownFileType = file; path = susquehanna.woff; sourceTree = "<group>"; };
+		689106152457FA2B007A587C /* susquehanna.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = susquehanna.ttf; sourceTree = "<group>"; };
+		6891061A2457FA2B007A587C /* susquehanna.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = susquehanna.svg; sourceTree = "<group>"; };
 		7737C89224C948DAB966648F /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		7C74C65B7A2C0567AB96C594 /* libPods-BennyBites-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BennyBites-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F1D362B4FE44E948E1BAEC4 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
@@ -169,7 +153,7 @@
 		13B07FAE1A68108700A75B9A /* BennyBites */ = {
 			isa = PBXGroup;
 			children = (
-				68C5568E24504BDE006228F0 /* Fonts */,
+				689106052457FA2B007A587C /* Fonts */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -209,15 +193,15 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		68C5568E24504BDE006228F0 /* Fonts */ = {
+		689106052457FA2B007A587C /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
-				68E1469D24515CDE00AD2662 /* MyriadPro-Regular.ttf */,
-				68E1469C24515CDE00AD2662 /* MyriadPro-Semibold.ttf */,
-				68C5568F24504BDE006228F0 /* susquehanna.eot */,
-				68C5569024504BDE006228F0 /* susquehanna.woff */,
-				68C5569224504BDE006228F0 /* susquehanna.ttf */,
-				68C5569324504BDE006228F0 /* susquehanna.svg */,
+				689106092457FA2B007A587C /* MyriadPro-Regular.ttf */,
+				6891060B2457FA2B007A587C /* susquehanna.eot */,
+				6891060D2457FA2B007A587C /* MyriadPro-Semibold.ttf */,
+				6891060F2457FA2B007A587C /* susquehanna.woff */,
+				689106152457FA2B007A587C /* susquehanna.ttf */,
+				6891061A2457FA2B007A587C /* susquehanna.svg */,
 			);
 			name = Fonts;
 			path = BennyBites/Fonts;
@@ -378,7 +362,7 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = ML9PP6M82T;
 						LastSwiftMigration = 1120;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -425,29 +409,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				68C5569524504BDE006228F0 /* susquehanna.eot in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
-				CEB8A9AEDE674D60B0B4CC5C /* AntDesign.ttf in Resources */,
-				546127DC13574CF3B2977BD6 /* Entypo.ttf in Resources */,
-				519489F506C548A68B66B291 /* EvilIcons.ttf in Resources */,
-				B1197427007547CD89BA839A /* Feather.ttf in Resources */,
-				BC6F49D7B85643AAB5B822B6 /* FontAwesome.ttf in Resources */,
-				765659F9AED74F74AAE3DFE7 /* FontAwesome5_Brands.ttf in Resources */,
-				68C5569824504BDE006228F0 /* susquehanna.ttf in Resources */,
-				68C5569924504BDE006228F0 /* susquehanna.svg in Resources */,
-				21F1FE174D414889BB374006 /* FontAwesome5_Regular.ttf in Resources */,
-				D6F8DA5BB2CF477E8014DF0D /* FontAwesome5_Solid.ttf in Resources */,
-				D994321BE4A041449B543F9C /* Fontisto.ttf in Resources */,
-				68C5569624504BDE006228F0 /* susquehanna.woff in Resources */,
-				68E1469F24515CDE00AD2662 /* MyriadPro-Regular.ttf in Resources */,
-				62A5392EB68C48AE8E85A8D4 /* Foundation.ttf in Resources */,
-				53EADA59558F48A2A1C2ADC6 /* Ionicons.ttf in Resources */,
-				F0E6376691164C4789B25066 /* MaterialCommunityIcons.ttf in Resources */,
-				F3AA90EA30074EA4BEB19067 /* MaterialIcons.ttf in Resources */,
-				57D449A5B98749E2A6F4CC9D /* Octicons.ttf in Resources */,
-				68E1469E24515CDE00AD2662 /* MyriadPro-Semibold.ttf in Resources */,
-				56A924041BD74BEFAE7D4C5F /* SimpleLineIcons.ttf in Resources */,
-				54119E73F2B9415B80A41C06 /* Zocial.ttf in Resources */,
+				689106232457FA2B007A587C /* MyriadPro-Semibold.ttf in Resources */,
+				689106252457FA2B007A587C /* susquehanna.woff in Resources */,
+				6891061F2457FA2B007A587C /* MyriadPro-Regular.ttf in Resources */,
+				689106212457FA2B007A587C /* susquehanna.eot in Resources */,
+				6891062B2457FA2B007A587C /* susquehanna.ttf in Resources */,
+				689106302457FA2B007A587C /* susquehanna.svg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -834,9 +802,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ML9PP6M82T;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -851,7 +820,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = BennyBites;
-				PROVISIONING_PROFILE_SPECIFIER = "Benny's";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -866,9 +835,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ML9PP6M82T;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = BennyBites/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
@@ -878,7 +848,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = BennyBites;
-				PROVISIONING_PROFILE_SPECIFIER = "Benny's";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";

@@ -14,12 +14,13 @@ import SplashScreen from 'react-native-splash-screen';
 import Login from './src/layouts/Login';
 import ForgotPassword from './src/layouts/ForgotPassword';
 import ChangePassword from './src/layouts/ChangePassword';
-import ResetPassword from './src/layouts/ResetPassword';
 
 import Events from './src/layouts/Management/Events';
 import EventsDetails from './src/layouts/Management/EventsDetails';
 import CreateEvent from './src/layouts/Management/CreateEvent';
 import EditEvents from './src/layouts/Management/EditEvents';
+import Profile from './src/layouts/Profile';
+import EditProfile from './src/layouts/EditProfile';
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -43,10 +44,11 @@ const AppNavigator = createStackNavigator(
     CreateEvent: {screen: CreateEvent},
     EditEvents: {screen: EditEvents},
     ChangePassword: {screen: ChangePassword},
-    ResetPassword: {screen: ResetPassword},
+    Profile: {screen: Profile},
+    EditProfile: {screen: EditProfile},
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'Events',
     // headerMode: "none",
     /* The header config from HomeScreen is now here */
     defaultNavigationOptions: ({ navigation }) => ({

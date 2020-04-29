@@ -48,9 +48,6 @@ export class Login extends Component {
       // email.message = ErrorMsg.emailRequired // import
       password.message.push(ErrorMessage.EMPTY_PASS);
       password.isValid = false;
-    } else if (password.value.length < 8) {
-      password.message.push(ErrorMessage.WRONG_PASS);
-      password.isValid = false;
     }
 
     this.setState({ password });
