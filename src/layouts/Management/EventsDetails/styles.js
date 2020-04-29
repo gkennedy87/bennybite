@@ -1,15 +1,48 @@
 import {StyleSheet, Dimensions} from 'react-native';
 import {Font, Color} from '../../../utils/variable';
+import {ifIphoneX} from 'react-native-iphone-x-helper';
+import {isIOS} from '../../../utils/theme';
+
 const {width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   eventbackbtn: {
-    paddingTop: 55,
-    paddingLeft: 15,
-    paddingRight: 15,
+    ...ifIphoneX(
+      {
+        paddingTop: 55,
+      },
+      {
+        paddingTop: 25,
+      },
+    ),
+    alignSelf: 'flex-start',
+    position: 'absolute',
+    left: 15,
+    zIndex: 1,
   },
-  backbtnicon: {
+  backicon: {
     fontSize: Font.FONTSIZE_20,
+    color: Color.TXT_BLACK,
+  },
+  editbtn: {
+    ...ifIphoneX(
+      {
+        paddingTop: 55,
+      },
+      {
+        paddingTop: 25,
+      },
+    ),
+    alignSelf: 'flex-start',
+    position: 'absolute',
+    right: 15,
+    zIndex: 1,
+  },
+  editicon: {
+    position: 'relative',
+    top: 3,
+    fontSize: Font.FONTSIZE_18,
+    color: Color.TXT_BLACK,
   },
   container: {
     flex: 1,
@@ -19,7 +52,14 @@ const styles = StyleSheet.create({
     paddingRight: 15,
   },
   header: {
-    backgroundColor: 'whitesmoke',
+    ...ifIphoneX(
+      {
+        paddingTop: 55,
+      },
+      {
+        paddingTop: 35,
+      },
+    ),
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'center',
@@ -76,7 +116,7 @@ const styles = StyleSheet.create({
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
     position: 'relative',
-    top: 3,
+    top: isIOS() ? 3 : 0,
   },
   btnview: {
     paddingTop: 25,
@@ -88,14 +128,15 @@ const styles = StyleSheet.create({
     backgroundColor: Color.BACK_WHITE,
     borderColor: Color.BACK_DARKYELLOW,
     borderWidth: 1,
-    paddingTop: 17,
-    paddingBottom: 13,
+    height: 48,
     borderRadius: 5,
   },
   sendnotificationtxt: {
     color: Color.TXT_DARKYELLOW,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
+    position: 'relative',
+    top: isIOS() ? 2 : 0,
   },
   locationtxt: {
     fontSize: Font.FONTSIZE_16,
@@ -211,27 +252,29 @@ const styles = StyleSheet.create({
   createvent: {
     width: '50%',
     backgroundColor: Color.BACK_DARKYELLOW,
-    paddingTop: 16,
-    paddingBottom: 11,
+    height: 48,
     borderRadius: 5,
   },
   createventxt: {
     color: Color.TXT_WHITE,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
+    position: 'relative',
+    top: isIOS() ? 3 : 0,
   },
   deleteevent: {
     backgroundColor: Color.BACK_WHITE,
     borderColor: Color.BACK_DARKYELLOW,
     borderWidth: 1,
-    paddingTop: 16,
-    paddingBottom: 11,
+    height: 48,
     borderRadius: 5,
   },
   deleteeventxt: {
     color: Color.TXT_DARKYELLOW,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
+    position: 'relative',
+    top: isIOS() ? 3 : 0,
   },
 });
 

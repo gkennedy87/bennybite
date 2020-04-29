@@ -96,34 +96,6 @@ const Eventlist = [
   },
 ];
 
-function Item({ name, info, location, evtstatus, upcomingtime }) {
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        this.props.navigation.navigate('EventsDetails');
-      }}
-      style={styles.listingspace}>
-      <View style={styles.listingborder}>
-        <View style={styles.listingtitle}>
-          <Text numberOfLines={1} style={styles.title}>
-            {name}
-          </Text>
-          <Text style={styles.upcomingtime}>{upcomingtime}</Text>
-        </View>
-        <Text style={styles.subtxt} numberOfLines={2}>
-          {info}
-        </Text>
-        <View style={styles.row}>
-          <Text numberOfLines={1} style={styles.evtaddress}>
-            {location}
-          </Text>
-          <Text style={styles.evtstatus}>{evtstatus}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-}
-
 const Userlist = [
   {
     name: 'Miyah Myles',
@@ -182,10 +154,7 @@ const Userlist = [
 ];
 
 const Row = ({ item }) => (
-  <RectButton
-    style={styles.userlistingspace}
-  //onPress={() => alert(item.userprofile, item.name, item.email)}
-  >
+  <RectButton  style={styles.userlistingspace}>
     <View style={styles.userlistingborder}>
       <Image source={{ uri: item.pic }} style={styles.userprofile} />
       <View style={styles.usremail}>
@@ -222,7 +191,6 @@ export class Events extends Component {
       this.props.fetchEventList();
       this.props.fetchUserList();
     }
-
   }
 
   static navigationOptions = {
@@ -241,10 +209,36 @@ export class Events extends Component {
       return 'Past'
   }
 
+  renderItem(item) {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          this.props.navigation.navigate('EventsDetails');
+        }}
+        style={styles.listingspace}>
+        <View style={styles.listingborder}>
+          <View style={styles.listingtitle}>
+            <Text numberOfLines={1} style={styles.title}>
+              {item.title}
+            </Text>
+            <Text style={styles.upcomingtime}>{item.upcomingtime}</Text>
+          </View>
+          <Text style={styles.subtxt} numberOfLines={2}>
+            {item.subtxt}
+          </Text>
+          <View style={styles.row}>
+            <Text numberOfLines={1} style={styles.evtaddress}>
+              {item.evtaddress}
+            </Text>
+            <Text style={styles.evtstatus}>{item.evtstatus}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
   render() {
-    const { navigate } = this.props.navigation;
     const { selected } = this.state;
-    const { children } = this.props;
 
     return (
       <View style={{ flex: 1 }}>
@@ -292,16 +286,7 @@ export class Events extends Component {
           <View style={{ flex: 1 }}>
             <FlatList
               data={this.props.events}
-              renderItem={({ item }) => (
-                <Item
-                  name={item.name}
-                  info={item.info}
-                  location={item.location}
-                  evtstatus={this.getEventStatus(item.startDate, item.endDate)}
-                  upcomingtime={item.upcomingtime}
-                  id={item.id}
-                />
-              )}
+              renderItem={({ item }) => this.renderItem(item)}
               keyExtractor={(item) => item.id}
             />
             <View style={styles.reatbtnview}>
@@ -332,7 +317,6 @@ export class Events extends Component {
     );
   }
 }
-
 
 const mapStateToProps = (state) => {
   return {

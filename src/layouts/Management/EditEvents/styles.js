@@ -1,5 +1,7 @@
 import {StyleSheet, Dimensions} from 'react-native';
 import {Font, Color} from '../../../utils/variable';
+import {isIOS} from '../../../utils/theme';
+
 import {ifIphoneX} from 'react-native-iphone-x-helper';
 const {width} = Dimensions.get('window');
 
@@ -20,29 +22,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   createvent: {
-    width: '50%',
     backgroundColor: Color.BACK_DARKYELLOW,
-    paddingTop: 18,
-    paddingBottom: 13,
+    height: 48,
     borderRadius: 5,
   },
   createventxt: {
     color: Color.TXT_WHITE,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
+    position: 'relative',
+    top: isIOS() ? 3 : 0,
   },
   deleteevent: {
     backgroundColor: Color.BACK_WHITE,
     borderColor: Color.BACK_DARKYELLOW,
     borderWidth: 1,
-    paddingTop: 18,
-    paddingBottom: 13,
+    height: 48,
     borderRadius: 5,
   },
   deleteeventxt: {
     color: Color.TXT_DARKYELLOW,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
+    position: 'relative',
+    top: isIOS() ? 3 : 0,
   },
 });
 

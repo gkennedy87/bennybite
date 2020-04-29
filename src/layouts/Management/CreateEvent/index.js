@@ -1,17 +1,23 @@
 import React, {Component} from 'react';
 import {SafeAreaView, View, Platform, ScrollView} from 'react-native';
 import DatePicker from 'react-native-datepicker';
+// import DateTimePicker from '@react-native-community/datetimepicker';
 import CustomTextfield from '../../../components/CustomTextfield';
 import CustomButton from '../../../components/CustomButton';
 import HeaderTitle from '../../../components/Header/HeaderTitle';
 import CustomIcon from '../../../components/CustomIcon';
+import {isIOS} from '../../../utils/theme';
+
 import styles from './styles';
 import {Color, Font} from '../../../utils/variable';
 
 export default class CreateEvent extends Component {
   constructor(props) {
     super(props);
-    this.state = {date: '2016-05-15'};
+    this.state = {
+      startDate: '',
+      endDate: '',
+    };
   }
 
   static navigationOptions = ({navigation}) => {
@@ -22,6 +28,8 @@ export default class CreateEvent extends Component {
 
   render() {
     const {navigate} = this.props.navigation;
+    const {startDate, endDate} = this.state;
+
     return (
       <SafeAreaView style={styles.safeareaview}>
         <View style={styles.contentcenter}>
@@ -38,7 +46,12 @@ export default class CreateEvent extends Component {
               placeholder="Event info"
               editable={true}
               inputmainstyle={{marginBottom: 20}}
-              inputstyle={{height: 150}}
+              inputstyle={{
+                height: 150,
+                paddingTop: 14,
+                paddingBottom: 14,
+                textAlignVertical: 'top',
+              }}
               multiline={true}
               //onChangeText={this.onEmailTextChange}
               //value={email.value}
@@ -56,10 +69,10 @@ export default class CreateEvent extends Component {
               //errorMsgs={email.message}
             ></CustomTextfield>
             <DatePicker
-              date={this.state.date}
+              date={startDate}
               mode="datetime"
               placeholder="Start time"
-              format="DD-MM-YYYY"
+              format="hh:mma, DD-MM-YYYY"
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
               iconComponent={
@@ -68,6 +81,8 @@ export default class CreateEvent extends Component {
                   style={{
                     fontSize: Font.FONTSIZE_18,
                     color: Color.TXT_BLACK,
+                    position: 'relative',
+                    top: 2,
                   }}></CustomIcon>
               }
               style={{
@@ -80,8 +95,7 @@ export default class CreateEvent extends Component {
                 fontFamily: Font.MYRIAD_REGULAR,
                 paddingLeft: 15,
                 paddingRight: 10,
-                paddingTop: 1,
-                paddingBottom: 1,
+                height: 48,
                 borderRadius: 5,
               }}
               customStyles={{
@@ -95,37 +109,44 @@ export default class CreateEvent extends Component {
                   fontSize: Font.FONTSIZE_16,
                   fontFamily: Font.MYRIAD_REGULAR,
                 },
+                placeholderText: {
+                  color: Color.TXT_LIGHTGRAY,
+                  position: 'relative',
+                  top: isIOS() ? 6 : 2,
+                  fontSize: Font.FONTSIZE_16,
+                  fontFamily: Font.MYRIAD_REGULAR,
+                },
                 dateText: {
                   position: 'relative',
-                  top: 3,
+                  top: isIOS() ? 6 : 2,
                   color: Color.TXT_BLACK,
                   fontFamily: Font.MYRIAD_REGULAR,
                   fontSize: Font.FONTSIZE_16,
                 },
                 btnTextConfirm: {
                   position: 'relative',
-                  top: 3,
+                  top: isIOS() ? 3 : 0,
                   color: Color.TXT_BLACK,
                   fontFamily: Font.MYRIAD_SEMIBOLD,
                   fontSize: Font.FONTSIZE_16,
                 },
                 btnTextCancel: {
                   position: 'relative',
-                  top: 3,
+                  top: isIOS() ? 3 : 0,
                   color: Color.TXT_BLACK,
                   fontFamily: Font.MYRIAD_SEMIBOLD,
                   fontSize: Font.FONTSIZE_16,
                 },
               }}
               onDateChange={(date) => {
-                this.setState({date: date});
+                this.setState({startDate: date});
               }}
             />
             <DatePicker
-              date={this.state.date}
+              date={endDate}
               mode="datetime"
-              placeholder="Start time"
-              format="DD-MM-YYYY"
+              placeholder="End time"
+              format="hh:mma, DD-MM-YYYY"
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
               iconComponent={
@@ -134,6 +155,8 @@ export default class CreateEvent extends Component {
                   style={{
                     fontSize: Font.FONTSIZE_18,
                     color: Color.TXT_BLACK,
+                    position: 'relative',
+                    top: 2,
                   }}></CustomIcon>
               }
               style={{
@@ -146,8 +169,7 @@ export default class CreateEvent extends Component {
                 fontFamily: Font.MYRIAD_REGULAR,
                 paddingLeft: 15,
                 paddingRight: 10,
-                paddingTop: 1,
-                paddingBottom: 1,
+                height: 48,
                 borderRadius: 5,
               }}
               customStyles={{
@@ -161,32 +183,40 @@ export default class CreateEvent extends Component {
                   fontSize: Font.FONTSIZE_16,
                   fontFamily: Font.MYRIAD_REGULAR,
                 },
+                placeholderText: {
+                  color: Color.TXT_LIGHTGRAY,
+                  position: 'relative',
+                  top: isIOS() ? 6 : 2,
+                  fontSize: Font.FONTSIZE_16,
+                  fontFamily: Font.MYRIAD_REGULAR,
+                },
                 dateText: {
                   position: 'relative',
-                  top: 3,
+                  top: isIOS() ? 6 : 2,
                   color: Color.TXT_BLACK,
                   fontFamily: Font.MYRIAD_REGULAR,
                   fontSize: Font.FONTSIZE_16,
                 },
                 btnTextConfirm: {
                   position: 'relative',
-                  top: 3,
+                  top: isIOS() ? 3 : 0,
                   color: Color.TXT_BLACK,
                   fontFamily: Font.MYRIAD_SEMIBOLD,
                   fontSize: Font.FONTSIZE_16,
                 },
                 btnTextCancel: {
                   position: 'relative',
-                  top: 3,
+                  top: isIOS() ? 3 : 0,
                   color: Color.TXT_BLACK,
                   fontFamily: Font.MYRIAD_SEMIBOLD,
                   fontSize: Font.FONTSIZE_16,
                 },
               }}
               onDateChange={(date) => {
-                this.setState({date: date});
+                this.setState({endDate: date});
               }}
             />
+
             <View style={styles.CreateEventMain}>
               <CustomButton
                 btnText="Create Event"

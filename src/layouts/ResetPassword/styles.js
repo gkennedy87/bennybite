@@ -1,10 +1,11 @@
 import {StyleSheet, Dimensions} from 'react-native';
 import {Font, Color} from '../../utils/variable';
+import {isIOS} from '../../utils/theme';
+
 const {width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   safeareaview: {
-    flex: 1,
     alignItems: 'center',
   },
   contentcenter: {
@@ -25,22 +26,24 @@ const styles = StyleSheet.create({
     color: Color.TXT_BLACK,
     fontSize: Font.FONTSIZE_16,
     fontFamily: Font.MYRIAD_SEMIBOLD,
+    position: 'relative',
+    top: isIOS() ? 2 : 0,
   },
   withlogin: {
     fontSize: Font.FONTSIZE_16,
     color: Color.TXT_WHITE,
     fontFamily: Font.MYRIAD_SEMIBOLD,
+    position: 'relative',
+    top: isIOS() ? 2 : 0,
   },
   logingray: {
     backgroundColor: Color.BACK_LIGHTGRAY,
-    paddingTop: 17,
-    paddingBottom: 13,
+    height: 48,
     borderRadius: 5,
   },
   loginyellow: {
     backgroundColor: Color.BACK_DARKYELLOW,
-    paddingTop: 17,
-    paddingBottom: 13,
+    height: 48,
     borderRadius: 5,
   },
 });

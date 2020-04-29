@@ -1,4 +1,6 @@
 import {StyleSheet, Dimensions} from 'react-native';
+import {isIOS} from '../../utils/theme';
+
 import {Color, Font} from '../../utils/variable';
 
 const {width} = Dimensions.get('window');
@@ -16,7 +18,7 @@ const styles = StyleSheet.create({
   Menuactive: {
     position: 'absolute',
     left: 0,
-    bottom: 3,
+    bottom: isIOS() ? 0 : -5,
     height: 3,
     width: 30,
     backgroundColor: Color.BACK_BLACK,

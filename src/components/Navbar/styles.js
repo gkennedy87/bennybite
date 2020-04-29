@@ -1,13 +1,21 @@
 import {StyleSheet, Dimensions} from 'react-native';
 import {Color, Font} from '../../utils/variable';
-
+import {ifIphoneX} from 'react-native-iphone-x-helper';
 const {width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   headermain: {
     paddingLeft: 16,
     paddingRight: 16,
-    paddingTop: 45,
+
+    ...ifIphoneX(
+      {
+        paddingTop: 45,
+      },
+      {
+        paddingTop: 20,
+      },
+    ),
     paddingBottom: 10,
   },
   userview: {
