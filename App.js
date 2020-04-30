@@ -24,9 +24,8 @@ import EditProfile from './src/layouts/EditProfile';
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { withAuthentication, withoutAuthentication } from "./src/hoc"
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
+import { withAuthentication, withoutAuthentication } from "./src/hoc";
+
 import HeaderLeft from './src/components/Header/HeaderLeft';
 import GlobalStyles from './src/utils/GlobalStyles';
 import { isIOS } from './src/utils/theme';
@@ -48,7 +47,7 @@ const AppNavigator = createStackNavigator(
     EditProfile: {screen: EditProfile},
   },
   {
-    initialRouteName: 'Events',
+    initialRouteName: 'Login',
     // headerMode: "none",
     /* The header config from HomeScreen is now here */
     defaultNavigationOptions: ({ navigation }) => ({

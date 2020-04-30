@@ -13,6 +13,7 @@ import CustomButton from '../../../components/CustomButton';
 import CustomIcon from '../../../components/CustomIcon';
 import styles from './styles';
 import { Color, Font } from '../../../utils/variable';
+import { cos } from 'react-native-reanimated';
 
 export default class EventsDetails extends Component {
   constructor(props) {
@@ -43,9 +44,21 @@ export default class EventsDetails extends Component {
     this.setState({ modalVisible: visible });
   };
 
+  getEventStatus = (startDate, endDate) => {
+    startDate = new Date(startDate).getTime();
+    endDate = new Date(endDate).getTime();
+    const current = new Date().getTime();
+    if (startDate > current)
+      return 'Upcoming'
+    else if (startDate < current && endDate > current)
+      return 'On going'
+    else
+      return 'Past'
+  }
+
   render() {
-    const { navigate } = this.props.navigation;
     const { modalVisible, scrollOffset } = this.state;
+    const event = this.props.navigation.state.params.event;
     const screenWidth = Dimensions.get('window').width;
 
     return (
@@ -54,16 +67,13 @@ export default class EventsDetails extends Component {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <CustomTextfield
-                placeholder="TEDx talks"
+                placeholder={event.name}
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
                 inputstyle={{
                   fontFamily: Font.MYRIAD_SEMIBOLD,
                   fontSize: Font.FONTSIZE_16,
                 }}
-              //onChangeText={this.onEmailTextChange}
-              //value={email.value}
-              //errorMsgs={email.message}
               ></CustomTextfield>
               <CustomTextfield
                 placeholder="Start typing..."
@@ -76,9 +86,6 @@ export default class EventsDetails extends Component {
                   textAlignVertical: 'top',
                 }}
                 multiline={true}
-              //onChangeText={this.onEmailTextChange}
-              //value={email.value}
-              //errorMsgs={email.message}
               ></CustomTextfield>
               <View style={styles.CreateEventMain}>
                 <CustomButton
@@ -116,7 +123,8 @@ export default class EventsDetails extends Component {
         <View style={styles.editbtn}>
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.navigate('EditEvents');
+              console.log(event)
+              this.props.navigation.navigate('EditEvents', { event });
             }}>
             <CustomIcon style={styles.editicon} name="edit" />
           </TouchableOpacity>
@@ -152,7 +160,7 @@ export default class EventsDetails extends Component {
                 }),
               },
             ]}>
-            TEDx talks
+            {event.name}
           </Animated.Text>
           <Animated.View
             style={{
@@ -173,7 +181,7 @@ export default class EventsDetails extends Component {
           <View style={styles.contentspacing}>
             <View style={styles.timestatus}>
               <Text style={styles.timetitle}>Time</Text>
-              <Text style={styles.eventstatus}>On going</Text>
+              <Text style={styles.eventstatus}>{this.getEventStatus(event.startDate, event.endDate)}</Text>
             </View>
             <View>
               <Text style={styles.available}>Food available until</Text>
@@ -181,7 +189,7 @@ export default class EventsDetails extends Component {
             <View style={styles.titlecount}>
               <Text style={styles.conftitle}>RSVP Confirmed</Text>
               <View style={styles.countmain}>
-                <Text style={styles.count}>10</Text>
+                <Text style={styles.count}>{event.rsvp.length}</Text>
               </View>
             </View>
             <View style={styles.btnview}>
@@ -197,58 +205,11 @@ export default class EventsDetails extends Component {
             <View>
               <Text style={styles.locationtxt}>Location</Text>
               <Text style={styles.addresstxt}>
-                Ryder Avenue Seattle, WA 98109
+                {event.location}
               </Text>
               <Text style={styles.eventdetailsttl}>Event Details</Text>
               <Text style={styles.eventdetailstxt}>
-                Millennials love expressing their values online, but 80% of them
-                feel it’s essential for people to come together in Did you know
-                that the iconic idea-sharing forum TEDx started as a campus
-                event at USC in 2009? Now, the platform encourages campuses to
-                start their own version of the digitally evolved lecture series.
-                Capturing such talks on video makes for powerful, potentially
-                viral social media. For details on how to start a campus TEDx,
-                visit the website.Lorem Ipsum is simply dummy text of the
-                printing and typesetting industry.
-              </Text>
-              <Text style={styles.eventdetailstxt}>
-                Lorem Ipsum has been the industry's standard dummy text ever
-                since the 1500s, when an unknown printer took a galley of type
-                and scrambled it to make a type specimen book. It has survived
-                not only five centuries, but also the leap into electronic
-                typesetting, remaining essentially unchanged. It was popularised
-                in the 1960s with the release of Letraset sheets containing
-                Lorem Ipsum passages,Lorem Ipsum is simply dummy text of the
-                printing and typesetting industry. Lorem Ipsum has been the
-                industry's standard dummy text ever since the 1500s, when an
-                unknown printer took a galley of type and scrambled it to make a
-                type specimen book. It has survived not only five centuries, but
-                also the leap into electronic typesetting, remaining essentially
-                unchanged. It was popularised in the 1960s with the release of
-                Letraset sheets containing Lorem Ipsum passages,Lorem Ipsum is
-                simply dummy text of the printing and typesetting industry.
-                Lorem Ipsum has been the industry's standard dummy text ever
-                since the 1500s, when an unknown printer took a galley of type
-                and scrambled it to make a type specimen book. It has survived
-                not only five centuries, but also the leap into electronic
-                typesetting, remaining essentially unchanged. It was popularised
-                in the 1960s with the release of Letraset sheets containing
-                Lorem Ipsum passages,simply dummy text of the printing and
-                typesetting industry. Lorem Ipsum has been the industry's
-                standard dummy text ever since the 1500s, when an unknown
-                printer took a galley of type and scrambled it to make a type
-                specimen book. It has survived not only five centuries, but also
-                the leap into electronic typesetting, remaining essentially
-                unchanged. It was popularised in the 1960s with the release of
-                Letraset sheets containing Lorem Ipsum passages,Lorem Ipsum is
-                simply dummy text of the printing and typesetting industry.
-                Lorem Ipsum has been the industry's standard dummy text ever
-                since the 1500s, when an unknown printer took a galley of type
-                and scrambled it to make a type specimen book. It has survived
-                not only five centuries, but also the leap into electronic
-                typesetting, remaining essentially unchanged. It was popularised
-                in the 1960s with the release of Letraset sheets containing
-                Lorem Ipsum passages,
+                {event.info}
               </Text>
             </View>
           </View>

@@ -1,8 +1,6 @@
 import { get } from "lodash"
 import { fetch } from "../utils";
 
-const baseUrl = typeof document === "undefined" ? "https://api-bennybite.herokuapp.com/v1" : "/v1";
-
 const apiService = ({ getState }) => (next) => (action, state) => {
     const result = next(action);
 
@@ -15,7 +13,7 @@ const apiService = ({ getState }) => (next) => (action, state) => {
         throw new Error(`'path' not specified for async action ${action.type}`);
     }
 
-    const url = `${baseUrl}${path}`;
+    const url = `${path}`;
     const token = get(getState(), 'auth.session.tokens.access.token', null)
     return fetch(url, method, body, token).then(
         res => handleResponse(res, action, next),

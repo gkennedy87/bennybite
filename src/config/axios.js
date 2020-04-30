@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const instance = axios.create({
-    baseURL: 'https://api-bennybite.herokuapp.com/',
+    baseURL: 'https://api-bennybite.herokuapp.com/v1',
 });
 
 // Add a response interceptor

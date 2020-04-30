@@ -1,33 +1,62 @@
-import React, {Component} from 'react';
-import {SafeAreaView, View, Platform, ScrollView} from 'react-native';
+import React, { Component } from 'react';
+import { connect } from "react-redux";
+import { SafeAreaView, View } from 'react-native';
 import DatePicker from 'react-native-datepicker';
+
+import { eventOperations } from "./../../../state/ducks/event";
+
+
 import CustomTextfield from '../../../components/CustomTextfield';
 import CustomButton from '../../../components/CustomButton';
 import HeaderTitle from '../../../components/Header/HeaderTitle';
 import CustomIcon from '../../../components/CustomIcon';
-import {isIOS} from '../../../utils/theme';
+import { isIOS } from '../../../utils/theme';
 
 import styles from './styles';
-import {Color, Font} from '../../../utils/variable';
+import { Color, Font } from '../../../utils/variable';
 
-export default class EditEvents extends Component {
+export class EditEvents extends Component {
   constructor(props) {
     super(props);
+    const event = this.props.navigation.state.params.event;
     this.state = {
-      startDate: '',
-      endDate: '',
+      ...event,
+      startDate: new Date(event.startDate),
+      endDate: new Date(event.endDate)
     };
   }
 
-  static navigationOptions = ({navigation}) => {
+  static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: () => <HeaderTitle title={'Edit Event'} />,
     };
   };
 
+  onUpdateEvent = async () => {
+    try {
+      await this.props.updateEvent(this.state._id, {
+        name: this.state.name,
+        info: this.state.info,
+        location: this.state.location
+      });
+      this.props.navigation.navigate('Events');
+    }
+    catch (err) {
+      console.log(err)
+    }
+  }
+
+  onDeleteEvent = async () => {
+    try {
+      await this.props.deleteEvent(this.state._id);
+      this.props.navigation.navigate('Events');
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   render() {
-    const {navigate} = this.props.navigation;
-    const {startDate, endDate} = this.state;
+    const { name, info, location, startDate, endDate } = this.state;
 
     return (
       <SafeAreaView style={styles.safeareaview}>
@@ -36,15 +65,14 @@ export default class EditEvents extends Component {
             <CustomTextfield
               placeholder="Event name"
               editable={true}
-              inputmainstyle={{marginBottom: 20}}
-              //onChangeText={this.onEmailTextChange}
-              //value={email.value}
-              //errorMsgs={email.message}
+              inputmainstyle={{ marginBottom: 20 }}
+              txtvalue={name}
+              onChangeText={(name) => this.setState({ name })}
             ></CustomTextfield>
             <CustomTextfield
               placeholder="Event info"
               editable={true}
-              inputmainstyle={{marginBottom: 20}}
+              inputmainstyle={{ marginBottom: 20 }}
               inputstyle={{
                 height: 150,
                 paddingTop: 14,
@@ -52,20 +80,18 @@ export default class EditEvents extends Component {
                 textAlignVertical: 'top',
               }}
               multiline={true}
-              //onChangeText={this.onEmailTextChange}
-              //value={email.value}
-              //errorMsgs={email.message}
+              txtvalue={info}
+              onChangeText={(info) => this.setState({ info })}
             ></CustomTextfield>
             <CustomTextfield
               placeholder="Event location "
               editable={true}
-              inputmainstyle={{marginBottom: 20}}
-              inputstyle={{paddingRight: 40}}
+              inputmainstyle={{ marginBottom: 20 }}
+              inputstyle={{ paddingRight: 40 }}
               ifIcon={true}
               iconname={'map'}
-              // onChangeText={this.onEmailTextChange}
-              // value={email.value}
-              //errorMsgs={email.message}
+              txtvalue={location}
+              onChangeText={(location) => this.setState({ location })}
             ></CustomTextfield>
             <DatePicker
               date={startDate}
@@ -138,7 +164,7 @@ export default class EditEvents extends Component {
                 },
               }}
               onDateChange={(date) => {
-                this.setState({startDate: date});
+                // this.setState({ startDate: date });
               }}
             />
             <DatePicker
@@ -212,7 +238,7 @@ export default class EditEvents extends Component {
                 },
               }}
               onDateChange={(date) => {
-                this.setState({endDate: date});
+                // this.setState({ endDate: date });
               }}
             />
             <View style={styles.CreateEventMain}>
@@ -221,18 +247,14 @@ export default class EditEvents extends Component {
                 btnText="Save Event"
                 mainStyle={styles.createvent}
                 btnStyle={styles.createventxt}
-                onClick={() => {
-                  this.props.navigation.navigate('Events');
-                }}
+                onClick={this.onUpdateEvent}
               />
               <CustomButton
                 width="48%"
                 btnText="Delete Event"
                 mainStyle={styles.deleteevent}
                 btnStyle={styles.deleteeventxt}
-                onClick={() => {
-                  this.props.navigation.navigate('Events');
-                }}
+                onClick={this.onDeleteEvent}
               />
             </View>
           </View>
@@ -241,3 +263,13 @@ export default class EditEvents extends Component {
     );
   }
 }
+
+
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = {
+  updateEvent: eventOperations.updateEvent,
+  deleteEvent: eventOperations.deleteEvent,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditEvents);
