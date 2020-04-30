@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { toLower } from "lodash"
+import AsyncStorage from "@react-native-community/async-storage"
 import { connect } from "react-redux";
 import { View, Image, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 
@@ -83,7 +85,7 @@ export class Login extends Component {
       await AsyncStorage.setItem('tokens', JSON.stringify(tokens));
       this.props.navigation.navigate('Events');
     } catch (err) {
-      alert(err.response.data.message)
+      console.log(err)
     }
   }
 
