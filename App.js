@@ -14,11 +14,15 @@ import ForgotPassword from './src/layouts/ForgotPassword';
 import ChangePassword from './src/layouts/ChangePassword';
 
 import Events from './src/layouts/Management/Events';
+import EventStudents from './src/layouts/Management/EventStudents';
+
 import EventsDetails from './src/layouts/Management/EventsDetails';
 import CreateEvent from './src/layouts/Management/CreateEvent';
 import EditEvents from './src/layouts/Management/EditEvents';
 import Profile from './src/layouts/Profile';
 import EditProfile from './src/layouts/EditProfile';
+
+import TermsConditions from './src/layouts/TermsConditions';
 
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
@@ -38,9 +42,11 @@ const AppNavigator = createStackNavigator(
     ChangePassword: {screen: ChangePassword},
     Profile: {screen: Profile},
     EditProfile: {screen: EditProfile},
+    EventStudents: {screen: EventStudents},
+    TermsConditions: {screen: TermsConditions},
   },
   {
-    initialRouteName: 'Events',
+    initialRouteName: 'Login',
     // headerMode: "none",
     /* The header config from HomeScreen is now here */
     defaultNavigationOptions: ({navigation}) => ({

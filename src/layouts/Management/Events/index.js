@@ -1,18 +1,24 @@
-import React, {Component} from 'react';
-import {View, FlatList, Text, Image, TouchableOpacity} from 'react-native';
+import React, {useState, Component} from 'react';
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  TouchableHighlight,
+  Image,
+} from 'react-native';
 import Navbar from '../../../components/Navbar';
 import CustomButton from '../../../components/CustomButton';
 import Tabbutton from '../../../components/Tabbutton';
+import CustomIcon from '../../../components/CustomIcon';
+
 import styles from './styles';
 import {Color} from '../../../utils/variable';
 
-import {RectButton} from 'react-native-gesture-handler';
-
-import AppleStyleSwipeableRow from './AppleStyleSwipeableRow';
+import {SwipeListView, SwipeRow} from 'react-native-swipe-list-view';
 
 const Eventlist = [
   {
-    id: '1',
+    key: '1',
     title: 'TEDx talks',
     subtxt:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
@@ -21,7 +27,7 @@ const Eventlist = [
     upcomingtime: '',
   },
   {
-    id: '2',
+    key: '2',
     title: 'College campus farmer’s dsd  ff f ds ss gsdg s',
     subtxt:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
@@ -30,7 +36,7 @@ const Eventlist = [
     upcomingtime: '',
   },
   {
-    id: '3',
+    key: '3',
     title: 'Community service events Community service events',
     subtxt:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
@@ -40,7 +46,7 @@ const Eventlist = [
     upcomingtime: '',
   },
   {
-    id: '4',
+    key: '4',
     title: 'Craft workshops',
     subtxt:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
@@ -50,7 +56,7 @@ const Eventlist = [
     upcomingtime: '',
   },
   {
-    id: '1',
+    key: '5',
     title: 'TEDx talks',
     subtxt:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
@@ -59,7 +65,7 @@ const Eventlist = [
     upcomingtime: '',
   },
   {
-    id: '2',
+    key: '6',
     title: 'College campus farmer’s',
     subtxt:
       'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
@@ -68,7 +74,7 @@ const Eventlist = [
     upcomingtime: '',
   },
   {
-    id: '3',
+    key: '7',
     title: 'Community service events',
     subtxt:
       'Millennials love expressing their values online, but 80% of them feel it’s essential for people to come together in',
@@ -77,7 +83,7 @@ const Eventlist = [
     upcomingtime: '1pm-3pm, 23/12/2020',
   },
   {
-    id: '4',
+    key: '8',
     title: 'Craft workshops 123',
     subtxt:
       'Host a workshop where students can make their own dorm room décor — think plant hangers, terrariu...',
@@ -89,89 +95,76 @@ const Eventlist = [
 
 const Userlist = [
   {
+    key: 1,
     name: 'Miyah Myles',
     email: 'miyah.myles@gmail.com',
     userprofile:
       'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=707b9c33066bf8808c934c8ab394dff6',
   },
   {
+    key: 2,
     name: 'June Cha',
     email: 'june.cha@gmail.com',
     userprofile: 'https://randomuser.me/api/portraits/women/44.jpg',
   },
   {
+    key: 3,
     name: 'Iida Niskanen',
     email: 'iida.niskanen@gmail.com',
     userprofile: 'https://randomuser.me/api/portraits/women/68.jpg',
   },
   {
+    key: 4,
     name: 'Renee Sims',
     email: 'renee.sims@gmail.com',
     userprofile: 'https://randomuser.me/api/portraits/women/65.jpg',
   },
   {
+    key: 5,
     name: 'Jonathan Nu\u00f1ez',
     email: 'jonathan.nu\u00f1ez@gmail.com',
     userprofile: 'https://randomuser.me/api/portraits/men/43.jpg',
   },
   {
+    key: 6,
     name: 'Sasha Ho',
     email: 'sasha.ho@gmail.com',
     userprofile:
       'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?h=350&auto=compress&cs=tinysrgb',
   },
   {
+    key: 7,
     name: 'Abdullah Hadley',
     email: 'abdullah.hadley@gmail.com',
     userprofile:
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=a72ca28288878f8404a795f39642a46f',
   },
   {
+    key: 8,
     name: 'Thomas Stock',
     email: 'thomas.stock@gmail.com',
     userprofile:
       'https://tinyfac.es/data/avatars/B0298C36-9751-48EF-BE15-80FB9CD11143-500w.jpeg',
   },
   {
+    key: 9,
     name: 'Veeti Seppanen',
     email: 'veeti.seppanen@gmail.com',
     userprofile: 'https://randomuser.me/api/portraits/men/97.jpg',
   },
   {
+    key: 10,
     name: 'Bonnie Riley',
     email: 'bonnie.riley@gmail.com',
     userprofile: 'https://randomuser.me/api/portraits/women/26.jpg',
   },
 ];
 
-const Row = ({item}) => (
-  <RectButton
-    style={styles.userlistingspace}
-    //onPress={() => alert(item.userprofile, item.name, item.email)}
-  >
-    <View style={styles.userlistingborder}>
-      <Image source={{uri: item.userprofile}} style={styles.userprofile} />
-      <View style={styles.usremail}>
-        <Text style={styles.usernametxt}>{item.name}</Text>
-        <Text style={styles.usertxtemail}>{item.email}</Text>
-      </View>
-    </View>
-  </RectButton>
-);
-
-const SwipeableRow = ({item, index}) => {
-  return (
-    <AppleStyleSwipeableRow>
-      <Row item={item} />
-    </AppleStyleSwipeableRow>
-  );
-};
-
 export default class Events extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: 'Users',
+      selected: 'FoodonCampus',
     };
   }
 
@@ -179,38 +172,95 @@ export default class Events extends Component {
     header: null,
   };
 
-  renderItem(item) {
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          this.props.navigation.navigate('EventsDetails');
-        }}
-        style={styles.listingspace}>
-        <View style={styles.listingborder}>
-          <View style={styles.listingtitle}>
-            <Text numberOfLines={1} style={styles.title}>
-              {item.title}
-            </Text>
-            <Text style={styles.upcomingtime}>{item.upcomingtime}</Text>
-          </View>
-          <Text style={styles.subtxt} numberOfLines={2}>
-            {item.subtxt}
-          </Text>
-          <View style={styles.row}>
-            <Text numberOfLines={1} style={styles.evtaddress}>
-              {item.evtaddress}
-            </Text>
-            <Text style={styles.evtstatus}>{item.evtstatus}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
   render() {
     const {navigate} = this.props.navigation;
     const {selected} = this.state;
-    const {children} = this.props;
+
+    const renderItem = (data, rowMap) => (
+      <SwipeRow rightOpenValue={-150}>
+        <View style={styles.swipeBack}>
+          <TouchableOpacity
+            style={[styles.SwipeBtn, styles.btndelete]}
+            //onPress={() => deleteRow(rowMap, data.item.key)}
+          >
+            <CustomIcon style={styles.swipeicon} name="delete" />
+            <Text style={styles.swipetxt}>Delete</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.SwipeBtn, styles.btnedit]}
+            //onPress={() => closeRow(rowMap, data.item.key)}
+            onPress={() => {
+              this.props.navigation.navigate('EditEvents');
+            }}>
+            <CustomIcon style={styles.swipeicon} name="edit" />
+            <Text style={styles.swipetxt}>Edit</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableHighlight
+          onPress={() => {
+            this.props.navigation.navigate('EventsDetails');
+          }}
+          //onPress={() => console.log('You touched me')}
+          style={styles.swiperowpadd}
+          underlayColor={'#ffffff'}>
+          <View style={styles.swiperowborder}>
+            <View style={styles.listingtitle}>
+              <Text numberOfLines={1} style={styles.title}>
+                {data.item.title}
+              </Text>
+              <Text style={styles.upcomingtime}>{data.item.upcomingtime}</Text>
+            </View>
+            <Text style={styles.subtxt} numberOfLines={2}>
+              {data.item.subtxt}
+            </Text>
+            <View style={styles.row}>
+              <Text numberOfLines={1} style={styles.evtaddress}>
+                {data.item.evtaddress}
+              </Text>
+              <Text style={styles.evtstatus}>{data.item.evtstatus}</Text>
+            </View>
+          </View>
+        </TouchableHighlight>
+      </SwipeRow>
+    );
+
+    const renderItemUsers = (data, rowMap) => (
+      <SwipeRow rightOpenValue={-170}>
+        <View style={styles.swipeBack}>
+          <TouchableOpacity
+            style={[styles.swipebtnusers, styles.btnusers]}
+            //onPress={() => deleteRow(rowMap, data.item.key)}
+          >
+            <CustomIcon style={styles.swipeicon} name="user" />
+            <Text style={styles.swipetxt}>Enable Users</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.swipebtnusers, styles.btndeleteusers]}
+            //onPress={() => closeRow(rowMap, data.item.key)}
+          >
+            <CustomIcon style={styles.swipeicon} name="delete" />
+            <Text style={styles.swipetxt}>Delete</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableHighlight
+          //onPress={() => console.log('You touched me')}
+          style={styles.swiperowpadd}
+          underlayColor={'#ffffff'}>
+          <View style={styles.swiperowborder}>
+            <View style={styles.userlistingborder}>
+              <Image
+                source={{uri: data.item.userprofile}}
+                style={styles.userprofile}
+              />
+              <View style={styles.usremail}>
+                <Text style={styles.usernametxt}>{data.item.name}</Text>
+                <Text style={styles.usertxtemail}>{data.item.email}</Text>
+              </View>
+            </View>
+          </View>
+        </TouchableHighlight>
+      </SwipeRow>
+    );
 
     return (
       <View style={{flex: 1}}>
@@ -256,10 +306,12 @@ export default class Events extends Component {
         </View>
         {selected === 'FoodonCampus' && (
           <View style={{flex: 1}}>
-            <FlatList
+            <SwipeListView
               data={Eventlist}
-              renderItem={({item}) => this.renderItem(item)}
-              keyExtractor={(item) => item.id}
+              previewRowKey={'0'}
+              previewOpenValue={-40}
+              previewOpenDelay={3000}
+              renderItem={renderItem}
             />
             <View style={styles.reatbtnview}>
               <CustomButton
@@ -275,14 +327,7 @@ export default class Events extends Component {
         )}
         {selected === 'Users' && (
           <View style={{flex: 1}}>
-            <FlatList
-              data={Userlist}
-              // ItemSeparatorComponent={() => }
-              renderItem={({item, index}) => (
-                <SwipeableRow item={item} index={index} />
-              )}
-              keyExtractor={(item, index) => `message ${index}`}
-            />
+            <SwipeListView data={Userlist} renderItem={renderItemUsers} />
           </View>
         )}
       </View>

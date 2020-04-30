@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Image, SafeAreaView, Text} from 'react-native';
+import {View, Image, SafeAreaView, Text, TouchableOpacity} from 'react-native';
 import CustomTextfield from '../../components/CustomTextfield';
 import {REGEX} from '../../utils/validation';
 import {ErrorMessage} from '../../utils/message';
@@ -159,11 +159,17 @@ export default class Login extends Component {
                     //     }),
                     //   2000,
                     // );
-                    this.props.navigation.navigate('Events');
+                    this.props.navigation.navigate('TermsConditions');
                   }}
                 />
               </View>
             </View>
+          </View>
+          <View style={styles.signupmain}>
+            <Text style={styles.newusertxt}>New user ?</Text>
+            <TouchableOpacity>
+              <Text style={styles.signuptxt}>Signup</Text>
+            </TouchableOpacity>
           </View>
         </SafeAreaView>
       </View>

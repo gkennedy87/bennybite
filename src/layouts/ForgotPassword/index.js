@@ -94,7 +94,7 @@ export default class ForgotPassword extends Component {
                       //     }),
                       //   2000,
                       // );
-                      this.props.navigation.navigate('Events');
+                      this.props.navigation.navigate('TermsConditions');
                     }}
                   />
                 </View>

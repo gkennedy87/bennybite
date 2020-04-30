@@ -70,7 +70,7 @@ export default class CreateEvent extends Component {
             <DatePicker
               date={startDate}
               mode="datetime"
-              placeholder="Start time"
+              placeholder="Food Available"
               format="hh:mma, DD-MM-YYYY"
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
@@ -144,7 +144,7 @@ export default class CreateEvent extends Component {
             <DatePicker
               date={endDate}
               mode="datetime"
-              placeholder="End time"
+              placeholder="Clean Up Time"
               format="hh:mma, DD-MM-YYYY"
               confirmBtnText="Confirm"
               cancelBtnText="Cancel"
