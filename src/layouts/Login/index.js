@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { connect } from "react-redux"
-import { View, Image, SafeAreaView, Text } from 'react-native';
-import { toLower } from "lodash"
-import AsyncStorage from "@react-native-community/async-storage"
+import { connect } from "react-redux";
+import { View, Image, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+
 import { authOperations } from "./../../state/ducks/auth";
 
+import CustomButton from '../../components/CustomButton';
 import CustomTextfield from '../../components/CustomTextfield';
+
 import { REGEX } from '../../utils/validation';
 import { ErrorMessage } from '../../utils/message';
-import CustomButton from '../../components/CustomButton';
 
 import styles from './styles';
 
@@ -17,8 +17,6 @@ export class Login extends Component {
     super(props);
     this.state = {
       hasError: true,
-      // isModalVisible: false,
-      // isToastVisible: false,
       hidePassword: true,
       passVisible: true,
       email: {
@@ -45,7 +43,6 @@ export class Login extends Component {
     password.isValid = true;
 
     if (password.value.length == 0 || password.value == '') {
-      // email.message = ErrorMsg.emailRequired // import
       password.message.push(ErrorMessage.EMPTY_PASS);
       password.isValid = false;
     }
@@ -60,11 +57,9 @@ export class Login extends Component {
     email.isValid = true;
 
     if (email.value.length == 0 || email.value == '') {
-      // email.message = ErrorMsg.emailRequired // import
       email.message.push(ErrorMessage.EMPTY_EMAIL);
       email.isValid = false;
     } else if (!email.value.match(REGEX.EMAIL)) {
-      // email.message = ErrorMsg.emailInvalid
       email.message.push(ErrorMessage.EMAIL_VALID);
       email.isValid = false;
     }
@@ -91,12 +86,6 @@ export class Login extends Component {
       alert(err.response.data.message)
     }
   }
-
-  // onChangeValue = () => {
-  //   this.setState({
-  //     isChecked: !this.state.isChecked,
-  //   });
-  // };
 
   render() {
     const { email, password } = this.state;
@@ -149,27 +138,31 @@ export class Login extends Component {
               <View style={styles.loginbtnmain}>
                 <CustomButton
                   btnText="Login"
-                  mainStyle={styles.loginyellow}
-                  btnStyle={styles.withlogin}
-                  // mainStyle={[
-                  //   this.state.email.isValid && this.state.password.isValid
-                  //     ? styles.loginyellow
-                  //     : styles.logingray,
-                  //   styles.loginbtn,
-                  // ]}
-                  // btnStyle={
-                  //   this.state.email.isValid && this.state.password.isValid
-                  //     ? styles.withlogin
-                  //     : styles.withoutlogin
-                  // }
-                  // value={false}
-                  // disabled={
-                  //   !(this.state.email.isValid && this.state.password.isValid)
-                  // }
+                  mainStyle={[
+                    this.state.email.isValid && this.state.password.isValid
+                      ? styles.loginyellow
+                      : styles.logingray,
+                    styles.loginbtn,
+                  ]}
+                  btnStyle={
+                    this.state.email.isValid && this.state.password.isValid
+                      ? styles.withlogin
+                      : styles.withoutlogin
+                  }
+                  value={false}
+                  disabled={
+                    !(this.state.email.isValid && this.state.password.isValid)
+                  }
                   onClick={this.onLogin}
                 />
               </View>
             </View>
+          </View>
+          <View style={styles.signupmain}>
+            <Text style={styles.newusertxt}>New user ?</Text>
+            <TouchableOpacity>
+              <Text style={styles.signuptxt}>Signup</Text>
+            </TouchableOpacity>
           </View>
         </SafeAreaView>
       </View>

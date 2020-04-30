@@ -3,10 +3,10 @@
  * https://github.com/facebook/react-native
  **/
 
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { get } from "lodash";
 import { Provider } from 'react-redux';
-import AsyncStorage from "@react-native-community/async-storage"
 import PubNub from 'pubnub'
 import PubNubReact from 'pubnub-react';
 import PushNotification from "react-native-push-notification";
@@ -20,6 +20,8 @@ import ForgotPassword from './src/layouts/ForgotPassword';
 import ChangePassword from './src/layouts/ChangePassword';
 
 import Events from './src/layouts/Management/Events';
+import EventStudents from './src/layouts/Management/EventStudents';
+
 import EventsDetails from './src/layouts/Management/EventsDetails';
 import CreateEvent from './src/layouts/Management/CreateEvent';
 import EditEvents from './src/layouts/Management/EditEvents';
@@ -28,7 +30,8 @@ import EditProfile from './src/layouts/EditProfile';
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { withAuthentication, withoutAuthentication } from "./src/hoc";
+
+import TermsConditions from './src/layouts/TermsConditions';
 
 import HeaderLeft from './src/components/Header/HeaderLeft';
 import GlobalStyles from './src/utils/GlobalStyles';
@@ -49,6 +52,8 @@ const AppNavigator = createStackNavigator(
     ChangePassword: { screen: ChangePassword },
     Profile: { screen: Profile },
     EditProfile: { screen: EditProfile },
+    EventStudents: { screen: EventStudents },
+    TermsConditions: { screen: TermsConditions },
   },
   {
     initialRouteName: 'Login',
@@ -87,19 +92,19 @@ export default class App extends Component {
         this.pubnub = new PubNub({
           publishKey: 'pub-c-7adf56d8-74eb-4a78-b508-35748bbb2271',
           subscribeKey: 'sub-c-37cdfa88-885d-11ea-965b-8ea1ff3ad6ee',
-          uuid : token.token
+          uuid: get(token, 'token', '')
         });
         if (token.os == "ios") {
           this.pubnub.push.addChannels({
             channels: ['notifications'],
-            device: token.token,
+            device: get(token, 'token', ''),
             pushGateway: 'apns'
           });
           // Send iOS Notification from debug console: {"pn_apns":{"aps":{"alert":"Hello World."}}}
         } else if (token.os == "android") {
           this.pubnub.push.addChannels({
             channels: ['notifications'],
-            device: token.token,
+            device: get(token, 'token', ''),
             pushGateway: 'gcm' // apns, gcm, mpns
           });
           // Send Android Notification from debug console: {"pn_gcm":{"data":{"message":"Hello World."}}}

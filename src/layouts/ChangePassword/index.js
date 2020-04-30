@@ -20,13 +20,16 @@ export default class ChangePassword extends Component {
     super(props);
     this.state = {
       hasError: true,
-      // isModalVisible: false,
-      //isToastVisible: false,
-      // hidePassword: true,
-      // oldPass: true,
-
-      currentpassVisible: false,
-
+      isModalVisible: false,
+      isToastVisible: false,
+      hidePassword: true,
+      oldPass: true,
+      passVisible: true,
+      Currentpassword: {
+        value: '',
+        message: [],
+        isValid: false,
+      },
       password: {
         value: '',
         message: [],
@@ -39,6 +42,21 @@ export default class ChangePassword extends Component {
       },
     };
   }
+
+  onCurrentPassword = (text) => {
+    const Currentpassword = this.state.Currentpassword;
+    Currentpassword.value = text;
+    Currentpassword.message = [];
+    Currentpassword.isValid = true;
+
+    if (Currentpassword.value.length == 0 || Currentpassword.value == '') {
+      // email.message = ErrorMsg.emailRequired // import
+      Currentpassword.message.push(ErrorMessage.EMPTY_PASS);
+      Currentpassword.isValid = false;
+    }
+
+    this.setState({Currentpassword});
+  };
 
   onPasswordChange = (text) => {
     const password = this.state.password;
@@ -93,8 +111,9 @@ export default class ChangePassword extends Component {
       passVisible: !this.state.passVisible,
     });
   };
+
   render() {
-    const {password, ConfirmPassword} = this.state;
+    const {password, ConfirmPassword, Currentpassword} = this.state;
     const {navigate} = this.props.navigation;
 
     return (
@@ -105,7 +124,7 @@ export default class ChangePassword extends Component {
               Please enter old password to change your password
             </Text>
             <View style={styles.form}>
-              {/* <CustomTextfield
+              <CustomTextfield
                 placeholder="Current Password"
                 inputmainstyle={{marginBottom: 25}}
                 inputstyle={{paddingRight: 40}}
@@ -114,38 +133,9 @@ export default class ChangePassword extends Component {
                 passVisible={this.state.passVisible}
                 onPassVisi={this.onPassVisi}
                 isPassword={true}
-                value={password.value}
-                txtfieldStyle={styles.txtfieldStyle}></CustomTextfield>
-              <CustomTextfield
-                placeholder="New Password"
-                inputmainstyle={{marginBottom: 25}}
-                inputstyle={{paddingRight: 40}}
-                editable={true}
-                passwordField={true}
-                passVisible={this.state.passVisible}
-                onPassVisi={this.onPassVisi}
-                onChangeText={this.onPasswordChange}
-                value={password.value}
-                errorMsgs={password.message}></CustomTextfield>
-              <CustomTextfield
-                placeholder="Confirm Password"
-                inputstyle={{paddingRight: 40}}
-                editable={true}
-                passwordField={true}
-                onChangeText={this.onConfrimPasswordChange}
-                value={ConfirmPassword.value}
-                errorMsgs={ConfirmPassword.message}></CustomTextfield> */}
-
-              <CustomTextfield
-                placeholder="Current Password"
-                inputmainstyle={{marginBottom: 25}}
-                inputstyle={{paddingRight: 40}}
-                editable={true}
-                passwordField={true}
-                passVisible={this.state.oldPass}
-                onPassVisi={this.onPassVisi}
-                isPassword={false}
-                value={password.value}></CustomTextfield>
+                onChangeText={this.onCurrentPassword}
+                value={Currentpassword.value}
+                errorMsgs={Currentpassword.message}></CustomTextfield>
               <CustomTextfield
                 placeholder="New Password"
                 inputmainstyle={{marginBottom: 25}}
@@ -160,10 +150,11 @@ export default class ChangePassword extends Component {
                 errorMsgs={password.message}></CustomTextfield>
               <CustomTextfield
                 placeholder="Confirm Password"
-                inputmainstyle={{marginBottom: 25}}
                 inputstyle={{paddingRight: 40}}
                 editable={true}
                 passwordField={true}
+                passVisible={this.state.passVisible}
+                isPassword={true}
                 onChangeText={this.onConfrimPasswordChange}
                 value={ConfirmPassword.value}
                 errorMsgs={ConfirmPassword.message}></CustomTextfield>

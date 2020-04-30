@@ -67,6 +67,23 @@ const styles = StyleSheet.create({
     // paddingBottom: 13,
     borderRadius: 5,
   },
+  signupmain: {
+    marginTop: 85,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  newusertxt: {
+    fontSize: Font.FONTSIZE_16,
+    color: Color.TXT_BLACK,
+    fontFamily: Font.MYRIAD_REGULAR,
+  },
+  signuptxt: {
+    marginLeft: 5,
+    fontSize: Font.FONTSIZE_16,
+    color: Color.TXT_DARKYELLOW,
+    fontFamily: Font.MYRIAD_REGULAR,
+  },
 });
 
 export default styles;

@@ -45,7 +45,7 @@ export class ForgotPassword extends Component {
     this.setState({ email });
   };
 
-  onResetPassword = async () => {
+  onForgotPassword = async () => {
     try {
       await this.props.forgotPassword({ email: toLower(this.state.email.value )})
       this.props.navigation.navigate('Login');
@@ -84,22 +84,33 @@ export class ForgotPassword extends Component {
                 <View style={styles.loginbtnmain}>
                   <CustomButton
                     btnText="Submit"
-                    mainStyle={styles.loginyellow}
-                    btnStyle={styles.withlogin}
-                    // mainStyle={[
-                    //   this.state.email.isValid
-                    //     ? styles.loginyellow
-                    //     : styles.logingray,
-                    //   styles.loginbtn,
-                    // ]}
-                    // btnStyle={
-                    //   this.state.email.isValid
-                    //     ? styles.withlogin
-                    //     : styles.withoutlogin
-                    // }
-                    //value={false}
-                    //disabled={!this.state.email.isValid}
-                    onClick={this.onResetPassword}
+                    // mainStyle={styles.loginyellow}
+                    // btnStyle={styles.withlogin}
+                    mainStyle={[
+                      this.state.email.isValid
+                        ? styles.loginyellow
+                        : styles.logingray,
+                      styles.loginbtn,
+                    ]}
+                    btnStyle={
+                      this.state.email.isValid
+                        ? styles.withlogin
+                        : styles.withoutlogin
+                    }
+                    value={false}
+                    disabled={!this.state.email.isValid}
+                    onClick={() => {
+                      // this.setState({isToastVisible: true});
+                      // setTimeout(
+                      //   () =>
+                      //     this.setState({
+                      //       isToastVisible: false,
+                      //     }),
+                      //   2000,
+                      // );
+                      this.onForgotPassword()
+                      // this.props.navigation.navigate('TermsConditions');
+                    }}
                   />
                 </View>
               </View>

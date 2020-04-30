@@ -1,26 +1,22 @@
 import React, { Component } from 'react';
-import {
-  View,
-  ScrollView,
-  Modal,
-  Text,
-  Animated,
-  Dimensions,
-  TouchableOpacity,
-} from 'react-native';
+import { connect } from "react-redux";
+import { View, ScrollView, Modal, Text, Animated, Dimensions, TouchableOpacity } from 'react-native';
+
+import { eventOperations } from "./../../../state/ducks/event";
+
 import CustomTextfield from '../../../components/CustomTextfield';
 import CustomButton from '../../../components/CustomButton';
 import CustomIcon from '../../../components/CustomIcon';
 import styles from './styles';
-import { Color, Font } from '../../../utils/variable';
-import { cos } from 'react-native-reanimated';
+import { Font } from '../../../utils/variable';
 
-export default class EventsDetails extends Component {
+export class EventsDetails extends Component {
   constructor(props) {
     super(props);
     this.offset = 0;
     this.state = {
       modalVisible: false,
+      ActionModalVisible: false,
       scrollOffset: new Animated.Value(0),
       titleWidth: 0,
     };
@@ -44,6 +40,19 @@ export default class EventsDetails extends Component {
     this.setState({ modalVisible: visible });
   };
 
+  setActionModalVisible = (visible) => {
+    this.setState({ ActionModalVisible: visible });
+  };
+
+  onDeleteEvent = async (eventId) => {
+    try {
+      await this.props.deleteEvent(eventId);
+      this.props.navigation.navigate('Events');
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   getEventStatus = (startDate, endDate) => {
     startDate = new Date(startDate).getTime();
     endDate = new Date(endDate).getTime();
@@ -57,12 +66,47 @@ export default class EventsDetails extends Component {
   }
 
   render() {
-    const { modalVisible, scrollOffset } = this.state;
-    const event = this.props.navigation.state.params.event;
+    const { modalVisible, ActionModalVisible, scrollOffset } = this.state;
     const screenWidth = Dimensions.get('window').width;
+    const event = this.props.navigation.state.params.event;
 
     return (
       <View style={styles.container}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={ActionModalVisible}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.confirmtxt}>
+                Are you sure you want to delete this event
+              </Text>
+              <View style={styles.actionbuttons}>
+                <CustomButton
+                  width="48%"
+                  btnText="Delete"
+                  mainStyle={styles.actiondelete}
+                  btnStyle={styles.actiondeletetxt}
+                  onClick={() => {
+                    this.setState({ ActionModalVisible: false }, () => {
+                      this.onDeleteEvent(event._id)
+                    });
+                  }}
+                />
+                <CustomButton
+                  width="48%"
+                  btnText="Cancel"
+                  mainStyle={styles.actioncancelbtn}
+                  btnStyle={styles.actioncancelbtntxt}
+                  onClick={() => {
+                    this.setActionModalVisible(!ActionModalVisible);
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
+
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -87,12 +131,12 @@ export default class EventsDetails extends Component {
                 }}
                 multiline={true}
               ></CustomTextfield>
-              <View style={styles.CreateEventMain}>
+              <View style={styles.sendcancelmain}>
                 <CustomButton
                   width="48%"
                   btnText="Send"
-                  mainStyle={styles.createvent}
-                  btnStyle={styles.createventxt}
+                  mainStyle={styles.sendbtn}
+                  btnStyle={styles.sendbtntxt}
                   onClick={() => {
                     this.setModalVisible(!modalVisible);
                   }}
@@ -100,8 +144,8 @@ export default class EventsDetails extends Component {
                 <CustomButton
                   width="48%"
                   btnText="Cancel"
-                  mainStyle={styles.deleteevent}
-                  btnStyle={styles.deleteeventxt}
+                  mainStyle={styles.cancelbtn}
+                  btnStyle={styles.cancelbtntxt}
                   onClick={() => {
                     this.setModalVisible(!modalVisible);
                   }}
@@ -123,7 +167,6 @@ export default class EventsDetails extends Component {
         <View style={styles.editbtn}>
           <TouchableOpacity
             onPress={() => {
-              console.log(event)
               this.props.navigation.navigate('EditEvents', { event });
             }}>
             <CustomIcon style={styles.editicon} name="edit" />
@@ -182,16 +225,17 @@ export default class EventsDetails extends Component {
             <View style={styles.timestatus}>
               <Text style={styles.timetitle}>Time</Text>
               <Text style={styles.eventstatus}>{this.getEventStatus(event.startDate, event.endDate)}</Text>
+              <Text style={styles.eventstatus}>Food Available Until:</Text>
             </View>
             <View>
-              <Text style={styles.available}>Food available until</Text>
+              <Text style={styles.available}>12:30pm</Text>
             </View>
-            <View style={styles.titlecount}>
+            {/* <View style={styles.titlecount}>
               <Text style={styles.conftitle}>RSVP Confirmed</Text>
               <View style={styles.countmain}>
                 <Text style={styles.count}>{event.rsvp.length}</Text>
               </View>
-            </View>
+            </View> */}
             <View style={styles.btnview}>
               <CustomButton
                 btnText="Send notification"
@@ -214,7 +258,24 @@ export default class EventsDetails extends Component {
             </View>
           </View>
         </ScrollView>
+        <View style={styles.reatbtnview}>
+          <CustomButton
+            btnText="Delete event"
+            mainStyle={styles.createvent}
+            btnStyle={styles.createventxt}
+            onClick={() => {
+              this.setActionModalVisible(true);
+            }}
+          />
+        </View>
       </View>
     );
   }
 }
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = {
+  deleteEvent: eventOperations.deleteEvent
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EventsDetails);
