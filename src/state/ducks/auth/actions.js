@@ -39,3 +39,18 @@ export const forgotPassword = ( payload) => ( {
     },
 } );
 
+export const signup = ( payload) => ( {
+    type: types.SIGNUP,
+    meta: {
+        async: true,
+        blocking: true,
+        path: "/auth/register",
+        method: "POST",
+        body: payload
+    },
+} );
+
+
+
+
+

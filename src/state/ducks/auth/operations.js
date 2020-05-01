@@ -1,5 +1,5 @@
 import { get } from "lodash"
-import { login as loginAction, logout as logoutAction, initializeSession, authenticated, destroySession, forgotPassword } from "./actions";
+import { login as loginAction, logout as logoutAction, initializeSession, authenticated, destroySession, forgotPassword, signup } from "./actions";
 
 const login = (payload) => {
     return async (dispatch) => {
@@ -23,5 +23,6 @@ export {
     login,
     logout,
     forgotPassword,
-    initializeSession
+    initializeSession,
+    signup
 };

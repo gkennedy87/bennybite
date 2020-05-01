@@ -1,42 +1,40 @@
-import React, {Component} from 'react';
-import {View, Image, SafeAreaView, Text} from 'react-native';
-import CustomTextfield from '../../components/CustomTextfield';
-import {REGEX} from '../../utils/validation';
-import {ErrorMessage} from '../../utils/message';
-import CustomButton from '../../components/CustomButton';
+import React, { Component } from "react";
+import { View, Image, SafeAreaView, Text } from "react-native";
+import CustomTextfield from "../../components/CustomTextfield";
+import { REGEX } from "../../utils/validation";
+import { ErrorMessage } from "../../utils/message";
+import CustomButton from "../../components/CustomButton";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-import HeaderTitle from '../../components/Header/HeaderTitle';
+import HeaderTitle from "../../components/Header/HeaderTitle";
 
-import styles from './styles';
+import styles from "./styles";
 
 export default class ChangePassword extends Component {
   static navigationOptions = ({}) => {
     return {
-      headerTitle: () => <HeaderTitle title={'Change password'} />,
+      headerTitle: () => <HeaderTitle title={"Change password"} />,
     };
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      hasError: true,
-      isModalVisible: false,
-      isToastVisible: false,
       hidePassword: true,
       oldPass: true,
       passVisible: true,
       Currentpassword: {
-        value: '',
+        value: "",
         message: [],
         isValid: false,
       },
       password: {
-        value: '',
+        value: "",
         message: [],
         isValid: false,
       },
       ConfirmPassword: {
-        value: '',
+        value: "",
         message: [],
         isValid: false,
       },
@@ -49,13 +47,13 @@ export default class ChangePassword extends Component {
     Currentpassword.message = [];
     Currentpassword.isValid = true;
 
-    if (Currentpassword.value.length == 0 || Currentpassword.value == '') {
+    if (Currentpassword.value.length == 0 || Currentpassword.value == "") {
       // email.message = ErrorMsg.emailRequired // import
       Currentpassword.message.push(ErrorMessage.EMPTY_PASS);
       Currentpassword.isValid = false;
     }
 
-    this.setState({Currentpassword});
+    this.setState({ Currentpassword });
   };
 
   onPasswordChange = (text) => {
@@ -64,7 +62,7 @@ export default class ChangePassword extends Component {
     password.message = [];
     password.isValid = true;
 
-    if (password.value.length == 0 || password.value == '') {
+    if (password.value.length == 0 || password.value == "") {
       // email.message = ErrorMsg.emailRequired // import
       password.message.push(ErrorMessage.EMPTY_PASS);
       password.isValid = false;
@@ -91,7 +89,7 @@ export default class ChangePassword extends Component {
       password.isValid = false;
     }
 
-    this.setState({password});
+    this.setState({ password });
   };
   onConfrimPasswordChange = (text) => {
     const ConfirmPassword = this.state.ConfirmPassword;
@@ -104,7 +102,7 @@ export default class ChangePassword extends Component {
       this.state.ConfirmPassword.message.push(ErrorMessage.CONFIRM_PASS);
       this.state.ConfirmPassword.isValid = false;
     }
-    this.setState({ConfirmPassword});
+    this.setState({ ConfirmPassword });
   };
   onPassVisi = () => {
     this.setState({
@@ -113,86 +111,100 @@ export default class ChangePassword extends Component {
   };
 
   render() {
-    const {password, ConfirmPassword, Currentpassword} = this.state;
-    const {navigate} = this.props.navigation;
+    const { password, ConfirmPassword, Currentpassword } = this.state;
+    const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.safeareaview}>
-        <SafeAreaView style={styles.contentcenter}>
-          <View style={styles.container}>
-            <Text style={styles.logintxt}>
-              Please enter old password to change your password
-            </Text>
-            <View style={styles.form}>
-              <CustomTextfield
-                placeholder="Current Password"
-                inputmainstyle={{marginBottom: 25}}
-                inputstyle={{paddingRight: 40}}
-                editable={true}
-                passwordField={true}
-                passVisible={this.state.passVisible}
-                onPassVisi={this.onPassVisi}
-                isPassword={true}
-                onChangeText={this.onCurrentPassword}
-                value={Currentpassword.value}
-                errorMsgs={Currentpassword.message}></CustomTextfield>
-              <CustomTextfield
-                placeholder="New Password"
-                inputmainstyle={{marginBottom: 25}}
-                inputstyle={{paddingRight: 40}}
-                editable={true}
-                passwordField={true}
-                passVisible={this.state.passVisible}
-                onPassVisi={this.onPassVisi}
-                isPassword={true}
-                onChangeText={this.onPasswordChange}
-                value={password.value}
-                errorMsgs={password.message}></CustomTextfield>
-              <CustomTextfield
-                placeholder="Confirm Password"
-                inputstyle={{paddingRight: 40}}
-                editable={true}
-                passwordField={true}
-                passVisible={this.state.passVisible}
-                isPassword={true}
-                onChangeText={this.onConfrimPasswordChange}
-                value={ConfirmPassword.value}
-                errorMsgs={ConfirmPassword.message}></CustomTextfield>
+        <KeyboardAwareScrollView
+          contentContainerStyle={{
+            alignItems: "center",
+            justifyContent: "center",
+            flexGrow: 1,
+          }}
+          scrollEnabled={true}
+          enableOnAndroid={false}
+          showsVerticalScrollIndicator={true}
+        >
+          <View style={styles.contentcenter}>
+            <View style={styles.container}>
+              <Text style={styles.logintxt}>
+                Please enter old password to change your password
+              </Text>
+              <View style={styles.form}>
+                <CustomTextfield
+                  placeholder="Current Password"
+                  inputmainstyle={{ marginBottom: 25 }}
+                  inputstyle={{ paddingRight: 40 }}
+                  editable={true}
+                  passwordField={true}
+                  passVisible={this.state.passVisible}
+                  onPassVisi={this.onPassVisi}
+                  isPassword={true}
+                  onChangeText={this.onCurrentPassword}
+                  value={Currentpassword.value}
+                  errorMsgs={Currentpassword.message}
+                ></CustomTextfield>
+                <CustomTextfield
+                  placeholder="New Password"
+                  inputmainstyle={{ marginBottom: 25 }}
+                  inputstyle={{ paddingRight: 40 }}
+                  editable={true}
+                  passwordField={true}
+                  passVisible={this.state.passVisible}
+                  onPassVisi={this.onPassVisi}
+                  isPassword={true}
+                  onChangeText={this.onPasswordChange}
+                  value={password.value}
+                  errorMsgs={password.message}
+                ></CustomTextfield>
+                <CustomTextfield
+                  placeholder="Confirm Password"
+                  inputstyle={{ paddingRight: 40 }}
+                  editable={true}
+                  passwordField={true}
+                  passVisible={this.state.passVisible}
+                  isPassword={true}
+                  onChangeText={this.onConfrimPasswordChange}
+                  value={ConfirmPassword.value}
+                  errorMsgs={ConfirmPassword.message}
+                ></CustomTextfield>
 
-              <View style={styles.loginbtnmain}>
-                <CustomButton
-                  btnText="Submit"
-                  mainStyle={styles.loginyellow}
-                  btnStyle={styles.withlogin}
-                  // mainStyle={[
-                  //   this.state.email.isValid
-                  //     ? styles.loginyellow
-                  //     : styles.logingray,
-                  //   styles.loginbtn,
-                  // ]}
-                  // btnStyle={
-                  //   this.state.email.isValid
-                  //     ? styles.withlogin
-                  //     : styles.withoutlogin
-                  // }
-                  //value={false}
-                  //disabled={!this.state.email.isValid}
-                  onClick={() => {
-                    // this.setState({isToastVisible: true});
-                    // setTimeout(
-                    //   () =>
-                    //     this.setState({
-                    //       isToastVisible: false,
-                    //     }),
-                    //   2000,
-                    // );
-                    this.props.navigation.navigate('ResetPassword');
-                  }}
-                />
+                <View style={styles.loginbtnmain}>
+                  <CustomButton
+                    btnText="Submit"
+                    mainStyle={styles.loginyellow}
+                    btnStyle={styles.withlogin}
+                    // mainStyle={[
+                    //   this.state.email.isValid
+                    //     ? styles.loginyellow
+                    //     : styles.logingray,
+                    //   styles.loginbtn,
+                    // ]}
+                    // btnStyle={
+                    //   this.state.email.isValid
+                    //     ? styles.withlogin
+                    //     : styles.withoutlogin
+                    // }
+                    //value={false}
+                    //disabled={!this.state.email.isValid}
+                    onClick={() => {
+                      // this.setState({isToastVisible: true});
+                      // setTimeout(
+                      //   () =>
+                      //     this.setState({
+                      //       isToastVisible: false,
+                      //     }),
+                      //   2000,
+                      // );
+                      this.props.navigation.navigate("ResetPassword");
+                    }}
+                  />
+                </View>
               </View>
             </View>
           </View>
-        </SafeAreaView>
+        </KeyboardAwareScrollView>
       </View>
     );
   }

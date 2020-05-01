@@ -13,20 +13,21 @@ import PushNotification from "react-native-push-notification";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 
 // import NetInfo from '@react-native-community/netinfo';
-import SplashScreen from 'react-native-splash-screen';
+import SplashScreen from "react-native-splash-screen";
 
-import Login from './src/layouts/Login';
-import ForgotPassword from './src/layouts/ForgotPassword';
-import ChangePassword from './src/layouts/ChangePassword';
+import Login from "./src/layouts/Login";
+import Signup from "./src/layouts/Signup";
+import ForgotPassword from "./src/layouts/ForgotPassword";
+import ChangePassword from "./src/layouts/ChangePassword";
 
-import Events from './src/layouts/Management/Events';
-import EventStudents from './src/layouts/Management/EventStudents';
+import Events from "./src/layouts/Management/Events";
+import EventStudents from "./src/layouts/Management/EventStudents";
 
-import EventsDetails from './src/layouts/Management/EventsDetails';
-import CreateEvent from './src/layouts/Management/CreateEvent';
-import EditEvents from './src/layouts/Management/EditEvents';
-import Profile from './src/layouts/Profile';
-import EditProfile from './src/layouts/EditProfile';
+import EventsDetails from "./src/layouts/Management/EventsDetails";
+import CreateEvent from "./src/layouts/Management/CreateEvent";
+import EditEvents from "./src/layouts/Management/EditEvents";
+import Profile from "./src/layouts/Profile";
+import EditProfile from "./src/layouts/EditProfile";
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -41,9 +42,11 @@ import configureStore from "./src/state/store";
 
 const store = configureStore({});
 
+
 const AppNavigator = createStackNavigator(
   {
     Login: { screen: Login },
+    Signup: { screen: Signup },
     ForgotPassword: { screen: ForgotPassword },
     Events: { screen: Events },
     EventsDetails: { screen: EventsDetails },
@@ -56,7 +59,7 @@ const AppNavigator = createStackNavigator(
     TermsConditions: { screen: TermsConditions },
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: "Login",
     // headerMode: "none",
     /* The header config from HomeScreen is now here */
     defaultNavigationOptions: ({ navigation }) => ({
@@ -68,7 +71,7 @@ const AppNavigator = createStackNavigator(
       ),
       headerRight: isIOS() ? null : <View style={{ width: 30 }}></View>,
     }),
-  },
+  }
 );
 
 const RootNavigator = createAppContainer(AppNavigator);
@@ -130,7 +133,7 @@ export default class App extends Component {
   }
 
   _handleConnectivityChange = (state) => {
-    console.log('handleConnectivityChange', state.isConnected);
+    console.log("handleConnectivityChange", state.isConnected);
     this.setState({
       isConnected: state.isConnected,
     });

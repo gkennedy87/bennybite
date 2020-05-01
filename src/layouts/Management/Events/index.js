@@ -355,7 +355,7 @@ export class Events extends Component {
             </View>
           </View>
         )}
-        {selected === 'Users' && this.props.user.role != 'admin' && (
+        {selected === 'Users' && this.props.user.role != 'user' && (
           <View style={{ flex: 1 }}>
             <SwipeListView data={this.props.users.filter(u => u.role != 'admin')} renderItem={renderItemUsers} />
           </View>

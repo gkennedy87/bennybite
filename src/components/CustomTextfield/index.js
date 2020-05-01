@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Text,
   View,
@@ -6,12 +6,12 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
-} from 'react-native';
+} from "react-native";
 
-import styles from './styles';
-import {Color} from '../../utils/variable';
-import CustomIcon from '../CustomIcon';
-const {width} = Dimensions.get('window');
+import styles from "./styles";
+import { Color } from "../../utils/variable";
+import CustomIcon from "../CustomIcon";
+const { width } = Dimensions.get("window");
 
 const CustomTextfield = (props) => {
   return (
@@ -31,21 +31,21 @@ const CustomTextfield = (props) => {
         ]}
         maxLength={props.maxLength}
         autoCorrect={false}
-        autoCapitalize={props.autoCapitalize}
+        autoCapitalize={false}
         keyboardType={props.keyboardType}
         editable={props.editable}
-        autoCorrect={false}
         placeholder={props.placeholder}
         placeholderTextColor={Color.TXT_DARKGRAY}
         secureTextEntry={props.passVisible}
         name={props.name}
         onBlur={props.onBlur}
         numberOfLines={props.numberOfLines}
-        multiline={props.multiline}></TextInput>
+        multiline={props.multiline}
+      ></TextInput>
       {props.isPassword && (
         <TouchableOpacity style={styles.showbtn} onPress={props.onPassVisi}>
           <CustomIcon
-            name={props.passVisible ? 'eye-off' : 'eye-on'}
+            name={props.passVisible ? "eye-off" : "eye-on"}
             style={[
               styles.showbtnicon,
               {
@@ -77,7 +77,7 @@ const CustomTextfield = (props) => {
       {props.errorMsgs && (
         <FlatList
           data={props.errorMsgs}
-          renderItem={({item}) => (
+          renderItem={({ item }) => (
             <View style={styles.errorView}>
               <Text title={item.title} style={styles.error}>
                 {item}

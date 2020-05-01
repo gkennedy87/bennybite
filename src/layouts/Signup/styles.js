@@ -1,9 +1,8 @@
 import { StyleSheet, Dimensions } from "react-native";
 import { Font, Color } from "../../utils/variable";
 import { isIOS } from "../../utils/theme";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-const { width } = Dimensions.get("window");
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   safeareaview: {
@@ -11,16 +10,45 @@ const styles = StyleSheet.create({
   },
   contentcenter: {
     width: Dimensions.get("window").width - 40,
+    marginTop: -60,
+  },
+  logocenter: {
+    alignItems: "center",
+    marginBottom: 50,
+  },
+  prfltxt: {
+    marginBottom: 20,
+    fontSize: Font.FONTSIZE_16,
+    fontFamily: Font.MYRIAD_REGULAR,
+    color: Color.TXT_LIGHTGRAY,
   },
   logintxt: {
-    marginTop: 45,
     fontSize: Font.FONTSIZE_16,
     color: Color.TXT_BLACK,
     marginBottom: 30,
     fontFamily: Font.MYRIAD_REGULAR,
   },
+  profileview: {
+    width: 130,
+    height: 130,
+    backgroundColor: "#F2F1F1",
+    borderRadius: 130,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  profilepic: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    width: 130,
+    height: 130,
+    borderRadius: 130,
+  },
+  profileicon: {
+    fontSize: Font.FONTSIZE_24,
+  },
   loginbtnmain: {
-    marginTop: 50,
+    marginTop: 30,
   },
   withoutlogin: {
     color: Color.TXT_BLACK,
