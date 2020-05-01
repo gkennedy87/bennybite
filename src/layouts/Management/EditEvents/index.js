@@ -10,7 +10,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { isIOS } from "../../../utils/theme";
 
 import styles from "./styles";
-import { Color, Font } from "../../../utils/variable";
+import { Color, Font, Globals } from "../../../utils/variable";
 
 export default class EditEvents extends Component {
   constructor(props) {
@@ -78,6 +78,7 @@ export default class EditEvents extends Component {
           contentContainerStyle={{
             alignItems: "center",
             flexGrow: 1,
+            justifyContent: Globals.isIpad ? "center" : "flex-start",
           }}
           scrollEnabled={true}
           enableOnAndroid={false}

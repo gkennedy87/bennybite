@@ -8,7 +8,7 @@ import CustomIcon from "../../../components/CustomIcon";
 import { isIOS } from "../../../utils/theme";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import styles from "./styles";
-import { Color, Font } from "../../../utils/variable";
+import { Color, Font, Globals } from "../../../utils/variable";
 
 export default class CreateEvent extends Component {
   constructor(props) {
@@ -35,6 +35,7 @@ export default class CreateEvent extends Component {
           contentContainerStyle={{
             alignItems: "center",
             flexGrow: 1,
+            justifyContent: Globals.isIpad ? "center" : "flex-start",
           }}
           scrollEnabled={true}
           enableOnAndroid={false}

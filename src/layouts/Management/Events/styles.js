@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native";
-import { Font, Color } from "../../../utils/variable";
+import { Font, Color, Globals } from "../../../utils/variable";
 import { ifIphoneX } from "react-native-iphone-x-helper";
 import { isIOS } from "../../../utils/theme";
 
@@ -84,30 +84,30 @@ const styles = StyleSheet.create({
   },
   title: {
     width: "60%",
-    fontSize: Font.FONTSIZE_16,
+    fontSize: Globals.isIpad ? 20 : 16,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     color: Color.TXT_BLACK,
   },
   upcomingtime: {
     position: "relative",
     top: -2,
-    fontSize: Font.FONTSIZE_12,
+    fontSize: Globals.isIpad ? 16 : 12,
     fontFamily: Font.MYRIAD_REGULAR,
     color: Color.TXT_BLACK,
   },
   subtxt: {
-    fontSize: Font.FONTSIZE_14,
+    fontSize: Globals.isIpad ? 18 : 14,
     fontFamily: Font.MYRIAD_REGULAR,
     color: Color.TXT_LIGHTGRAY,
     marginBottom: 10,
   },
   evtaddress: {
-    fontSize: Font.FONTSIZE_12,
+    fontSize: Globals.isIpad ? 16 : 12,
     fontFamily: Font.MYRIAD_REGULAR,
     color: Color.TXT_LIGHTGRAY,
   },
   evtstatus: {
-    fontSize: Font.FONTSIZE_12,
+    fontSize: Globals.isIpad ? 16 : 12,
     fontFamily: Font.MYRIAD_REGULAR,
     color: Color.TXT_GREEN,
   },
@@ -145,13 +145,13 @@ const styles = StyleSheet.create({
     paddingLeft: 25,
   },
   usernametxt: {
-    fontSize: Font.FONTSIZE_16,
+    fontSize: Globals.isIpad ? 20 : 16,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     color: Color.TXT_BLACK,
     marginBottom: 5,
   },
   usertxtemail: {
-    fontSize: Font.FONTSIZE_14,
+    fontSize: Globals.isIpad ? 16 : 14,
     fontFamily: Font.MYRIAD_REGULAR,
     color: Color.TXT_BLACK,
   },
