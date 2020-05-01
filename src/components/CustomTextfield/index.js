@@ -30,7 +30,6 @@ const CustomTextfield = (props) => {
           },
         ]}
         maxLength={props.maxLength}
-        autoCorrect={false}
         autoCapitalize={false}
         keyboardType={props.keyboardType}
         editable={props.editable}
