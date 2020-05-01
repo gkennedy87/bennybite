@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
+import { get } from "lodash";
 import AsyncStorage from "@react-native-community/async-storage"
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
 import { View, TouchableOpacity, Text, TouchableHighlight, Image } from 'react-native';
@@ -315,7 +316,7 @@ export class Events extends Component {
                 });
               }}
               Menutext="Food on Campus"></Tabbutton>
-            <Tabbutton
+            {this.props.user.role != 'admin' && <Tabbutton
               MenubuttonStyle={{}}
               MenutextStyle={{
                 color:
@@ -330,7 +331,7 @@ export class Events extends Component {
                   selected: 'Users',
                 });
               }}
-              Menutext="Users"></Tabbutton>
+              Menutext="Users"></Tabbutton>}
           </View>
         </View>
         {selected === 'FoodonCampus' && (
@@ -354,7 +355,7 @@ export class Events extends Component {
             </View>
           </View>
         )}
-        {selected === 'Users' && (
+        {selected === 'Users' && this.props.user.role != 'admin' && (
           <View style={{ flex: 1 }}>
             <SwipeListView data={this.props.users.filter(u => u.role != 'admin')} renderItem={renderItemUsers} />
           </View>
@@ -367,7 +368,8 @@ export class Events extends Component {
 const mapStateToProps = (state) => {
   return {
     users: state.user.list,
-    events: state.event.list
+    events: state.event.list,
+    user: get(state, 'auth.session.user', {})
   }
 };
 
