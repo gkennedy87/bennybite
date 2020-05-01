@@ -3,62 +3,64 @@
  * https://github.com/facebook/react-native
  **/
 
-import React, {Component, useEffect} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React, { Component, useEffect } from "react";
+import { View, StyleSheet } from "react-native";
 
 // import NetInfo from '@react-native-community/netinfo';
-import SplashScreen from 'react-native-splash-screen';
+import SplashScreen from "react-native-splash-screen";
 
-import Login from './src/layouts/Login';
-import ForgotPassword from './src/layouts/ForgotPassword';
-import ChangePassword from './src/layouts/ChangePassword';
+import Login from "./src/layouts/Login";
+import Signup from "./src/layouts/Signup";
+import ForgotPassword from "./src/layouts/ForgotPassword";
+import ChangePassword from "./src/layouts/ChangePassword";
 
-import Events from './src/layouts/Management/Events';
-import EventStudents from './src/layouts/Management/EventStudents';
+import Events from "./src/layouts/Management/Events";
+import EventStudents from "./src/layouts/Management/EventStudents";
 
-import EventsDetails from './src/layouts/Management/EventsDetails';
-import CreateEvent from './src/layouts/Management/CreateEvent';
-import EditEvents from './src/layouts/Management/EditEvents';
-import Profile from './src/layouts/Profile';
-import EditProfile from './src/layouts/EditProfile';
+import EventsDetails from "./src/layouts/Management/EventsDetails";
+import CreateEvent from "./src/layouts/Management/CreateEvent";
+import EditEvents from "./src/layouts/Management/EditEvents";
+import Profile from "./src/layouts/Profile";
+import EditProfile from "./src/layouts/EditProfile";
 
-import TermsConditions from './src/layouts/TermsConditions';
+import TermsConditions from "./src/layouts/TermsConditions";
 
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
-import HeaderLeft from './src/components/Header/HeaderLeft';
-import GlobalStyles from './src/utils/GlobalStyles';
+import { createAppContainer } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
+import HeaderLeft from "./src/components/Header/HeaderLeft";
+import GlobalStyles from "./src/utils/GlobalStyles";
 
-import {isIOS} from './src/utils/theme';
+import { isIOS } from "./src/utils/theme";
 
 const AppNavigator = createStackNavigator(
   {
-    Login: {screen: Login},
-    ForgotPassword: {screen: ForgotPassword},
-    Events: {screen: Events},
-    EventsDetails: {screen: EventsDetails},
-    CreateEvent: {screen: CreateEvent},
-    EditEvents: {screen: EditEvents},
-    ChangePassword: {screen: ChangePassword},
-    Profile: {screen: Profile},
-    EditProfile: {screen: EditProfile},
-    EventStudents: {screen: EventStudents},
-    TermsConditions: {screen: TermsConditions},
+    Login: { screen: Login },
+    Signup: { screen: Signup },
+    ForgotPassword: { screen: ForgotPassword },
+    Events: { screen: Events },
+    EventsDetails: { screen: EventsDetails },
+    CreateEvent: { screen: CreateEvent },
+    EditEvents: { screen: EditEvents },
+    ChangePassword: { screen: ChangePassword },
+    Profile: { screen: Profile },
+    EditProfile: { screen: EditProfile },
+    EventStudents: { screen: EventStudents },
+    TermsConditions: { screen: TermsConditions },
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: "Login",
     // headerMode: "none",
     /* The header config from HomeScreen is now here */
-    defaultNavigationOptions: ({navigation}) => ({
+    defaultNavigationOptions: ({ navigation }) => ({
       gesturesEnabled: false,
       headerTransparent: false,
       headerStyle: GlobalStyles.headerStyle,
       headerLeft: (
         <HeaderLeft iconName="back" onPress={() => navigation.goBack()} />
       ),
-      headerRight: isIOS() ? null : <View style={{width: 30}}></View>,
+      headerRight: isIOS() ? null : <View style={{ width: 30 }}></View>,
     }),
-  },
+  }
 );
 
 const RootNavigator = createAppContainer(AppNavigator);
@@ -78,17 +80,17 @@ export default class App extends Component {
   }
 
   _handleConnectivityChange = (state) => {
-    console.log('handleConnectivityChange', state.isConnected);
+    console.log("handleConnectivityChange", state.isConnected);
     this.setState({
       isConnected: state.isConnected,
     });
   };
 
   render() {
-    const {isConnected} = this.state;
+    const { isConnected } = this.state;
     return (
       <View style={styles.container}>
-        <RootNavigator screenProps={{isConnected: isConnected}} />
+        <RootNavigator screenProps={{ isConnected: isConnected }} />
       </View>
     );
   }

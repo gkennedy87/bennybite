@@ -1,16 +1,7 @@
 import React, { Component } from "react";
-import {
-  View,
-  Image,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { View, Image, Text, TouchableOpacity } from "react-native";
 import CustomTextfield from "../../components/CustomTextfield";
-
-import CustomToast from "../../components/CustomToast";
-import NoData from "../../components/NoData";
-import Loader from "../../components/Loader";
+import CustomIcon from "../../components/CustomIcon";
 
 import { REGEX } from "../../utils/validation";
 import { ErrorMessage } from "../../utils/message";
@@ -27,11 +18,19 @@ export default class Login extends Component {
       // isToastVisible: false,
       hidePassword: true,
       passVisible: true,
+
+      username: {
+        value: "",
+        message: [],
+        isValid: false,
+      },
+
       email: {
         value: "",
         message: [],
         isValid: false,
       },
+
       password: {
         value: "",
         message: [],
@@ -40,8 +39,18 @@ export default class Login extends Component {
     };
   }
 
-  static navigationOptions = {
-    header: null,
+  onUserTextChange = (text) => {
+    const username = this.state.username;
+    username.value = text;
+    username.message = [];
+    username.isValid = true;
+
+    if (username.value.length == 0 || username.value == "") {
+      // username.message = ErrorMsg.emailRequired // import
+      username.message.push(ErrorMessage.EMPTY_USER);
+      username.isValid = false;
+    }
+    this.setState({ username });
   };
 
   onPasswordChange = (text) => {
@@ -71,41 +80,27 @@ export default class Login extends Component {
     email.isValid = true;
 
     if (email.value.length == 0 || email.value == "") {
-      // email.message = ErrorMsg.emailRequired // import
       email.message.push(ErrorMessage.EMPTY_EMAIL);
       email.isValid = false;
     } else if (!email.value.match(REGEX.EMAIL)) {
-      // email.message = ErrorMsg.emailInvalid
       email.message.push(ErrorMessage.EMAIL_VALID);
       email.isValid = false;
     }
     this.setState({ email });
   };
+
   onPassVisi = () => {
     this.setState({
       passVisible: !this.state.passVisible,
     });
   };
 
-  // onChangeValue = () => {
-  //   this.setState({
-  //     isChecked: !this.state.isChecked,
-  //   });
-  // };
-
   render() {
-    const { email, password } = this.state;
+    const { username, email, password } = this.state;
     const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.safeareaview}>
-        {/* <CustomToast
-          message="Sorry!  We couldn't find an account with that email"
-          isToastVisible={true}
-          type="warning"
-        />
-        <NoData NodataTxt="No Data Found" /> */}
-        {/*    */}
         <KeyboardAwareScrollView
           contentContainerStyle={{
             alignItems: "center",
@@ -119,15 +114,26 @@ export default class Login extends Component {
           <View style={styles.contentcenter}>
             <View style={styles.container}>
               <View style={styles.logocenter}>
-                <Image
-                  style={styles.logo}
-                  source={require("../../assets/Images/logo.png")}
-                ></Image>
+                <Text style={styles.prfltxt}>User Profile</Text>
+                <TouchableOpacity style={styles.profileview}>
+                  {/* <Image source="" style={styles.profilepic} */}
+                  <CustomIcon style={styles.profileicon} name="profilepic" />
+                </TouchableOpacity>
               </View>
-              <Text style={styles.logintxt}>
-                Enter your credentials to login
-              </Text>
+              <Text style={styles.logintxt}>Enter your details to signup</Text>
               <View style={styles.form}>
+                <CustomTextfield
+                  placeholder="User name"
+                  editable={true}
+                  inputmainstyle={{ marginBottom: 25 }}
+                  inputstyle={{ paddingRight: 40 }}
+                  ifIcon={true}
+                  iconname={"user"}
+                  onChangeText={this.onUserTextChange}
+                  value={username.value}
+                  errorMsgs={username.message}
+                ></CustomTextfield>
+
                 <CustomTextfield
                   placeholder="Email Id"
                   editable={true}
@@ -154,34 +160,31 @@ export default class Login extends Component {
                   errorMsgs={password.message}
                 ></CustomTextfield>
 
-                <View style={styles.forgotbtn}>
-                  <CustomButton
-                    btnText="Forgot Password?"
-                    btnStyle={styles.forgotbtntxt}
-                    value={false}
-                    onClick={() => navigate("ForgotPassword")}
-                  />
-                </View>
-
                 <View style={styles.loginbtnmain}>
                   <CustomButton
-                    btnText="Login"
-                    // mainStyle={styles.loginyellow}
-                    // btnStyle={styles.withlogin}
+                    btnText="Signup"
                     mainStyle={[
-                      this.state.email.isValid && this.state.password.isValid
+                      this.state.username.isValid &&
+                      this.state.email.isValid &&
+                      this.state.password.isValid
                         ? styles.loginyellow
                         : styles.logingray,
                       styles.loginbtn,
                     ]}
                     btnStyle={
-                      this.state.email.isValid && this.state.password.isValid
+                      this.state.username.isValid &&
+                      this.state.email.isValid &&
+                      this.state.password.isValid
                         ? styles.withlogin
                         : styles.withoutlogin
                     }
                     value={false}
                     disabled={
-                      !(this.state.email.isValid && this.state.password.isValid)
+                      !(
+                        this.state.username.isValid &&
+                        this.state.email.isValid &&
+                        this.state.password.isValid
+                      )
                     }
                     onClick={() => {
                       // this.setState({isToastVisible: true});
@@ -197,16 +200,6 @@ export default class Login extends Component {
                   />
                 </View>
               </View>
-            </View>
-            <View style={styles.signupmain}>
-              <Text style={styles.newusertxt}>New user ?</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.navigate("Signup");
-                }}
-              >
-                <Text style={styles.signuptxt}>Signup</Text>
-              </TouchableOpacity>
             </View>
           </View>
         </KeyboardAwareScrollView>

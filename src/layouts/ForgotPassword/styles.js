@@ -1,26 +1,25 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {Font, Color} from '../../utils/variable';
-import {isIOS} from '../../utils/theme';
+import { StyleSheet, Dimensions } from "react-native";
+import { Font, Color } from "../../utils/variable";
+import { isIOS } from "../../utils/theme";
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   safeareaview: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   contentcenter: {
-    width: Dimensions.get('window').width - 40,
+    marginTop: -45,
+    width: Dimensions.get("window").width - 40,
   },
   logocenter: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 60,
   },
   logo: {
     width: 265,
     height: 58,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
   logintxt: {
     fontSize: Font.FONTSIZE_16,
@@ -29,7 +28,7 @@ const styles = StyleSheet.create({
     fontFamily: Font.MYRIAD_REGULAR,
   },
   forgotbtn: {
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     fontFamily: Font.MYRIAD_REGULAR,
   },
   loginbtnmain: {
@@ -39,14 +38,14 @@ const styles = StyleSheet.create({
     color: Color.TXT_BLACK,
     fontSize: Font.FONTSIZE_16,
     fontFamily: Font.MYRIAD_SEMIBOLD,
-    position: 'relative',
+    position: "relative",
     top: isIOS() ? 2 : 0,
   },
   withlogin: {
     fontSize: Font.FONTSIZE_16,
     color: Color.TXT_WHITE,
     fontFamily: Font.MYRIAD_SEMIBOLD,
-    position: 'relative',
+    position: "relative",
     top: isIOS() ? 2 : 0,
   },
   logingray: {
