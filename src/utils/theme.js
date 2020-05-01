@@ -1,9 +1,10 @@
-import React from 'react';
-import {PixelRatio, Platform, Dimensions, StyleSheet} from 'react-native';
-import {relativeWidth} from './dimensions';
-import DeviceInfo from 'react-native-device-info';
+import React from "react";
+import { PixelRatio, Platform, Dimensions, StyleSheet } from "react-native";
+import { relativeWidth } from "./dimensions";
+import DeviceInfo from "react-native-device-info";
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
+
 // const realWidth = height > width ? width : height;
 
 // const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
@@ -27,11 +28,11 @@ const {width, height} = Dimensions.get('window');
 // const fontBase14 = DeviceInfo.isTablet() ? 14 : 14;
 // const fontBase12 = DeviceInfo.isTablet() ? 12 : 12;
 
-export const screenWidth = Dimensions.get('window').width;
-export const screenHeight = Dimensions.get('window').height;
+export const screenWidth = Dimensions.get("window").width;
+export const screenHeight = Dimensions.get("window").height;
 
 export function isIOS() {
-  return Platform.OS == 'ios' ? true : false;
+  return Platform.OS == "ios" ? true : false;
 }
 
 const isTablet = () => {

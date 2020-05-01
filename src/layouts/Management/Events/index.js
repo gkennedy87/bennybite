@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import AsyncStorage from "@react-native-community/async-storage"
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
-import { View, TouchableOpacity, Text, TouchableHighlight, Image } from 'react-native';
+import { View, TouchableOpacity, Text, TouchableHighlight, Image, Modal } from 'react-native';
 
 import { safeJSONParser } from "./../../../utils/helper"
 import { authOperations } from "./../../../state/ducks/auth";
@@ -21,145 +21,145 @@ import CustomButton from "./../../../components/CustomButton"
 
 const Eventlist = [
   {
-    key: '1',
-    title: 'TEDx talks',
+    key: "1",
+    title: "TEDx talks",
     subtxt:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'On going',
-    upcomingtime: '',
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
+    evtaddress: "Ryder Avenue Seattle, WA 98109",
+    evtstatus: "On going",
+    upcomingtime: "",
   },
   {
-    key: '2',
-    title: 'College campus farmer’s dsd  ff f ds ss gsdg s',
+    key: "2",
+    title: "College campus farmer’s dsd  ff f ds ss gsdg s",
     subtxt:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'On going',
-    upcomingtime: '',
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
+    evtaddress: "Ryder Avenue Seattle, WA 98109",
+    evtstatus: "On going",
+    upcomingtime: "",
   },
   {
-    key: '3',
-    title: 'Community service events Community service events',
+    key: "3",
+    title: "Community service events Community service events",
     subtxt:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'Upcoming',
-    upcomingtime: '1pm-3pm, 23/12/2020',
-    upcomingtime: '',
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
+    evtaddress: "Ryder Avenue Seattle, WA 98109",
+    evtstatus: "Upcoming",
+    upcomingtime: "1pm-3pm, 23/12/2020",
+    upcomingtime: "",
   },
   {
-    key: '4',
-    title: 'Craft workshops',
+    key: "4",
+    title: "Craft workshops",
     subtxt:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'Upcoming',
-    upcomingtime: '1pm-3pm, 23/12/2020',
-    upcomingtime: '',
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
+    evtaddress: "Ryder Avenue Seattle, WA 98109",
+    evtstatus: "Upcoming",
+    upcomingtime: "1pm-3pm, 23/12/2020",
+    upcomingtime: "",
   },
   {
-    key: '5',
-    title: 'TEDx talks',
+    key: "5",
+    title: "TEDx talks",
     subtxt:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'On going',
-    upcomingtime: '',
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
+    evtaddress: "Ryder Avenue Seattle, WA 98109",
+    evtstatus: "On going",
+    upcomingtime: "",
   },
   {
-    key: '6',
-    title: 'College campus farmer’s',
+    key: "6",
+    title: "College campus farmer’s",
     subtxt:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'On going',
-    upcomingtime: '',
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
+    evtaddress: "Ryder Avenue Seattle, WA 98109",
+    evtstatus: "On going",
+    upcomingtime: "",
   },
   {
-    key: '7',
-    title: 'Community service events',
+    key: "7",
+    title: "Community service events",
     subtxt:
-      'Millennials love expressing their values online, but 80% of them feel it’s essential for people to come together in',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'Upcoming',
-    upcomingtime: '1pm-3pm, 23/12/2020',
+      "Millennials love expressing their values online, but 80% of them feel it’s essential for people to come together in",
+    evtaddress: "Ryder Avenue Seattle, WA 98109",
+    evtstatus: "Upcoming",
+    upcomingtime: "1pm-3pm, 23/12/2020",
   },
   {
-    key: '8',
-    title: 'Craft workshops 123',
+    key: "8",
+    title: "Craft workshops 123",
     subtxt:
-      'Host a workshop where students can make their own dorm room décor — think plant hangers, terrariu...',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'Upcoming',
-    upcomingtime: '1pm-3pm, 23/12/2020',
+      "Host a workshop where students can make their own dorm room décor — think plant hangers, terrariu...",
+    evtaddress: "Ryder Avenue Seattle, WA 98109",
+    evtstatus: "Upcoming",
+    upcomingtime: "1pm-3pm, 23/12/2020",
   },
 ];
 
 const Userlist = [
   {
     key: 1,
-    name: 'Miyah Myles',
-    email: 'miyah.myles@gmail.com',
+    name: "Miyah Myles",
+    email: "miyah.myles@gmail.com",
     userprofile:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=707b9c33066bf8808c934c8ab394dff6',
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=707b9c33066bf8808c934c8ab394dff6",
   },
   {
     key: 2,
-    name: 'June Cha',
-    email: 'june.cha@gmail.com',
-    userprofile: 'https://randomuser.me/api/portraits/women/44.jpg',
+    name: "June Cha",
+    email: "june.cha@gmail.com",
+    userprofile: "https://randomuser.me/api/portraits/women/44.jpg",
   },
   {
     key: 3,
-    name: 'Iida Niskanen',
-    email: 'iida.niskanen@gmail.com',
-    userprofile: 'https://randomuser.me/api/portraits/women/68.jpg',
+    name: "Iida Niskanen",
+    email: "iida.niskanen@gmail.com",
+    userprofile: "https://randomuser.me/api/portraits/women/68.jpg",
   },
   {
     key: 4,
-    name: 'Renee Sims',
-    email: 'renee.sims@gmail.com',
-    userprofile: 'https://randomuser.me/api/portraits/women/65.jpg',
+    name: "Renee Sims",
+    email: "renee.sims@gmail.com",
+    userprofile: "https://randomuser.me/api/portraits/women/65.jpg",
   },
   {
     key: 5,
-    name: 'Jonathan Nu\u00f1ez',
-    email: 'jonathan.nu\u00f1ez@gmail.com',
-    userprofile: 'https://randomuser.me/api/portraits/men/43.jpg',
+    name: "Jonathan Nu\u00f1ez",
+    email: "jonathan.nu\u00f1ez@gmail.com",
+    userprofile: "https://randomuser.me/api/portraits/men/43.jpg",
   },
   {
     key: 6,
-    name: 'Sasha Ho',
-    email: 'sasha.ho@gmail.com',
+    name: "Sasha Ho",
+    email: "sasha.ho@gmail.com",
     userprofile:
-      'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?h=350&auto=compress&cs=tinysrgb',
+      "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?h=350&auto=compress&cs=tinysrgb",
   },
   {
     key: 7,
-    name: 'Abdullah Hadley',
-    email: 'abdullah.hadley@gmail.com',
+    name: "Abdullah Hadley",
+    email: "abdullah.hadley@gmail.com",
     userprofile:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=a72ca28288878f8404a795f39642a46f',
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=a72ca28288878f8404a795f39642a46f",
   },
   {
     key: 8,
-    name: 'Thomas Stock',
-    email: 'thomas.stock@gmail.com',
+    name: "Thomas Stock",
+    email: "thomas.stock@gmail.com",
     userprofile:
-      'https://tinyfac.es/data/avatars/B0298C36-9751-48EF-BE15-80FB9CD11143-500w.jpeg',
+      "https://tinyfac.es/data/avatars/B0298C36-9751-48EF-BE15-80FB9CD11143-500w.jpeg",
   },
   {
     key: 9,
-    name: 'Veeti Seppanen',
-    email: 'veeti.seppanen@gmail.com',
-    userprofile: 'https://randomuser.me/api/portraits/men/97.jpg',
+    name: "Veeti Seppanen",
+    email: "veeti.seppanen@gmail.com",
+    userprofile: "https://randomuser.me/api/portraits/men/97.jpg",
   },
   {
     key: 10,
-    name: 'Bonnie Riley',
-    email: 'bonnie.riley@gmail.com',
-    userprofile: 'https://randomuser.me/api/portraits/women/26.jpg',
+    name: "Bonnie Riley",
+    email: "bonnie.riley@gmail.com",
+    userprofile: "https://randomuser.me/api/portraits/women/26.jpg",
   },
 ];
 
@@ -169,7 +169,9 @@ export class Events extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: 'FoodonCampus',
+      FoodModalVisible: false,
+      UsersModalVisible: false,
+      selected: "FoodonCampus",
     };
   }
 
@@ -208,15 +210,26 @@ export class Events extends Component {
     }
   }
 
+  setActionModalVisible = (visible) => {
+    this.setState({ FoodModalVisible: visible });
+  };
+  setUsersModalVisible = (visible) => {
+    this.setState({ UsersModalVisible: visible });
+  };
+
   render() {
-    const { selected } = this.state;
+    const { navigate } = this.props.navigation;
+    const { selected, FoodModalVisible, UsersModalVisible } = this.state;
 
     const renderItem = ({ item }) => (
       <SwipeRow rightOpenValue={-150}>
         <View style={styles.swipeBack}>
           <TouchableOpacity
             style={[styles.SwipeBtn, styles.btndelete]}
-            onPress={() => this.onDeleteEvent(item._id)}
+            onPress={() => {
+              this.setActionModalVisible(true);
+            }}
+            //onPress={() => deleteRow(rowMap, data.item.key)}
           >
             <CustomIcon style={styles.swipeicon} name="delete" />
             <Text style={styles.swipetxt}>Delete</Text>
@@ -235,7 +248,8 @@ export class Events extends Component {
             this.props.navigation.navigate('EventsDetails', { event: item });
           }}
           style={styles.swiperowpadd}
-          underlayColor={'#ffffff'}>
+          underlayColor={"#ffffff"}
+        >
           <View style={styles.swiperowborder}>
             <View style={styles.listingtitle}>
               <Text numberOfLines={1} style={styles.title}>
@@ -268,6 +282,10 @@ export class Events extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.swipebtnusers, styles.btndeleteusers]}
+            onPress={() => {
+              this.setUsersModalVisible(true);
+            }}
+            //onPress={() => closeRow(rowMap, data.item.key)}
           >
             <CustomIcon style={styles.swipeicon} name="delete" />
             <Text style={styles.swipetxt}>Delete</Text>
@@ -275,7 +293,8 @@ export class Events extends Component {
         </View>
         <TouchableHighlight
           style={styles.swiperowpadd}
-          underlayColor={'#ffffff'}>
+          underlayColor={"#ffffff"}
+        >
           <View style={styles.swiperowborder}>
             <View style={styles.userlistingborder}>
               <Image
@@ -294,6 +313,78 @@ export class Events extends Component {
 
     return (
       <View style={{ flex: 1 }}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={FoodModalVisible}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.confirmtxt}>
+                Are you sure you want to delete this event
+              </Text>
+              <View style={styles.actionbuttons}>
+                <CustomButton
+                  width="48%"
+                  btnText="Delete"
+                  mainStyle={styles.actiondelete}
+                  btnStyle={styles.actiondeletetxt}
+                  onClick={() => {
+                    this.setState({ FoodModalVisible: false }, () => {
+                      this.props.navigation.navigate("Events");
+                    });
+                  }}
+                />
+                <CustomButton
+                  width="48%"
+                  btnText="Cancel"
+                  mainStyle={styles.actioncancelbtn}
+                  btnStyle={styles.actioncancelbtntxt}
+                  onClick={() => {
+                    this.setActionModalVisible(!FoodModalVisible);
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={UsersModalVisible}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.confirmtxt}>
+                Are you sure you want to delete this event
+              </Text>
+              <View style={styles.actionbuttons}>
+                <CustomButton
+                  width="48%"
+                  btnText="Delete"
+                  mainStyle={styles.actiondelete}
+                  btnStyle={styles.actiondeletetxt}
+                  onClick={() => {
+                    this.setState({ UsersModalVisible: false }, () => {
+                      this.props.navigation.navigate("Events");
+                    });
+                  }}
+                />
+                <CustomButton
+                  width="48%"
+                  btnText="Cancel"
+                  mainStyle={styles.actioncancelbtn}
+                  btnStyle={styles.actioncancelbtntxt}
+                  onClick={() => {
+                    this.setUsersModalVisible(!UsersModalVisible);
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
+
         <Navbar />
 
         <View style={styles.tabmain}>
@@ -302,33 +393,33 @@ export class Events extends Component {
               MenubuttonStyle={{}}
               MenutextStyle={{
                 color:
-                  selected === 'FoodonCampus'
+                  selected === "FoodonCampus"
                     ? Color.TXT_BLACK
                     : Color.TXT_DARKGRAY,
               }}
               MenuactiveStyle={{
                 backgroundColor:
-                  selected === 'FoodonCampus' ? Color.TXT_BLACK : 'transparent',
+                  selected === "FoodonCampus" ? Color.TXT_BLACK : "transparent",
               }}
               onClick={() => {
                 this.setState({
-                  selected: 'FoodonCampus',
+                  selected: "FoodonCampus",
                 });
               }}
               Menutext="Food on Campus"></Tabbutton>
-            {this.props.user.role != 'admin' && <Tabbutton
+            {this.props.user.role != 'user' && <Tabbutton
               MenubuttonStyle={{}}
               MenutextStyle={{
                 color:
-                  selected === 'Users' ? Color.TXT_BLACK : Color.TXT_DARKGRAY,
+                  selected === "Users" ? Color.TXT_BLACK : Color.TXT_DARKGRAY,
               }}
               MenuactiveStyle={{
                 backgroundColor:
-                  selected === 'Users' ? Color.TXT_BLACK : 'transparent',
+                  selected === "Users" ? Color.TXT_BLACK : "transparent",
               }}
               onClick={() => {
                 this.setState({
-                  selected: 'Users',
+                  selected: "Users",
                 });
               }}
               Menutext="Users"></Tabbutton>}
@@ -349,7 +440,7 @@ export class Events extends Component {
                 mainStyle={styles.createvent}
                 btnStyle={styles.createventxt}
                 onClick={() => {
-                  this.props.navigation.navigate('CreateEvent');
+                  this.props.navigation.navigate("CreateEvent");
                 }}
               />
             </View>

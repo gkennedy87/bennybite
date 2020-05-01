@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from "react-native";
-import { Font, Color } from "../../utils/variable";
+import { Font, Color, Globals } from "../../utils/variable";
 import { isIOS } from "../../utils/theme";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -10,7 +10,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentcenter: {
-    width: Dimensions.get("window").width - 40,
+    backgroundColor: Globals.isIpad ? Color.BACK_WHITE : "transparent",
+    width: Globals.isIpad ? 400 : Dimensions.get("window").width - 40,
+    paddingLeft: Globals.isIpad ? 45 : 0,
+    paddingRight: Globals.isIpad ? 45 : 0,
+    paddingTop: Globals.isIpad ? 50 : 0,
+    paddingBottom: Globals.isIpad ? 50 : 0,
+    borderRadius: Globals.isIpad ? 4 : 0,
+    shadowColor: Globals.isIpad ? Color.BACK_BLACK : "transparent",
+    shadowOffset: {
+      width: 0,
+      height: Globals.isIpad ? 1 : 0,
+    },
+    shadowOpacity: Globals.isIpad ? 0.2 : 0,
+    shadowRadius: Globals.isIpad ? 2 : 0,
+    elevation: Globals.isIpad ? 3 : 0,
   },
   logintxt: {
     marginTop: 45,
