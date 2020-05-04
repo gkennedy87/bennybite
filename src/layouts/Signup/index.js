@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import ImagePicker from 'react-native-image-picker';
 
 import { authOperations } from "./../../state/ducks/auth";
-import { uploadPic } from "./../../utils/helper"
+import { commonOperations } from "./../../state/ducks/common";
 
 import CustomTextfield from "../../components/CustomTextfield";
 import CustomIcon from "../../components/CustomIcon";
@@ -103,7 +103,8 @@ export class Signup extends Component {
       await this.props.signup({
         name: toLower(this.state.username.value),
         email: toLower(this.state.email.value),
-        password: this.state.password.value
+        password: this.state.password.value,
+        pic: this.state.pic
       });
       this.props.navigation.navigate('Login');
     } catch (err) {
@@ -112,6 +113,7 @@ export class Signup extends Component {
   }
 
   uploadProfilePic = async () => {
+    console.log(this.props.uploadPic)
     ImagePicker.showImagePicker(options, async (response) => {
       console.log('Response = ', response);
 
@@ -122,16 +124,25 @@ export class Signup extends Component {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
-        const uri = response.data;
-        const result = await uploadPic(response);
-        console.log(result);
+        try {
+          const payload = new FormData()
+          payload.append("pic", {
+              uri: response.uri,
+              type: response.type,
+              name: response.fileName || 'pic'
+          });
+          await this.props.uploadPic(payload);
+          this.setState({ pic: response.uri})
+        } catch (err) {
+
+        }
       }
     });
   }
 
   render() {
-    const { username, email, password } = this.state;
-
+    const { username, email, password, pic } = this.state;
+    console.log(pic)
     return (
       <View style={styles.safeareaview}>
         <KeyboardAwareScrollView
@@ -149,7 +160,7 @@ export class Signup extends Component {
               <View style={styles.logocenter}>
                 <Text style={styles.prfltxt}>User Profile</Text>
                 <TouchableOpacity style={styles.profileview} onPress={this.uploadProfilePic}>
-                  <Image source={this.state.pic} style={styles.profilepic}></Image>
+                  <Image source={{ uri: pic }} style={styles.profilepic}></Image>
                   {/* <CustomIcon style={styles.profileicon} name="profilepic" /> */}
                 </TouchableOpacity>
               </View>
@@ -233,6 +244,9 @@ export class Signup extends Component {
 
 export const mapStateToProps = (state) => ({});
 
-const mapDispatchToProps = { signup: authOperations.signup };
+const mapDispatchToProps = {
+  signup: authOperations.signup,
+  uploadPic: commonOperations.uploadPic
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Signup);

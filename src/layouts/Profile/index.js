@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {View, SafeAreaView, Text, TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { View, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import CustomIcon from '../../components/CustomIcon';
 import HeaderLeft from '../../components/Header/HeaderLeft';
 import HeaderTitle from '../../components/Header/HeaderTitle';
@@ -12,7 +12,7 @@ export default class Profile extends Component {
     this.state = {};
   }
 
-  static navigationOptions = ({navigation}) => {
+  static navigationOptions = ({ navigation }) => {
     return {
       headerTitle: () => <HeaderTitle title={'Settings'} />,
       headerTitle: () => <HeaderTitle title={'Settings'} />,
@@ -28,7 +28,7 @@ export default class Profile extends Component {
   };
 
   render() {
-    const {navigate} = this.props.navigation;
+    const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.safeareaview}>

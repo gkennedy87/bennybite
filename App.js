@@ -23,25 +23,24 @@ import ChangePassword from "./src/layouts/ChangePassword";
 import Events from "./src/layouts/Management/Events";
 import EventStudents from "./src/layouts/Management/EventStudents";
 
-import EventsDetails from "./src/layouts/Management/EventsDetails";
-import CreateEvent from "./src/layouts/Management/CreateEvent";
-import EditEvents from "./src/layouts/Management/EditEvents";
 import Profile from "./src/layouts/Profile";
 import EditProfile from "./src/layouts/EditProfile";
+import EditEvents from "./src/layouts/Management/EditEvents";
+import CreateEvent from "./src/layouts/Management/CreateEvent";
+import EventsDetails from "./src/layouts/Management/EventsDetails";
 
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import TermsConditions from './src/layouts/TermsConditions';
 
-import HeaderLeft from './src/components/Header/HeaderLeft';
-import GlobalStyles from './src/utils/GlobalStyles';
 import { isIOS } from './src/utils/theme';
+import GlobalStyles from './src/utils/GlobalStyles';
+import HeaderLeft from './src/components/Header/HeaderLeft';
 
 import configureStore from "./src/state/store";
 
 const store = configureStore({});
-
 
 const AppNavigator = createStackNavigator(
   {

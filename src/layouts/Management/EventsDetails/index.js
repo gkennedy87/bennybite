@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
+import { get} from "lodash";
 import { View, ScrollView, Modal, Text, Animated, Dimensions, TouchableOpacity } from 'react-native';
 
 import { eventOperations } from "./../../../state/ducks/event";
@@ -66,9 +67,16 @@ export class EventsDetails extends Component {
   }
 
   render() {
-    const { modalVisible, ActionModalVisible, scrollOffset } = this.state;
     const screenWidth = Dimensions.get('window').width;
     const event = this.props.navigation.state.params.event;
+    const { modalVisible, ActionModalVisible, scrollOffset } = this.state;
+    const { role, id } = this.props.user;
+
+    let isEventOwner = false;
+    if (role === 'admin')
+      isEventOwner = true;
+    else if (role === 'staff' && event.createdBy === id)
+      isEventOwner = true;
 
     return (
       <View style={styles.container}>
@@ -164,14 +172,14 @@ export class EventsDetails extends Component {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.editbtn}>
+        {isEventOwner && <View style={styles.editbtn}>
           <TouchableOpacity
             onPress={() => {
               this.props.navigation.navigate('EditEvents', { event });
             }}>
             <CustomIcon style={styles.editicon} name="edit" />
           </TouchableOpacity>
-        </View>
+        </View>}
 
         <Animated.View
           style={[
@@ -230,12 +238,6 @@ export class EventsDetails extends Component {
             <View>
               <Text style={styles.available}>12:30pm</Text>
             </View>
-            {/* <View style={styles.titlecount}>
-              <Text style={styles.conftitle}>RSVP Confirmed</Text>
-              <View style={styles.countmain}>
-                <Text style={styles.count}>{event.rsvp.length}</Text>
-              </View>
-            </View> */}
             <View style={styles.btnview}>
               <CustomButton
                 btnText="Send notification"
@@ -258,7 +260,7 @@ export class EventsDetails extends Component {
             </View>
           </View>
         </ScrollView>
-        <View style={styles.reatbtnview}>
+        {isEventOwner && <View style={styles.reatbtnview}>
           <CustomButton
             btnText="Delete event"
             mainStyle={styles.createvent}
@@ -267,12 +269,14 @@ export class EventsDetails extends Component {
               this.setActionModalVisible(true);
             }}
           />
-        </View>
+        </View>}
       </View>
     );
   }
 }
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({
+  user: get(state, 'auth.session.user', {})
+});
 
 const mapDispatchToProps = {
   deleteEvent: eventOperations.deleteEvent
