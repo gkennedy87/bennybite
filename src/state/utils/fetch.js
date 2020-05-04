@@ -5,10 +5,17 @@ export default (url, method, body, token) => {
         url,
         method,
         data: method !== "GET" ? body : null,
+        headers: {}
     };
 
+    if (body instanceof FormData) {
+        options.headers = Object.assign(options.headers, {
+            'Content-Type': 'multipart/form-data'
+        })
+    }
+
     if (token) {
-        options.headers = { authorization: token }
+        options.headers = Object.assign(options.headers, { authorization: token })
     }
 
     return axios.request(options)

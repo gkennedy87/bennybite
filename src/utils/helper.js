@@ -13,12 +13,7 @@ export const uploadPic = async (image) => {
     formData.append("pic", {
         uri: image.uri,
         type: image.type,
-        name: image.fileName
+        name: image.fileName || 'pic'
     });
-    try {
-        await axios.post('/common/upload-pic', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
-    } catch (err) {
-        var a = err;
-        console.log(err.reponse)
-    }
+    return await axios.post('/common/upload-pic', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
 }

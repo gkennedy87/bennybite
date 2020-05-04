@@ -1,0 +1,1 @@
+export const UPLOAD_PIC = "common/UPLOAD_PIC";
