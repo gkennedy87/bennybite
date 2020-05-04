@@ -1,26 +1,27 @@
 import React, { Component } from "react";
-import { Modal, View, Text } from "react-native";
-import DatePicker from "react-native-datepicker";
+import { Modal, View, Text, TouchableOpacity } from "react-native";
 import { connect } from "react-redux";
-
 import { eventOperations } from "./../../../state/ducks/event";
-
 import CustomTextfield from "../../../components/CustomTextfield";
 import CustomButton from "../../../components/CustomButton";
 import HeaderTitle from "../../../components/Header/HeaderTitle";
-import CustomIcon from "../../../components/CustomIcon";
+import { REGEX } from "../../../utils/validation";
+import { ErrorMessage } from "../../../utils/message";
+import moment from "moment";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
-import { isIOS } from "../../../utils/theme";
-
 import styles from "./styles";
-import { Color, Font, Globals } from "../../../utils/variable";
+import { Globals } from "../../../utils/variable";
 
 export class EditEvents extends Component {
   constructor(props) {
     super(props);
     const event = this.props.navigation.state.params.event;
     this.state = {
+      isStartDate: false,
+      startDate: "",
+      isEndDate: false,
+      endDate: "",
       ...event,
       startDate: new Date(event.startDate),
       endDate: new Date(event.endDate),
@@ -65,6 +66,8 @@ export class EditEvents extends Component {
     const {
       startDate,
       endDate,
+      isStartDate,
+      isEndDate,
       ActionModalVisible,
       name,
       info,

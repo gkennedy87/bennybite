@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { get} from "lodash";
 import { View, ScrollView, Modal, Text, Animated, Dimensions, TouchableOpacity } from 'react-native';
-
 import { eventOperations } from "./../../../state/ducks/event";
-
 import CustomTextfield from '../../../components/CustomTextfield';
 import CustomButton from '../../../components/CustomButton';
 import CustomIcon from '../../../components/CustomIcon';
