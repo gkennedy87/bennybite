@@ -1,28 +1,56 @@
-import React, { Component } from 'react';
+import React, { useState, Component } from "react";
 import { connect } from "react-redux";
-import { SafeAreaView, View, Platform, ScrollView } from 'react-native';
-import DatePicker from 'react-native-datepicker';
-import CustomTextfield from '../../../components/CustomTextfield';
-import CustomButton from '../../../components/CustomButton';
-import HeaderTitle from '../../../components/Header/HeaderTitle';
-import CustomIcon from '../../../components/CustomIcon';
-import { isIOS } from '../../../utils/theme';
-
+import { View, TouchableOpacity } from "react-native";
+import CustomTextfield from "../../../components/CustomTextfield";
+import CustomButton from "../../../components/CustomButton";
+import HeaderTitle from "../../../components/Header/HeaderTitle";
+import { REGEX } from "../../../utils/validation";
+import { ErrorMessage } from "../../../utils/message";
+import moment from "moment";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { eventOperations } from "./../../../state/ducks/event";
 
-import styles from './styles';
-import { Color, Font, Globals } from '../../../utils/variable';
+import styles from "./styles";
+import { Globals } from "../../../utils/variable";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export class CreateEvent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      info: '',
-      location: '',
-      startDate: '',
-      endDate: '',
+      hasError: true,
+      name: "",
+      info: "",
+      location: "",
+      isStartDate: false,
+      startDate: "",
+      isEndDate: false,
+      endDate: "",
+      name: {
+        value: "",
+        message: [],
+        isValid: false,
+      },
+      eventinfo: {
+        value: "",
+        message: [],
+        isValid: false,
+      },
+      eventlocation: {
+        value: "",
+        message: [],
+        isValid: false,
+      },
+      startdate: {
+        value: "",
+        message: [],
+        isValid: false,
+      },
+      enddate: {
+        value: "",
+        message: [],
+        isValid: false,
+      },
     };
   }
 
@@ -35,27 +63,39 @@ export class CreateEvent extends Component {
   onInsertEvent = async () => {
     const dt = new Date();
     const startDate = new Date();
-    startDate.setDate(dt.getDate() + 1)
+    startDate.setDate(dt.getDate() + 1);
     const endDate = new Date();
-    endDate.setDate(dt.getDate() + 2)
+    endDate.setDate(dt.getDate() + 2);
     try {
       await this.props.insertEvent({
         name: this.state.name,
         info: this.state.info,
         location: this.state.location,
         startDate: startDate,
-        endDate: endDate
+        endDate: endDate,
       });
-      this.props.navigation.navigate('Events');
+      this.props.navigation.navigate("Events");
+    } catch (err) {
+      console.log(err);
     }
-    catch (err) {
-      console.log(err)
+  };
+
+  onEventname = (text) => {
+    const name = this.state.name;
+    name.value = text;
+    name.message = [];
+    name.isValid = true;
+
+    if (name.value.length == 0 || name.value == "") {
+      name.message.push(ErrorMessage.EMPTY_EVENT);
+      name.isValid = false;
     }
-  }
+    this.setState({ name });
+  };
 
   render() {
     const { navigate } = this.props.navigation;
-    const { startDate, endDate } = this.state;
+    const { startDate, endDate, isStartDate, isEndDate, name } = this.state;
 
     return (
       <View style={styles.safeareaview}>
@@ -75,9 +115,10 @@ export class CreateEvent extends Component {
                 placeholder="Event name"
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
-                onChangeText={(name) => this.setState({name})}
-                //value={email.value}
-                //errorMsgs={email.message}
+                //onChangeText={(name) => this.setState({ name })}
+                onChangeText={this.onEventname}
+                value={name.value}
+                errorMsgs={name.message}
               ></CustomTextfield>
               <CustomTextfield
                 placeholder="Event info"
@@ -90,7 +131,7 @@ export class CreateEvent extends Component {
                   textAlignVertical: "top",
                 }}
                 multiline={true}
-                onChangeText={(info) => this.setState({info})}
+                onChangeText={(info) => this.setState({ info })}
                 //value={email.value}
                 //errorMsgs={email.message}
               ></CustomTextfield>
@@ -101,158 +142,86 @@ export class CreateEvent extends Component {
                 inputstyle={{ paddingRight: 40 }}
                 ifIcon={true}
                 iconname={"map"}
-                onChangeText={(location) => this.setState({location})}
-                // value={email.value}
-                //errorMsgs={email.message}
+                onChangeText={(location) => this.setState({ location })}
               ></CustomTextfield>
-              <DatePicker
-                date={startDate}
+
+              <View style={{ position: "relative", marginBottom: 25 }}>
+                <CustomTextfield
+                  placeholder="Food Available"
+                  editable={false}
+                  inputmainstyle={{}}
+                  inputstyle={{}}
+                  ifIcon={true}
+                  iconname={"map"}
+                  txtvalue={startDate}
+                />
+
+                <TouchableOpacity
+                  style={styles.touchableinput}
+                  onPress={() => {
+                    this.setState({
+                      isStartDate: true,
+                    });
+                  }}
+                ></TouchableOpacity>
+              </View>
+
+              <DateTimePickerModal
+                isVisible={isStartDate}
                 mode="datetime"
-                placeholder="Food Available"
-                format="hh:mma, DD-MM-YYYY"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                iconComponent={
-                  <CustomIcon
-                    name="picker"
-                    style={{
-                      fontSize: Font.FONTSIZE_18,
-                      color: Color.TXT_BLACK,
-                      position: "relative",
-                      top: 2,
-                    }}
-                  ></CustomIcon>
-                }
-                style={{
-                  marginBottom: 25,
-                  width: "100%",
-                  borderWidth: 1,
-                  borderColor: Color.INPUT_BORDER,
-                  color: Color.TXT_BLACK,
-                  fontSize: Font.FONTSIZE_16,
-                  fontFamily: Font.MYRIAD_REGULAR,
-                  paddingLeft: 15,
-                  paddingRight: 10,
-                  height: 48,
-                  borderRadius: 5,
+                onConfirm={(date) => {
+                  const formatedDate = moment(date).format(
+                    "hh:mma, DD-MM-YYYY"
+                  );
+                  this.setState({
+                    isStartDate: false,
+                    startDate: formatedDate,
+                  });
                 }}
-                customStyles={{
-                  dateInput: {
-                    alignItems: "flex-start",
-                    justifyContent: "center",
-                    borderWidth: 0,
-                    padding: 0,
-                    borderRadius: 0,
-                    color: Color.TXT_BLACK,
-                    fontSize: Font.FONTSIZE_16,
-                    fontFamily: Font.MYRIAD_REGULAR,
-                  },
-                  placeholderText: {
-                    color: Color.TXT_LIGHTGRAY,
-                    position: "relative",
-                    top: isIOS() ? 6 : 2,
-                    fontSize: Font.FONTSIZE_16,
-                    fontFamily: Font.MYRIAD_REGULAR,
-                  },
-                  dateText: {
-                    position: "relative",
-                    top: isIOS() ? 6 : 2,
-                    color: Color.TXT_BLACK,
-                    fontFamily: Font.MYRIAD_REGULAR,
-                    fontSize: Font.FONTSIZE_16,
-                  },
-                  btnTextConfirm: {
-                    position: "relative",
-                    top: isIOS() ? 3 : 0,
-                    color: Color.TXT_BLACK,
-                    fontFamily: Font.MYRIAD_SEMIBOLD,
-                    fontSize: Font.FONTSIZE_16,
-                  },
-                  btnTextCancel: {
-                    position: "relative",
-                    top: isIOS() ? 3 : 0,
-                    color: Color.TXT_BLACK,
-                    fontFamily: Font.MYRIAD_SEMIBOLD,
-                    fontSize: Font.FONTSIZE_16,
-                  },
-                }}
-                onDateChange={(date) => {
-                  this.setState({ startDate: date });
+                onCancel={() => {
+                  this.setState({
+                    isStartDate: false,
+                  });
                 }}
               />
-              <DatePicker
-                date={endDate}
+
+              <View style={{ position: "relative", marginBottom: 25 }}>
+                <CustomTextfield
+                  placeholder="Clean Up Time"
+                  editable={false}
+                  inputmainstyle={{}}
+                  inputstyle={{}}
+                  ifIcon={true}
+                  iconname={"map"}
+                  txtvalue={endDate}
+                />
+
+                <TouchableOpacity
+                  style={styles.touchableinput}
+                  onPress={() => {
+                    this.setState({
+                      isEndDate: true,
+                    });
+                  }}
+                ></TouchableOpacity>
+              </View>
+
+              <DateTimePickerModal
+                isVisible={isEndDate}
                 mode="datetime"
-                placeholder="Clean Up Time"
-                format="hh:mma, DD-MM-YYYY"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                iconComponent={
-                  <CustomIcon
-                    name="picker"
-                    style={{
-                      fontSize: Font.FONTSIZE_18,
-                      color: Color.TXT_BLACK,
-                      position: "relative",
-                      top: 2,
-                    }}
-                  ></CustomIcon>
-                }
-                style={{
-                  marginBottom: 25,
-                  width: "100%",
-                  borderWidth: 1,
-                  borderColor: Color.INPUT_BORDER,
-                  color: Color.TXT_BLACK,
-                  fontSize: Font.FONTSIZE_16,
-                  fontFamily: Font.MYRIAD_REGULAR,
-                  paddingLeft: 15,
-                  paddingRight: 10,
-                  height: 48,
-                  borderRadius: 5,
+                onConfirm={(date) => {
+                  const formatedDate = moment(date).format(
+                    "hh:mma, DD-MM-YYYY"
+                  );
+                  this.setState({
+                    isEndDate: false,
+                    endDate: formatedDate,
+                  });
                 }}
-                customStyles={{
-                  dateInput: {
-                    alignItems: "flex-start",
-                    justifyContent: "center",
-                    borderWidth: 0,
-                    padding: 0,
-                    borderRadius: 0,
-                    color: Color.TXT_BLACK,
-                    fontSize: Font.FONTSIZE_16,
-                    fontFamily: Font.MYRIAD_REGULAR,
-                  },
-                  placeholderText: {
-                    color: Color.TXT_LIGHTGRAY,
-                    position: "relative",
-                    top: isIOS() ? 6 : 2,
-                    fontSize: Font.FONTSIZE_16,
-                    fontFamily: Font.MYRIAD_REGULAR,
-                  },
-                  dateText: {
-                    position: "relative",
-                    top: isIOS() ? 6 : 2,
-                    color: Color.TXT_BLACK,
-                    fontFamily: Font.MYRIAD_REGULAR,
-                    fontSize: Font.FONTSIZE_16,
-                  },
-                  btnTextConfirm: {
-                    position: "relative",
-                    top: isIOS() ? 3 : 0,
-                    color: Color.TXT_BLACK,
-                    fontFamily: Font.MYRIAD_SEMIBOLD,
-                    fontSize: Font.FONTSIZE_16,
-                  },
-                  btnTextCancel: {
-                    position: "relative",
-                    top: isIOS() ? 3 : 0,
-                    color: Color.TXT_BLACK,
-                    fontFamily: Font.MYRIAD_SEMIBOLD,
-                    fontSize: Font.FONTSIZE_16,
-                  },
-                }}
-                onDateChange={(date) => {
-                  this.setState({ endDate: date });
+                onCancel={() => {
+                  this.setState({
+                    isEndDate: false,
+                  });
                 }}
               />
 

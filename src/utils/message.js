@@ -2,6 +2,7 @@ export const ErrorMessage = {
   OTP_Invalid: "Invalid OTP",
   EMPTY_EMAIL: "Email Id can't be empy",
   EMPTY_USER: "User name can't be empy",
+  EMPTY_EVENT: "User name can't be empy",
   EMPTY_OTP: "OTP can't be empty",
   EMPTY_PASS: "Password can't be empty",
   WRONG_PASS:

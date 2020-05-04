@@ -24,7 +24,7 @@ export class EditEvents extends Component {
       ...event,
       startDate: new Date(event.startDate),
       endDate: new Date(event.endDate),
-      ActionModalVisible: false
+      ActionModalVisible: false,
     };
   }
 
@@ -39,23 +39,22 @@ export class EditEvents extends Component {
       await this.props.updateEvent(this.state._id, {
         name: this.state.name,
         info: this.state.info,
-        location: this.state.location
+        location: this.state.location,
       });
-      this.props.navigation.navigate('Events');
+      this.props.navigation.navigate("Events");
+    } catch (err) {
+      console.log(err);
     }
-    catch (err) {
-      console.log(err)
-    }
-  }
+  };
 
   onDeleteEvent = async () => {
     try {
       await this.props.deleteEvent(this.state._id);
-      this.props.navigation.navigate('Events');
+      this.props.navigation.navigate("Events");
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   setActionModalVisible = (visible) => {
     this.setState({ ActionModalVisible: visible });
@@ -63,7 +62,14 @@ export class EditEvents extends Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const { startDate, endDate, ActionModalVisible, name, info, location } = this.state;
+    const {
+      startDate,
+      endDate,
+      ActionModalVisible,
+      name,
+      info,
+      location,
+    } = this.state;
 
     return (
       <View style={styles.safeareaview}>
@@ -84,7 +90,9 @@ export class EditEvents extends Component {
                   mainStyle={styles.actiondelete}
                   btnStyle={styles.actiondeletetxt}
                   onClick={() => {
-                    this.setState({ ActionModalVisible: false }, () => this.onDeleteEvent());
+                    this.setState({ ActionModalVisible: false }, () =>
+                      this.onDeleteEvent()
+                    );
                   }}
                 />
                 <CustomButton
@@ -133,8 +141,8 @@ export class EditEvents extends Component {
                 multiline={true}
                 txtvalue={info}
                 onChangeText={(info) => this.setState({ info })}
-              //value={email.value}
-              //errorMsgs={email.message}
+                //value={email.value}
+                //errorMsgs={email.message}
               ></CustomTextfield>
               <CustomTextfield
                 placeholder="Event location "
@@ -145,160 +153,91 @@ export class EditEvents extends Component {
                 iconname={"map"}
                 txtvalue={location}
                 onChangeText={(location) => this.setState({ location })}
-              // onChangeText={this.onEmailTextChange}
-              // value={email.value}
-              //errorMsgs={email.message}
+                // onChangeText={this.onEmailTextChange}
+                // value={email.value}
+                //errorMsgs={email.message}
               ></CustomTextfield>
-              <DatePicker
-                date={startDate}
+
+              <View style={{ position: "relative", marginBottom: 25 }}>
+                <CustomTextfield
+                  placeholder="Food Available"
+                  editable={false}
+                  inputmainstyle={{}}
+                  inputstyle={{}}
+                  ifIcon={true}
+                  iconname={"map"}
+                  txtvalue={startDate}
+                />
+
+                <TouchableOpacity
+                  style={styles.touchableinput}
+                  onPress={() => {
+                    this.setState({
+                      isStartDate: true,
+                    });
+                  }}
+                ></TouchableOpacity>
+              </View>
+
+              <DateTimePickerModal
+                isVisible={isStartDate}
                 mode="datetime"
-                placeholder="Start time"
-                format="hh:mma, DD-MM-YYYY"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                iconComponent={
-                  <CustomIcon
-                    name="picker"
-                    style={{
-                      fontSize: Font.FONTSIZE_18,
-                      color: Color.TXT_BLACK,
-                      position: "relative",
-                      top: 2,
-                    }}
-                  ></CustomIcon>
-                }
-                style={{
-                  marginBottom: 25,
-                  width: "100%",
-                  borderWidth: 1,
-                  borderColor: Color.INPUT_BORDER,
-                  color: Color.TXT_BLACK,
-                  fontSize: Font.FONTSIZE_16,
-                  fontFamily: Font.MYRIAD_REGULAR,
-                  paddingLeft: 15,
-                  paddingRight: 10,
-                  height: 48,
-                  borderRadius: 5,
+                onConfirm={(date) => {
+                  const formatedDate = moment(date).format(
+                    "hh:mma, DD-MM-YYYY"
+                  );
+                  this.setState({
+                    isStartDate: false,
+                    startDate: formatedDate,
+                  });
                 }}
-                customStyles={{
-                  dateInput: {
-                    alignItems: "flex-start",
-                    justifyContent: "center",
-                    borderWidth: 0,
-                    padding: 0,
-                    borderRadius: 0,
-                    color: Color.TXT_BLACK,
-                    fontSize: Font.FONTSIZE_16,
-                    fontFamily: Font.MYRIAD_REGULAR,
-                  },
-                  placeholderText: {
-                    color: Color.TXT_LIGHTGRAY,
-                    position: "relative",
-                    top: isIOS() ? 6 : 2,
-                    fontSize: Font.FONTSIZE_16,
-                    fontFamily: Font.MYRIAD_REGULAR,
-                  },
-                  dateText: {
-                    position: "relative",
-                    top: isIOS() ? 6 : 2,
-                    color: Color.TXT_BLACK,
-                    fontFamily: Font.MYRIAD_REGULAR,
-                    fontSize: Font.FONTSIZE_16,
-                  },
-                  btnTextConfirm: {
-                    position: "relative",
-                    top: isIOS() ? 3 : 0,
-                    color: Color.TXT_BLACK,
-                    fontFamily: Font.MYRIAD_SEMIBOLD,
-                    fontSize: Font.FONTSIZE_16,
-                  },
-                  btnTextCancel: {
-                    position: "relative",
-                    top: isIOS() ? 3 : 0,
-                    color: Color.TXT_BLACK,
-                    fontFamily: Font.MYRIAD_SEMIBOLD,
-                    fontSize: Font.FONTSIZE_16,
-                  },
-                }}
-                onDateChange={(date) => {
-                  this.setState({ startDate: date });
+                onCancel={() => {
+                  this.setState({
+                    isStartDate: false,
+                  });
                 }}
               />
-              <DatePicker
-                date={endDate}
+
+              <View style={{ position: "relative", marginBottom: 25 }}>
+                <CustomTextfield
+                  placeholder="Clean Up Time"
+                  editable={false}
+                  inputmainstyle={{}}
+                  inputstyle={{}}
+                  ifIcon={true}
+                  iconname={"map"}
+                  txtvalue={endDate}
+                />
+
+                <TouchableOpacity
+                  style={styles.touchableinput}
+                  onPress={() => {
+                    this.setState({
+                      isEndDate: true,
+                    });
+                  }}
+                ></TouchableOpacity>
+              </View>
+
+              <DateTimePickerModal
+                isVisible={isEndDate}
                 mode="datetime"
-                placeholder="End time"
-                format="hh:mma, DD-MM-YYYY"
-                confirmBtnText="Confirm"
-                cancelBtnText="Cancel"
-                iconComponent={
-                  <CustomIcon
-                    name="picker"
-                    style={{
-                      fontSize: Font.FONTSIZE_18,
-                      color: Color.TXT_BLACK,
-                      position: "relative",
-                      top: 2,
-                    }}
-                  ></CustomIcon>
-                }
-                style={{
-                  marginBottom: 25,
-                  width: "100%",
-                  borderWidth: 1,
-                  borderColor: Color.INPUT_BORDER,
-                  color: Color.TXT_BLACK,
-                  fontSize: Font.FONTSIZE_16,
-                  fontFamily: Font.MYRIAD_REGULAR,
-                  paddingLeft: 15,
-                  paddingRight: 10,
-                  height: 48,
-                  borderRadius: 5,
+                onConfirm={(date) => {
+                  const formatedDate = moment(date).format(
+                    "hh:mma, DD-MM-YYYY"
+                  );
+                  this.setState({
+                    isEndDate: false,
+                    endDate: formatedDate,
+                  });
                 }}
-                customStyles={{
-                  dateInput: {
-                    alignItems: "flex-start",
-                    justifyContent: "center",
-                    borderWidth: 0,
-                    padding: 0,
-                    borderRadius: 0,
-                    color: Color.TXT_BLACK,
-                    fontSize: Font.FONTSIZE_16,
-                    fontFamily: Font.MYRIAD_REGULAR,
-                  },
-                  placeholderText: {
-                    color: Color.TXT_LIGHTGRAY,
-                    position: "relative",
-                    top: isIOS() ? 6 : 2,
-                    fontSize: Font.FONTSIZE_16,
-                    fontFamily: Font.MYRIAD_REGULAR,
-                  },
-                  dateText: {
-                    position: "relative",
-                    top: isIOS() ? 6 : 2,
-                    color: Color.TXT_BLACK,
-                    fontFamily: Font.MYRIAD_REGULAR,
-                    fontSize: Font.FONTSIZE_16,
-                  },
-                  btnTextConfirm: {
-                    position: "relative",
-                    top: isIOS() ? 3 : 0,
-                    color: Color.TXT_BLACK,
-                    fontFamily: Font.MYRIAD_SEMIBOLD,
-                    fontSize: Font.FONTSIZE_16,
-                  },
-                  btnTextCancel: {
-                    position: "relative",
-                    top: isIOS() ? 3 : 0,
-                    color: Color.TXT_BLACK,
-                    fontFamily: Font.MYRIAD_SEMIBOLD,
-                    fontSize: Font.FONTSIZE_16,
-                  },
-                }}
-                onDateChange={(date) => {
-                  this.setState({ endDate: date });
+                onCancel={() => {
+                  this.setState({
+                    isEndDate: false,
+                  });
                 }}
               />
+
               <View style={styles.CreateEventMain}>
                 <CustomButton
                   width="48%"
@@ -324,7 +263,6 @@ export class EditEvents extends Component {
     );
   }
 }
-
 
 const mapStateToProps = (state) => ({});
 
