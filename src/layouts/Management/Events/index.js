@@ -84,7 +84,7 @@ export class Events extends Component {
   }
 
   renderUsers = ({ item }) => (
-    <SwipeRow rightOpenValue={-170} disableLeftSwipe={!this.checkEventOwner(item)}>
+    <SwipeRow rightOpenValue={-170} disableLeftSwipe={this.props.user.role !== 'admin'}>
       <View style={styles.swipeBack}>
         <TouchableOpacity
           style={[styles.swipebtnusers, styles.btnusers]}

@@ -1,6 +1,8 @@
-import React, {Component} from 'react';
-import {TouchableOpacity, View, Image} from 'react-native';
-import {withNavigation} from 'react-navigation';
+import React, { Component } from 'react';
+import { get } from "lodash";
+import { connect } from "react-redux";
+import { TouchableOpacity, View, Image } from 'react-native';
+import { withNavigation } from 'react-navigation';
 import styles from './styles';
 
 class Navbar extends Component {
@@ -10,7 +12,9 @@ class Navbar extends Component {
   }
 
   render() {
-    const {navigate} = this.props.navigation;
+    let pic = require('../../assets/Images/user.png');
+    if (this.props.user.pic)
+      pic = { uri: this.props.user.pic }
     return (
       <View>
         <View style={styles.headermain}>
@@ -20,9 +24,7 @@ class Navbar extends Component {
                 onPress={() => {
                   this.props.navigation.navigate('Profile');
                 }}>
-                <Image
-                  style={styles.usericon}
-                  source={require('../../assets/Images/user.png')}></Image>
+                <Image style={styles.usericon} source={pic}></Image>
               </TouchableOpacity>
             </View>
           </View>
@@ -36,4 +38,10 @@ Navbar.defaultProps = {
   title: 'Demo',
 };
 
-export default withNavigation(Navbar);
+const mapStateToProps = (state) => ({
+  user: get(state, 'auth.session.user', {})
+});
+
+const mapDispatchToProps = {};
+
+export default withNavigation(connect(mapStateToProps, mapDispatchToProps)(Navbar));
