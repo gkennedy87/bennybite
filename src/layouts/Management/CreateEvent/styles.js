@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
     shadowRadius: Globals.isIpad ? 2 : 0,
     elevation: Globals.isIpad ? 3 : 0,
   },
-
   createventview: {
     marginTop: 15,
   },
@@ -44,6 +43,13 @@ const styles = StyleSheet.create({
     fontSize: Font.FONTSIZE_16,
     position: "relative",
     top: isIOS() ? 2 : 0,
+  },
+  touchableinput: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    height: "100%",
+    width: "100%",
   },
 });
 
