@@ -115,8 +115,7 @@ export class CreateEvent extends Component {
                 placeholder="Event name"
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
-                //onChangeText={(name) => this.setState({ name })}
-                onChangeText={this.onEventname}
+                onChangeText={(name) => this.setState({ name })}
                 value={name.value}
                 errorMsgs={name.message}
               ></CustomTextfield>
