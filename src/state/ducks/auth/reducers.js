@@ -15,7 +15,11 @@ const authReducer = createReducer(false)({
 
 const initializeSessionReducer = createReducer(null)({
     [types.INITIALIZE]: (state, action) => ({ user: action.payload.user, tokens: action.payload.tokens }),
-    [types.DESTROY]: (state, action) => null
+    [types.DESTROY]: (state, action) => null,
+    [types.UPDATE_PROFILE_PIC_COMPLETED]: (state, action) => {
+        console.log(action.payload)
+        return Object.assign(state, { user: action.payload.payload.user })
+    }
 });
 
 

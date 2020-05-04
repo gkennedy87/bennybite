@@ -1,6 +1,6 @@
 import * as types from "./types";
 
-export const login = ( payload) => ( {
+export const login = (payload) => ({
     type: types.LOGIN,
     meta: {
         async: true,
@@ -9,26 +9,26 @@ export const login = ( payload) => ( {
         method: "POST",
         body: payload
     },
-} );
+});
 
-export const logout = ( ) => ( {
+export const logout = () => ({
     type: types.LOGOUT,
-} );
+});
 
-export const authenticated = ( ) => ( {
+export const authenticated = () => ({
     type: types.AUTHENTICATED,
-} );
+});
 
-export const initializeSession = (payload ) => ( {
+export const initializeSession = (payload) => ({
     type: types.INITIALIZE,
     payload
-} );
+});
 
-export const destroySession = ( ) => ( {
+export const destroySession = () => ({
     type: types.DESTROY
-} );
+});
 
-export const forgotPassword = ( payload) => ( {
+export const forgotPassword = (payload) => ({
     type: types.FORGOT_PASSWORD,
     meta: {
         async: true,
@@ -37,9 +37,9 @@ export const forgotPassword = ( payload) => ( {
         method: "POST",
         body: payload
     },
-} );
+});
 
-export const signup = ( payload) => ( {
+export const signup = (payload) => ({
     type: types.SIGNUP,
     meta: {
         async: true,
@@ -48,7 +48,18 @@ export const signup = ( payload) => ( {
         method: "POST",
         body: payload
     },
-} );
+});
+
+export const updateProfilePic = (userId, payload) => ({
+    type: types.UPDATE_PROFILE_PIC,
+    meta: {
+        async: true,
+        blocking: true,
+        path: `/users/${userId}/change-profile-pic`,
+        method: "PATCH",
+        body: payload
+    },
+});
 
 
 

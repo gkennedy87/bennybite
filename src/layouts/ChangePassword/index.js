@@ -1,17 +1,18 @@
 import React, { Component } from "react";
-import { View, Image, SafeAreaView, Text } from "react-native";
-import CustomTextfield from "../../components/CustomTextfield";
+import { View, Text } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 import { REGEX } from "../../utils/validation";
 import { ErrorMessage } from "../../utils/message";
 import CustomButton from "../../components/CustomButton";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import CustomTextfield from "../../components/CustomTextfield";
 
 import HeaderTitle from "../../components/Header/HeaderTitle";
 
 import styles from "./styles";
 
 export default class ChangePassword extends Component {
-  static navigationOptions = ({}) => {
+  static navigationOptions = () => {
     return {
       headerTitle: () => <HeaderTitle title={"Change password"} />,
     };
@@ -48,7 +49,6 @@ export default class ChangePassword extends Component {
     Currentpassword.isValid = true;
 
     if (Currentpassword.value.length == 0 || Currentpassword.value == "") {
-      // email.message = ErrorMsg.emailRequired // import
       Currentpassword.message.push(ErrorMessage.EMPTY_PASS);
       Currentpassword.isValid = false;
     }
@@ -63,7 +63,6 @@ export default class ChangePassword extends Component {
     password.isValid = true;
 
     if (password.value.length == 0 || password.value == "") {
-      // email.message = ErrorMsg.emailRequired // import
       password.message.push(ErrorMessage.EMPTY_PASS);
       password.isValid = false;
     }
@@ -79,12 +78,10 @@ export default class ChangePassword extends Component {
       password.isValid = false;
     }
     if (password.value.match(REGEX.SPECIAL_CHARECTERS)) {
-      // email.message = ErrorMsg.emailInvalid
       password.message.push(ErrorMessage.SPECIAL_CHARACTER);
       password.isValid = false;
     }
     if (!password.value.match(REGEX.MIN_NUMBERS)) {
-      // email.message = ErrorMsg.emailInvalid
       password.message.push(ErrorMessage.MIN_NUMBER);
       password.isValid = false;
     }
@@ -98,7 +95,6 @@ export default class ChangePassword extends Component {
     ConfirmPassword.isValid = true;
 
     if (this.state.password.value != ConfirmPassword.value) {
-      // email.message = ErrorMsg.emailRequired // import
       this.state.ConfirmPassword.message.push(ErrorMessage.CONFIRM_PASS);
       this.state.ConfirmPassword.isValid = false;
     }
@@ -112,7 +108,6 @@ export default class ChangePassword extends Component {
 
   render() {
     const { password, ConfirmPassword, Currentpassword } = this.state;
-    const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.safeareaview}>
@@ -175,28 +170,7 @@ export default class ChangePassword extends Component {
                     btnText="Submit"
                     mainStyle={styles.loginyellow}
                     btnStyle={styles.withlogin}
-                    // mainStyle={[
-                    //   this.state.email.isValid
-                    //     ? styles.loginyellow
-                    //     : styles.logingray,
-                    //   styles.loginbtn,
-                    // ]}
-                    // btnStyle={
-                    //   this.state.email.isValid
-                    //     ? styles.withlogin
-                    //     : styles.withoutlogin
-                    // }
-                    //value={false}
-                    //disabled={!this.state.email.isValid}
                     onClick={() => {
-                      // this.setState({isToastVisible: true});
-                      // setTimeout(
-                      //   () =>
-                      //     this.setState({
-                      //       isToastVisible: false,
-                      //     }),
-                      //   2000,
-                      // );
                       this.props.navigation.navigate("ResetPassword");
                     }}
                   />

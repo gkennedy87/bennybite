@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { View, SafeAreaView, Text, TouchableOpacity } from 'react-native';
-import CustomIcon from '../../components/CustomIcon';
-import HeaderLeft from '../../components/Header/HeaderLeft';
+import { connect } from "react-redux";
+import { get } from "lodash";
+import { View, SafeAreaView, Text, TouchableOpacity, Image } from 'react-native';
+
 import HeaderTitle from '../../components/Header/HeaderTitle';
 import HeaderRight from '../../components/Header/HeaderRight';
 import styles from './styles';
 
-export default class Profile extends Component {
+export class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -28,7 +29,9 @@ export default class Profile extends Component {
   };
 
   render() {
-    const { navigate } = this.props.navigation;
+    let pic = require('../../assets/Images/user.png');
+    if (this.props.user.pic)
+      pic = { uri: this.props.user.pic }
 
     return (
       <View style={styles.safeareaview}>
@@ -38,7 +41,7 @@ export default class Profile extends Component {
               <View style={styles.profilecontent}>
                 <Text style={styles.prfltxt}>User Profile</Text>
                 <TouchableOpacity style={styles.profileview}>
-                  <CustomIcon style={styles.profileicon} name="profilepic" />
+                  <Image style={styles.profilepic} source={pic} />
                 </TouchableOpacity>
                 <Text style={styles.uploadtxt}>Upload</Text>
                 <Text style={styles.usertxt}>John Doe</Text>
@@ -66,3 +69,11 @@ export default class Profile extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  user: get(state, 'auth.session.user', {})
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

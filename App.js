@@ -87,40 +87,40 @@ export default class App extends Component {
     // });
     // this.pubnub.init(this);
 
-    PushNotification.configure({
-      // Called when Token is generated.
-      onRegister: function (token) {
-        console.log('TOKEN:', token);
-        this.pubnub = new PubNub({
-          publishKey: 'pub-c-7adf56d8-74eb-4a78-b508-35748bbb2271',
-          subscribeKey: 'sub-c-37cdfa88-885d-11ea-965b-8ea1ff3ad6ee',
-          uuid: get(token, 'token', '')
-        });
-        if (token.os == "ios") {
-          this.pubnub.push.addChannels({
-            channels: ['notifications'],
-            device: get(token, 'token', ''),
-            pushGateway: 'apns'
-          });
-          // Send iOS Notification from debug console: {"pn_apns":{"aps":{"alert":"Hello World."}}}
-        } else if (token.os == "android") {
-          this.pubnub.push.addChannels({
-            channels: ['notifications'],
-            device: get(token, 'token', ''),
-            pushGateway: 'gcm' // apns, gcm, mpns
-          });
-          // Send Android Notification from debug console: {"pn_gcm":{"data":{"message":"Hello World."}}}
-        }
-      }.bind(this),
-      onNotification: function (notification) {
-        console.log('NOTIFICATION:', notification);
-        notification.finish(PushNotificationIOS.FetchResult.NoData);
-      },
-      // ANDROID: GCM or FCM Sender ID
-      senderID: "sender-id",
-    });
+    // PushNotification.configure({
+    //   // Called when Token is generated.
+    //   onRegister: function (token) {
+    //     console.log('TOKEN:', token);
+    //     this.pubnub = new PubNub({
+    //       publishKey: 'pub-c-7adf56d8-74eb-4a78-b508-35748bbb2271',
+    //       subscribeKey: 'sub-c-37cdfa88-885d-11ea-965b-8ea1ff3ad6ee',
+    //       uuid: get(token, 'token', '')
+    //     });
+    //     if (token.os == "ios") {
+    //       this.pubnub.push.addChannels({
+    //         channels: ['notifications'],
+    //         device: get(token, 'token', ''),
+    //         pushGateway: 'apns'
+    //       });
+    //       // Send iOS Notification from debug console: {"pn_apns":{"aps":{"alert":"Hello World."}}}
+    //     } else if (token.os == "android") {
+    //       this.pubnub.push.addChannels({
+    //         channels: ['notifications'],
+    //         device: get(token, 'token', ''),
+    //         pushGateway: 'gcm' // apns, gcm, mpns
+    //       });
+    //       // Send Android Notification from debug console: {"pn_gcm":{"data":{"message":"Hello World."}}}
+    //     }
+    //   }.bind(this),
+    //   onNotification: function (notification) {
+    //     console.log('NOTIFICATION:', notification);
+    //     notification.finish(PushNotificationIOS.FetchResult.NoData);
+    //   },
+    //   // ANDROID: GCM or FCM Sender ID
+    //   senderID: "sender-id",
+    // });
 
-    PushNotificationIOS.addEventListener('registrationError', console.log)
+    // PushNotificationIOS.addEventListener('registrationError', console.log)
 
     this.state = {
       isConnected: false,
