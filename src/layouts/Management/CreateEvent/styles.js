@@ -32,17 +32,27 @@ const styles = StyleSheet.create({
   CreateEventMain: {
     marginTop: 10,
   },
-  createvent: {
+  createventgray: {
     backgroundColor: Color.BACK_DARKYELLOW,
+  },
+  createventyellow: {
+    backgroundColor: Color.BACK_LIGHTGRAY,
+  },
+  createventbtn: {
     height: 48,
     borderRadius: 5,
   },
   createventxt: {
-    color: Color.TXT_WHITE,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
     position: "relative",
     top: isIOS() ? 2 : 0,
+  },
+  createventxtgray: {
+    color: Color.TXT_BLACK,
+  },
+  createventxtyellow: {
+    color: Color.TXT_WHITE,
   },
   touchableinput: {
     position: "absolute",

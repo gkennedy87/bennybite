@@ -31,12 +31,12 @@ export class CreateEvent extends Component {
         message: [],
         isValid: false,
       },
-      eventinfo: {
+      info: {
         value: "",
         message: [],
         isValid: false,
       },
-      eventlocation: {
+      location: {
         value: "",
         message: [],
         isValid: false,
@@ -68,11 +68,11 @@ export class CreateEvent extends Component {
     endDate.setDate(dt.getDate() + 2);
     try {
       await this.props.insertEvent({
-        name: this.state.name,
-        info: this.state.info,
-        location: this.state.location,
-        startDate: startDate,
-        endDate: endDate,
+        name: this.state.name.value,
+        info: this.state.info.value,
+        location: this.state.location.value,
+        startDate: startDate.value,
+        endDate: endDate.value,
       });
       this.props.navigation.navigate("Events");
     } catch (err) {
@@ -93,9 +93,43 @@ export class CreateEvent extends Component {
     this.setState({ name });
   };
 
+  onEventinfo = (text) => {
+    const info = this.state.info;
+    info.value = text;
+    info.message = [];
+    info.isValid = true;
+
+    if (info.value.length == 0 || info.value == "") {
+      info.message.push(ErrorMessage.EMPTY_EVENT_INFO);
+      info.isValid = false;
+    }
+    this.setState({ info });
+  };
+
+  onEventlocation = (text) => {
+    const location = this.state.location;
+    location.value = text;
+    location.message = [];
+    location.isValid = true;
+
+    if (location.value.length == 0 || location.value == "") {
+      location.message.push(ErrorMessage.EMPTY_EVENT_LOCATION);
+      location.isValid = false;
+    }
+    this.setState({ location });
+  };
+
   render() {
     const { navigate } = this.props.navigation;
-    const { startDate, endDate, isStartDate, isEndDate, name } = this.state;
+    const {
+      startDate,
+      endDate,
+      isStartDate,
+      isEndDate,
+      name,
+      info,
+      location,
+    } = this.state;
 
     return (
       <View style={styles.safeareaview}>
@@ -115,7 +149,7 @@ export class CreateEvent extends Component {
                 placeholder="Event name"
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
-                onChangeText={(name) => this.setState({ name })}
+                onChangeText={this.onEventname}
                 value={name.value}
                 errorMsgs={name.message}
               ></CustomTextfield>
@@ -124,15 +158,15 @@ export class CreateEvent extends Component {
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
                 inputstyle={{
-                  height: 150,
+                  height: 130,
                   paddingTop: 14,
                   paddingBottom: 14,
                   textAlignVertical: "top",
                 }}
                 multiline={true}
-                onChangeText={(info) => this.setState({ info })}
-                //value={email.value}
-                //errorMsgs={email.message}
+                onChangeText={this.onEventinfo}
+                value={info.value}
+                errorMsgs={info.message}
               ></CustomTextfield>
               <CustomTextfield
                 placeholder="Event location "
@@ -141,7 +175,9 @@ export class CreateEvent extends Component {
                 inputstyle={{ paddingRight: 40 }}
                 ifIcon={true}
                 iconname={"map"}
-                onChangeText={(location) => this.setState({ location })}
+                onChangeText={this.onEventlocation}
+                value={location.value}
+                errorMsgs={location.message}
               ></CustomTextfield>
 
               <View style={{ position: "relative", marginBottom: 25 }}>
@@ -153,6 +189,9 @@ export class CreateEvent extends Component {
                   ifIcon={true}
                   iconname={"map"}
                   txtvalue={startDate}
+                  // onChangeText={this.onEventstart}
+                  // value={startdate.value}
+                  // errorMsgs={startdate.message}
                 />
 
                 <TouchableOpacity
@@ -227,8 +266,30 @@ export class CreateEvent extends Component {
               <View style={styles.CreateEventMain}>
                 <CustomButton
                   btnText="Create Event"
-                  mainStyle={styles.createvent}
-                  btnStyle={styles.createventxt}
+                  mainStyle={[
+                    this.state.name.isValid &&
+                    this.state.info.isValid &&
+                    this.state.location.isValid
+                      ? styles.createventgray
+                      : styles.createventyellow,
+                    styles.createventbtn,
+                  ]}
+                  btnStyle={[
+                    this.state.name.isValid &&
+                    this.state.info.isValid &&
+                    this.state.location.isValid
+                      ? styles.createventxtyellow
+                      : styles.createventxtgray,
+                    styles.createventxt,
+                  ]}
+                  value={false}
+                  disabled={
+                    !(
+                      this.state.name.isValid &&
+                      this.state.info.isValid &&
+                      this.state.location.isValid
+                    )
+                  }
                   onClick={this.onInsertEvent}
                 />
               </View>
