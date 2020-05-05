@@ -1,10 +1,9 @@
-import React, { useState, Component } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { View, TouchableOpacity } from "react-native";
 import CustomTextfield from "../../../components/CustomTextfield";
 import CustomButton from "../../../components/CustomButton";
 import HeaderTitle from "../../../components/Header/HeaderTitle";
-import { REGEX } from "../../../utils/validation";
 import { ErrorMessage } from "../../../utils/message";
 import moment from "moment";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -19,34 +18,29 @@ export class CreateEvent extends Component {
     super(props);
     this.state = {
       hasError: true,
-      name: "",
-      info: "",
-      location: "",
-      isStartDate: false,
-      startDate: "",
-      isEndDate: false,
-      endDate: "",
+      showStartDate: false,
+      showEndDate: false,
       name: {
         value: "",
         message: [],
         isValid: false,
       },
-      eventinfo: {
+      info: {
         value: "",
         message: [],
         isValid: false,
       },
-      eventlocation: {
+      location: {
         value: "",
         message: [],
         isValid: false,
       },
-      startdate: {
+      startDate: {
         value: "",
         message: [],
         isValid: false,
       },
-      enddate: {
+      endDate: {
         value: "",
         message: [],
         isValid: false,
@@ -61,18 +55,14 @@ export class CreateEvent extends Component {
   };
 
   onInsertEvent = async () => {
-    const dt = new Date();
-    const startDate = new Date();
-    startDate.setDate(dt.getDate() + 1);
-    const endDate = new Date();
-    endDate.setDate(dt.getDate() + 2);
+    const { name, info, location, startDate, endDate } = this.state
     try {
       await this.props.insertEvent({
-        name: this.state.name,
-        info: this.state.info,
-        location: this.state.location,
-        startDate: startDate,
-        endDate: endDate,
+        name: name.value,
+        info: info.value,
+        location: location.value,
+        startDate: startDate.value.toISOString(),
+        endDate: endDate.value.toISOString(),
       });
       this.props.navigation.navigate("Events");
     } catch (err) {
@@ -80,7 +70,7 @@ export class CreateEvent extends Component {
     }
   };
 
-  onEventname = (text) => {
+  onEventName = (text) => {
     const name = this.state.name;
     name.value = text;
     name.message = [];
@@ -93,10 +83,64 @@ export class CreateEvent extends Component {
     this.setState({ name });
   };
 
-  render() {
-    const { navigate } = this.props.navigation;
-    const { startDate, endDate, isStartDate, isEndDate, name } = this.state;
+  onEventInfo = (text) => {
+    const info = this.state.info;
+    info.value = text;
+    info.message = [];
+    info.isValid = true;
 
+    if (info.value.length == 0 || info.value == "") {
+      info.message.push(ErrorMessage.EMPTY_EVENT_INFO);
+      info.isValid = false;
+    }
+    this.setState({ info });
+  };
+
+  onEventLocation = (text) => {
+    const location = this.state.location;
+    location.value = text;
+    location.message = [];
+    location.isValid = true;
+
+    if (location.value.length == 0 || location.value == "") {
+      location.message.push(ErrorMessage.EMPTY_EVENT_LOCATION);
+      location.isValid = false;
+    }
+    this.setState({ location });
+  };
+
+  onEventStartDate = (date) => {
+    const startDate = this.state.startDate;
+    startDate.value = date;
+    startDate.message = [];
+    startDate.isValid = true;
+
+    if (!startDate.value) {
+      startDate.message.push(ErrorMessage.EMPTY_EVENT_START_DATE);
+      startDate.isValid = false;
+    }
+
+    this.setState({ startDate });
+  };
+
+  onEventEndDate = (date) => {
+    const endDate = this.state.endDate;
+    endDate.value = date;
+    endDate.message = [];
+    endDate.isValid = true;
+
+    if (!endDate.value) {
+      endDate.message.push(ErrorMessage.EMPTY_EVENT_END_DATE);
+      endDate.isValid = false;
+    }
+    this.setState({ endDate });
+  };
+
+  render() {
+    const { startDate, endDate, showStartDate, showEndDate, name, info, location } = this.state;
+    const startDateValue = startDate.value ? moment(startDate.value).format("hh:mma, DD-MM-YYYY") : ''
+    const endDateValue = endDate.value ? moment(endDate.value).format("hh:mma, DD-MM-YYYY") : ''
+    const isValid = name.isValid && info.isValid && location.isValid && startDate.isValid && endDate.isValid
     return (
       <View style={styles.safeareaview}>
         <KeyboardAwareScrollView
@@ -115,7 +159,7 @@ export class CreateEvent extends Component {
                 placeholder="Event name"
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
-                onChangeText={(name) => this.setState({ name })}
+                onChangeText={this.onEventName}
                 value={name.value}
                 errorMsgs={name.message}
               ></CustomTextfield>
@@ -124,15 +168,15 @@ export class CreateEvent extends Component {
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
                 inputstyle={{
-                  height: 150,
+                  height: 130,
                   paddingTop: 14,
                   paddingBottom: 14,
                   textAlignVertical: "top",
                 }}
                 multiline={true}
-                onChangeText={(info) => this.setState({ info })}
-                //value={email.value}
-                //errorMsgs={email.message}
+                onChangeText={this.onEventInfo}
+                value={info.value}
+                errorMsgs={info.message}
               ></CustomTextfield>
               <CustomTextfield
                 placeholder="Event location "
@@ -141,7 +185,9 @@ export class CreateEvent extends Component {
                 inputstyle={{ paddingRight: 40 }}
                 ifIcon={true}
                 iconname={"map"}
-                onChangeText={(location) => this.setState({ location })}
+                onChangeText={this.onEventLocation}
+                value={location.value}
+                errorMsgs={location.message}
               ></CustomTextfield>
 
               <View style={{ position: "relative", marginBottom: 25 }}>
@@ -152,34 +198,29 @@ export class CreateEvent extends Component {
                   inputstyle={{}}
                   ifIcon={true}
                   iconname={"map"}
-                  txtvalue={startDate}
+                  txtvalue={startDateValue}
+                  errorMsgs={startDate.message}
                 />
 
                 <TouchableOpacity
                   style={styles.touchableinput}
-                  onPress={() => {
-                    this.setState({
-                      isStartDate: true,
-                    });
-                  }}
+                  onPress={() => { this.setState({ showStartDate: true }) }}
                 ></TouchableOpacity>
               </View>
 
               <DateTimePickerModal
-                isVisible={isStartDate}
+                isVisible={showStartDate}
                 mode="datetime"
                 onConfirm={(date) => {
-                  const formatedDate = moment(date).format(
-                    "hh:mma, DD-MM-YYYY"
-                  );
                   this.setState({
-                    isStartDate: false,
-                    startDate: formatedDate,
+                    showStartDate: false
+                  }, () => {
+                    this.onEventStartDate(date)
                   });
                 }}
                 onCancel={() => {
                   this.setState({
-                    isStartDate: false,
+                    showStartDate: false,
                   });
                 }}
               />
@@ -192,34 +233,28 @@ export class CreateEvent extends Component {
                   inputstyle={{}}
                   ifIcon={true}
                   iconname={"map"}
-                  txtvalue={endDate}
+                  txtvalue={endDateValue}
                 />
 
                 <TouchableOpacity
                   style={styles.touchableinput}
-                  onPress={() => {
-                    this.setState({
-                      isEndDate: true,
-                    });
-                  }}
+                  onPress={() => { this.setState({ showEndDate: true }) }}
                 ></TouchableOpacity>
               </View>
 
               <DateTimePickerModal
-                isVisible={isEndDate}
+                isVisible={showEndDate}
                 mode="datetime"
                 onConfirm={(date) => {
-                  const formatedDate = moment(date).format(
-                    "hh:mma, DD-MM-YYYY"
-                  );
                   this.setState({
-                    isEndDate: false,
-                    endDate: formatedDate,
+                    showEndDate: false
+                  }, () => {
+                    this.onEventEndDate(date)
                   });
                 }}
                 onCancel={() => {
                   this.setState({
-                    isEndDate: false,
+                    showEndDate: false,
                   });
                 }}
               />
@@ -227,8 +262,16 @@ export class CreateEvent extends Component {
               <View style={styles.CreateEventMain}>
                 <CustomButton
                   btnText="Create Event"
-                  mainStyle={styles.createvent}
-                  btnStyle={styles.createventxt}
+                  mainStyle={[
+                    isValid ? styles.createventgray : styles.createventyellow,
+                    styles.createventbtn,
+                  ]}
+                  btnStyle={[
+                    isValid ? styles.createventxtyellow : styles.createventxtgray,
+                    styles.createventxt,
+                  ]}
+                  value={false}
+                  disabled={!isValid}
                   onClick={this.onInsertEvent}
                 />
               </View>

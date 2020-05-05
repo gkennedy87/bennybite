@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "145589030158",
+    "firebase_url": "https://bennybites-a575d.firebaseio.com",
+    "project_id": "bennybites-a575d",
+    "storage_bucket": "bennybites-a575d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145589030158:android:9d35296b457a1cca8f9b5f",
+        "android_client_info": {
+          "package_name": "com.bennybites"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "145589030158-c6v795r0jvph2c4rk8boqju32vhuc2ql.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6GxS1kMNPFeAZKEYL3fP0z0dVgItcZy0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "145589030158-c6v795r0jvph2c4rk8boqju32vhuc2ql.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

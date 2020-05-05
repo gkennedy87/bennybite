@@ -1,10 +1,14 @@
 export const ErrorMessage = {
   OTP_Invalid: "Invalid OTP",
-  EMPTY_EMAIL: "Email Id can't be empy",
-  EMPTY_USER: "User name can't be empy",
-  EMPTY_EVENT: "User name can't be empy",
-  EMPTY_OTP: "OTP can't be empty",
-  EMPTY_PASS: "Password can't be empty",
+  EMPTY_EMAIL: "Email Id is required",
+  EMPTY_USER: "User name is required",
+  EMPTY_EVENT: "Event name is required",
+  EMPTY_EVENT_INFO: "Event info is required",
+  EMPTY_EVENT_LOCATION: "Event location is required",
+  EMPTY_EVENT_START_DATE: "Event start date is required",
+  EMPTY_EVENT_END_DATE: "Event end date is required",
+  EMPTY_OTP: "OTP is requied",
+  EMPTY_PASS: "Password is requied",
   WRONG_PASS:
     'Incorrect Password. Please try again or click on "Forgot Password" below.',
   PASSWORD_LENGTH: "Password must be minimum of 8 characters",
@@ -16,8 +20,8 @@ export const ErrorMessage = {
   CONFIRM_PASS: "Both passwords must match",
   NAME_VALID:
     'This field can only contain "Alphanumeric" values. Please try again.',
-  FIRST_EMPTY: "First Name can't be empty",
-  LAST_EMPTY: "Last Name can't be empty",
-  PHONE_EMPTY: "Phone Number can't be empty",
+  FIRST_EMPTY: "First Name is requied",
+  LAST_EMPTY: "Last Name is requied",
+  PHONE_EMPTY: "Phone Number is requied",
   PHONE_LENGTH: "Phone Number must be between 10-13 digits.",
 };

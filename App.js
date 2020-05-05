@@ -6,8 +6,11 @@
 import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Provider } from 'react-redux';
-
 import SplashScreen from "react-native-splash-screen";
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+
+import { configPushNotification } from './src/config/pushNotification';
 
 import Login from "./src/layouts/Login";
 import Signup from "./src/layouts/Signup";
@@ -23,8 +26,7 @@ import EditEvents from "./src/layouts/Management/EditEvents";
 import CreateEvent from "./src/layouts/Management/CreateEvent";
 import EventsDetails from "./src/layouts/Management/EventsDetails";
 
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import Loader from "./src/components/Loader";
 
 import TermsConditions from './src/layouts/TermsConditions';
 
@@ -71,6 +73,7 @@ export default class App extends Component {
 
   constructor() {
     super();
+    configPushNotification();
     this.state = {
       isConnected: false,
     };
@@ -91,6 +94,7 @@ export default class App extends Component {
     const { isConnected } = this.state;
     return (
       <Provider store={store}>
+        <Loader></Loader>
         <View style={styles.container}>
           <RootNavigator screenProps={{ isConnected: isConnected }} />
         </View>

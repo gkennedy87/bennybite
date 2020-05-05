@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { View, ActivityIndicator, StyleSheet, Modal, Text } from "react-native";
 import { Color, Font } from "../../utils/variable";
 
@@ -42,4 +43,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Loader;
+export const mapStateToProps = (state) => ({
+  loading : !!state.busy
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Loader);
+
+// export default Loader;
