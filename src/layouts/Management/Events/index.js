@@ -17,6 +17,7 @@ import CustomIcon from '../../../components/CustomIcon';
 import styles from './styles';
 import { Color } from '../../../utils/variable';
 import CustomButton from "./../../../components/CustomButton"
+import Switch from "./../../../components/Switch"
 
 export class Events extends Component {
   constructor(props) {
@@ -25,6 +26,7 @@ export class Events extends Component {
       FoodModalVisible: false,
       UsersModalVisible: false,
       selected: "FoodonCampus",
+      userId: null
     };
   }
 
@@ -35,7 +37,8 @@ export class Events extends Component {
     if (isAuthenticated) {
       this.props.initializeSession({ user, tokens });
       this.props.fetchEventList();
-      this.props.fetchUserList();
+      if (user.role != 'user')
+        this.props.fetchUserList();
     }
   }
 
@@ -68,7 +71,9 @@ export class Events extends Component {
   };
 
   setUsersModalVisible = (visible) => {
-    this.setState({ UsersModalVisible: visible });
+    const state = { UsersModalVisible: visible }
+    if (!visible) state.userId = null;
+    this.setState(state);
   };
 
   checkEventOwner = (event) => {
@@ -83,29 +88,59 @@ export class Events extends Component {
     return isEventOwner
   }
 
-  renderUsers = ({ item }) => (
-    <SwipeRow rightOpenValue={-170} disableLeftSwipe={this.props.user.role !== 'admin'}>
+  onRoleChange = async (userId, value) => {
+    const role = value ? 'user' : 'staff';
+    try {
+      await this.props.assignRole(userId, role)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  onDeleteUser = async () => {
+    try {
+      await this.props.deleteUser(this.state.userId)
+      this.setUsersModalVisible(false);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  changeUserStatus = async (user) => {
+    try {
+      if (user.status === 1) {
+        await this.props.disableUser(user.id)
+      } else if (user.status === 0) {
+        await this.props.enableUser(user.id)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  showDeleteUserModel = (userId) => {
+    this.setUsersModalVisible(true);
+    this.setState({ userId })
+  }
+
+  renderUsers = ({ item }) => {
+    const isAdmin = this.props.user.role === 'admin';
+    const disableLeftSwipe = !isAdmin && item.role !== 'user';
+
+    return <SwipeRow rightOpenValue={-170} disableLeftSwipe={disableLeftSwipe}>
       <View style={styles.swipeBack}>
-        <TouchableOpacity
-          style={[styles.swipebtnusers, styles.btnusers]}
-        >
+        <TouchableOpacity style={[styles.swipebtnusers, styles.btnusers]} onPress={() => this.changeUserStatus(item)} >
           <CustomIcon style={styles.swipeicon} name="user" />
-          <Text style={styles.swipetxt}>Enable Users</Text>
+          <Text style={styles.swipetxt}>{item.status === 1 ? 'Disable User' : 'Enable User'}</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.swipebtnusers, styles.btndeleteusers]}
-          onPress={() => {
-            this.setUsersModalVisible(true);
-          }}
+        <TouchableOpacity style={[styles.swipebtnusers, styles.btndeleteusers]}
+          onPress={() => this.showDeleteUserModel(item.id)}
         >
           <CustomIcon style={styles.swipeicon} name="delete" />
           <Text style={styles.swipetxt}>Delete</Text>
         </TouchableOpacity>
       </View>
-      <TouchableHighlight
-        style={styles.swiperowpadd}
-        underlayColor={"#ffffff"}
-      >
+      <TouchableHighlight style={styles.swiperowpadd} underlayColor={"#ffffff"}>
         <View style={styles.swiperowborder}>
           <View style={styles.userlistingborder}>
             <Image
@@ -116,11 +151,12 @@ export class Events extends Component {
               <Text style={styles.usernametxt}>{item.name}</Text>
               <Text style={styles.usertxtemail}>{item.email}</Text>
             </View>
+            {isAdmin && <Switch showLabel={true} trueLabel={'staff'} falseLabel={'student'} defaultValue={item.role === 'staff'} onChange={(value) => this.onRoleChange(item.id, value)}></Switch>}
           </View>
         </View>
       </TouchableHighlight>
     </SwipeRow>
-  );
+  };
 
   renderEvents = ({ item }) => (
     <SwipeRow rightOpenValue={-150} disableLeftSwipe={!this.checkEventOwner(item)}>
@@ -220,7 +256,7 @@ export class Events extends Component {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.confirmtxt}>
-                Are you sure you want to delete this event
+                Are you sure you want to delete this user
               </Text>
               <View style={styles.actionbuttons}>
                 <CustomButton
@@ -228,11 +264,7 @@ export class Events extends Component {
                   btnText="Delete"
                   mainStyle={styles.actiondelete}
                   btnStyle={styles.actiondeletetxt}
-                  onClick={() => {
-                    this.setState({ UsersModalVisible: false }, () => {
-                      this.props.navigation.navigate("Events");
-                    });
-                  }}
+                  onClick={this.onDeleteUser}
                 />
                 <CustomButton
                   width="48%"
@@ -291,7 +323,7 @@ export class Events extends Component {
         {selected === 'FoodonCampus' && (
           <View style={{ flex: 1 }}>
             <SwipeListView
-              data={this.props.events}
+              data={this.props.events.map(e => ({ ...e, key: e._id }))}
               previewRowKey={'0'}
               previewOpenValue={-40}
               previewOpenDelay={3000}
@@ -311,7 +343,7 @@ export class Events extends Component {
         )}
         {selected === 'Users' && !isStudent && (
           <View style={{ flex: 1 }}>
-            <SwipeListView data={this.props.users.filter(u => u.role != 'admin')} renderItem={this.renderUsers} />
+            <SwipeListView data={this.props.users.filter(u => u.id != this.props.user.id).map(e => ({ ...e, key: e.id }))} renderItem={this.renderUsers} />
           </View>
         )}
       </View>
@@ -331,7 +363,11 @@ const mapDispatchToProps = {
   fetchUserList: userOperations.fetchList,
   fetchEventList: eventOperations.fetchList,
   deleteEvent: eventOperations.deleteEvent,
-  initializeSession: authOperations.initializeSession
+  initializeSession: authOperations.initializeSession,
+  assignRole: userOperations.assignRole,
+  deleteUser: userOperations.deleteUser,
+  enableUser: userOperations.enableUser,
+  disableUser: userOperations.disableUser
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Events);
