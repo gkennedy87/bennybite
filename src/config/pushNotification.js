@@ -4,8 +4,9 @@ import PushNotificationIOS from "@react-native-community/push-notification-ios";
 const configPushNotification = (pubnubClient) => {
     PushNotification.configure({
         // (optional) Called when Token is generated (iOS and Android)
-        onRegister: function (token) {
-            console.log("TOKEN:", token);
+        onRegister: function (device) {
+            console.log("DEVICE TOKEN:", device.token)
+            console.log("DEVICE TYPE:", device.os)
         },
 
         // (required) Called when a remote or local notification is opened or received
@@ -17,6 +18,9 @@ const configPushNotification = (pubnubClient) => {
             // required on iOS only (see fetchCompletionHandler docs: https://github.com/react-native-community/react-native-push-notification-ios)
             notification.finish(PushNotificationIOS.FetchResult.NoData);
         },
+
+        // ANDROID ONLY: GCM Sender ID (optional - not required for local notifications, but is need to receive remote push notifications)
+        senderID: "145589030158", // bhadresh@nimblechapps.com
 
         // IOS ONLY (optional): default: all - Permissions to register.
         permissions: {
@@ -37,5 +41,5 @@ const configPushNotification = (pubnubClient) => {
         requestPermissions: true,
     });
 }
-export { configPushNotification}
+export { configPushNotification }
 export default PushNotification;

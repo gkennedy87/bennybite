@@ -11,6 +11,7 @@ import PubNub from 'pubnub'
 import PubNubReact from 'pubnub-react';
 import PushNotification from "react-native-push-notification";
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import { configPushNotification } from './src/config/pushNotification';
 
 // import NetInfo from '@react-native-community/netinfo';
 import SplashScreen from "react-native-splash-screen";
@@ -121,7 +122,7 @@ export default class App extends Component {
     // });
 
     // PushNotificationIOS.addEventListener('registrationError', console.log)
-
+    configPushNotification();
     this.state = {
       isConnected: false,
     };
