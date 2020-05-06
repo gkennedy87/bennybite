@@ -1,23 +1,25 @@
 import React, { Component } from "react";
+import moment from "moment";
+import { get } from "lodash";
 import { connect } from "react-redux";
 import { View, TouchableOpacity } from "react-native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
+import CustomToast from "../../../components/CustomToast";
 import CustomTextfield from "../../../components/CustomTextfield";
 import CustomButton from "../../../components/CustomButton";
 import HeaderTitle from "../../../components/Header/HeaderTitle";
 import { ErrorMessage } from "../../../utils/message";
-import moment from "moment";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { eventOperations } from "./../../../state/ducks/event";
 
 import styles from "./styles";
 import { Globals } from "../../../utils/variable";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export class CreateEvent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasError: true,
       showStartDate: false,
       showEndDate: false,
       name: {
@@ -56,18 +58,26 @@ export class CreateEvent extends Component {
 
   onInsertEvent = async () => {
     const { name, info, location, startDate, endDate } = this.state
+    let toastMessage = '', toastType = '';
     try {
-      await this.props.insertEvent({
+      const response = await this.props.insertEvent({
         name: name.value,
         info: info.value,
         location: location.value,
         startDate: startDate.value.toISOString(),
         endDate: endDate.value.toISOString(),
       });
+      toastMessage = response.message
       this.props.navigation.navigate("Events");
     } catch (err) {
-      console.log(err);
+      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+      toastType = 'warning'
     }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType
+    })
   };
 
   onEventName = (text) => {
@@ -137,12 +147,17 @@ export class CreateEvent extends Component {
   };
 
   render() {
-    const { startDate, endDate, showStartDate, showEndDate, name, info, location } = this.state;
+    const { startDate, endDate, showStartDate, showEndDate, name, info, location, toastMessage, toastType, showToast } = this.state;;
     const startDateValue = startDate.value ? moment(startDate.value).format("hh:mma, DD-MM-YYYY") : ''
     const endDateValue = endDate.value ? moment(endDate.value).format("hh:mma, DD-MM-YYYY") : ''
     const isValid = name.isValid && info.isValid && location.isValid && startDate.isValid && endDate.isValid
     return (
       <View style={styles.safeareaview}>
+         <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+        />
         <KeyboardAwareScrollView
           contentContainerStyle={{
             alignItems: "center",

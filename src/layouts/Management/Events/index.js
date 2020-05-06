@@ -13,11 +13,12 @@ import { eventOperations } from "./../../../state/ducks/event";
 import Navbar from '../../../components/Navbar';
 import Tabbutton from '../../../components/Tabbutton';
 import CustomIcon from '../../../components/CustomIcon';
+import CustomToast from '../../../components/CustomToast';
 
 import styles from './styles';
 import { Color } from '../../../utils/variable';
-import CustomButton from "./../../../components/CustomButton"
 import Switch from "./../../../components/Switch"
+import CustomButton from "./../../../components/CustomButton"
 
 export class Events extends Component {
   constructor(props) {
@@ -26,7 +27,8 @@ export class Events extends Component {
       FoodModalVisible: false,
       UsersModalVisible: false,
       selected: "FoodonCampus",
-      userId: null
+      userId: null,
+      eventId: null
     };
   }
 
@@ -58,15 +60,24 @@ export class Events extends Component {
       return 'Past'
   }
 
-  onDeleteEvent = async (eventId) => {
+  onDeleteEvent = async () => {
+    let toastMessage = '', toastType = '';
     try {
-      await this.props.deleteEvent(eventId);
+      const response = await this.props.deleteEvent(this.state.eventId);
+      this.setEventModalVisible(false);
+      toastMessage = response.message
     } catch (err) {
-      console.log(err)
+      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+      toastType = 'warning'
     }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType
+    })
   }
 
-  setActionModalVisible = (visible) => {
+  setEventModalVisible = (visible) => {
     this.setState({ FoodModalVisible: visible });
   };
 
@@ -89,38 +100,68 @@ export class Events extends Component {
   }
 
   onRoleChange = async (userId, value) => {
+    let toastMessage = '', toastType = '';
     const role = value ? 'user' : 'staff';
     try {
-      await this.props.assignRole(userId, role)
+      const response = await this.props.assignRole(userId, role)
+      toastMessage = response.message
     } catch (err) {
-      console.log(err)
+      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+      toastType = 'warning'
     }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType
+    })
   }
 
   onDeleteUser = async () => {
+    let toastMessage = '', toastType = '';
     try {
-      await this.props.deleteUser(this.state.userId)
+      const response = await this.props.deleteUser(this.state.userId)
+      toastMessage = response.message
       this.setUsersModalVisible(false);
     } catch (err) {
-      console.log(err)
+      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+      toastType = 'warning'
     }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType
+    })
   }
 
   changeUserStatus = async (user) => {
+    let toastMessage = '', toastType = '';
+    let response;
     try {
       if (user.status === 1) {
-        await this.props.disableUser(user.id)
+        response = await this.props.disableUser(user.id)
       } else if (user.status === 0) {
-        await this.props.enableUser(user.id)
+        response = await this.props.enableUser(user.id)
       }
+      toastMessage = response.message
     } catch (err) {
-      console.log(err)
+      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+      toastType = 'warning'
     }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType
+    })
   }
 
   showDeleteUserModel = (userId) => {
     this.setUsersModalVisible(true);
     this.setState({ userId })
+  }
+
+  showDeleteEventModel = (eventId) => {
+    this.setEventModalVisible(true);
+    this.setState({ eventId })
   }
 
   renderUsers = ({ item }) => {
@@ -163,9 +204,7 @@ export class Events extends Component {
       <View style={styles.swipeBack}>
         <TouchableOpacity
           style={[styles.SwipeBtn, styles.btndelete]}
-          onPress={() => {
-            this.setActionModalVisible(true);
-          }}
+          onPress={() => { this.showDeleteEventModel(item._id); }}
         >
           <CustomIcon style={styles.swipeicon} name="delete" />
           <Text style={styles.swipetxt}>Delete</Text>
@@ -208,10 +247,15 @@ export class Events extends Component {
   );
 
   render() {
-    const { selected, FoodModalVisible, UsersModalVisible } = this.state;
+    const { selected, FoodModalVisible, UsersModalVisible, toastType, toastMessage, showToast } = this.state;
     const isStudent = this.props.user.role === 'user'
     return (
       <View style={{ flex: 1 }}>
+        <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+        />
         <Modal
           animationType="slide"
           transparent={true}
@@ -228,11 +272,7 @@ export class Events extends Component {
                   btnText="Delete"
                   mainStyle={styles.actiondelete}
                   btnStyle={styles.actiondeletetxt}
-                  onClick={() => {
-                    this.setState({ FoodModalVisible: false }, () => {
-                      this.props.navigation.navigate("Events");
-                    });
-                  }}
+                  onClick={this.onDeleteEvent}
                 />
                 <CustomButton
                   width="48%"
@@ -240,7 +280,7 @@ export class Events extends Component {
                   mainStyle={styles.actioncancelbtn}
                   btnStyle={styles.actioncancelbtntxt}
                   onClick={() => {
-                    this.setActionModalVisible(!FoodModalVisible);
+                    this.setEventModalVisible(!FoodModalVisible);
                   }}
                 />
               </View>

@@ -29,9 +29,10 @@ export class Profile extends Component {
   };
 
   render() {
+    const { user } = this.props;
     let pic = require('../../assets/Images/user.png');
-    if (this.props.user.pic)
-      pic = { uri: this.props.user.pic }
+    if (user.pic)
+      pic = { uri: user.pic }
 
     return (
       <View style={styles.safeareaview}>
@@ -43,9 +44,8 @@ export class Profile extends Component {
                 <TouchableOpacity style={styles.profileview}>
                   <Image style={styles.profilepic} source={pic} />
                 </TouchableOpacity>
-                <Text style={styles.uploadtxt}>Upload</Text>
-                <Text style={styles.usertxt}>John Doe</Text>
-                <Text style={styles.emailtxt}>johndoe@gmail.com</Text>
+                <Text style={styles.usertxt}>{user.name}</Text>
+                <Text style={styles.emailtxt}>{user.email}</Text>
                 <View style={styles.bottomtxt}>
                   <View style={styles.line}></View>
                   <TouchableOpacity

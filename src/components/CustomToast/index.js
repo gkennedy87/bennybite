@@ -1,14 +1,27 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Text } from "react-native";
 import styles from "./styles";
 import Toast from "react-native-root-toast";
 import { Color } from "../../utils/variable";
 
 const CustomToast = (props) => {
+  const [showToast, setShowToast] = useState(props.isToastVisible)
+
+  useEffect(() => {
+    console.log('isToastVisible', props.isToastVisible)
+    if(props.isToastVisible && props.isToastVisible != showToast){
+      setShowToast(props.isToastVisible)
+      setTimeout(()=> {
+        setShowToast(false)
+      }, 5000)
+    }
+  }, [props.isToastVisible])
+
   return (
     <Toast
       containerStyle={styles.toastView}
-      visible={props.isToastVisible}
+      duration={500}
+      visible={showToast}
       shadow={false}
       animation={true}
       hideOnPress={true}

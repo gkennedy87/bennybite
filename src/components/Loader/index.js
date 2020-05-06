@@ -4,8 +4,9 @@ import { View, ActivityIndicator, StyleSheet, Modal, Text } from "react-native";
 import { Color, Font } from "../../utils/variable";
 
 class Loader extends Component {
+  
   render() {
-    return this.props.loading ? (
+    return this.props.loading  ? (
       <Modal
         animationType="none"
         transparent={true}
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
 });
 
 export const mapStateToProps = (state) => ({
-  loading : !!state.busy
+  loading : state.busy !== 0
 });
 
 const mapDispatchToProps = {};

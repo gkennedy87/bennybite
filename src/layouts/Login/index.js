@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { toLower } from "lodash"
+import { toLower, get } from "lodash"
 import AsyncStorage from "@react-native-community/async-storage"
 import { connect } from "react-redux";
 import { View, Image, SafeAreaView, Text, TouchableOpacity } from 'react-native';
@@ -13,8 +13,6 @@ import { REGEX } from '../../utils/validation';
 import { ErrorMessage } from '../../utils/message';
 
 import CustomToast from "../../components/CustomToast";
-import NoData from "../../components/NoData";
-import Loader from "../../components/Loader";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import styles from "./styles";
 
@@ -22,9 +20,10 @@ export class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasError: true,
+      showToast: false,
+      toastMessage: '',
+      toastType: '',
       hidePassword: true,
-      passVisible: true,
       email: {
         value: "",
         message: [],
@@ -49,15 +48,9 @@ export class Login extends Component {
     password.isValid = true;
 
     if (password.value.length == 0 || password.value == "") {
-      // email.message = ErrorMsg.emailRequired // import
       password.message.push(ErrorMessage.EMPTY_PASS);
       password.isValid = false;
     }
-
-    // else if (password.value.length < 8) {
-    //   password.message.push(ErrorMessage.WRONG_PASS);
-    //   password.isValid = false;
-    // }
 
     this.setState({ password });
   };
@@ -69,7 +62,6 @@ export class Login extends Component {
     email.isValid = true;
 
     if (email.value.length == 0 || email.value == "") {
-      // email.message = ErrorMsg.emailRequired // import
       email.message.push(ErrorMessage.EMPTY_EMAIL);
       email.isValid = false;
     } else if (!email.value.match(REGEX.EMAIL)) {
@@ -81,7 +73,7 @@ export class Login extends Component {
 
   onPassVisi = () => {
     this.setState({
-      passVisible: !this.state.passVisible,
+      hidePassword: !this.state.hidePassword,
     });
   };
 
@@ -96,23 +88,26 @@ export class Login extends Component {
       await AsyncStorage.setItem('tokens', JSON.stringify(tokens));
       this.props.navigation.navigate('Events');
     } catch (err) {
-      console.log(err)
+      this.setState({
+        showToast: true,
+        toastMessage: get(err, 'response.data.message', 'Something went wrong!'),
+        toastType: 'warning'
+      })
     }
   }
 
   render() {
-    const { email, password } = this.state;
+    const { email, password, hidePassword, toastMessage, toastType, showToast } = this.state;
     const { navigate } = this.props.navigation;
+    const isValid = email.isValid && password.isValid
 
     return (
       <View style={styles.safeareaview}>
-        {/* <CustomToast
-          message="Sorry!  We couldn't find an account with that email"
-          isToastVisible={true}
-          type="warning"
+        <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
         />
-        <NoData NodataTxt="No Data Found" /> */}
-        {/*    */}
         <KeyboardAwareScrollView
           contentContainerStyle={{
             alignItems: "center",
@@ -153,7 +148,7 @@ export class Login extends Component {
                   inputstyle={{ paddingRight: 40 }}
                   editable={true}
                   passwordField={true}
-                  passVisible={this.state.passVisible}
+                  passVisible={hidePassword}
                   onPassVisi={this.onPassVisi}
                   isPassword={true}
                   onChangeText={this.onPasswordChange}
@@ -173,23 +168,10 @@ export class Login extends Component {
                 <View style={styles.loginbtnmain}>
                   <CustomButton
                     btnText="Login"
-                    // mainStyle={styles.loginyellow}
-                    // btnStyle={styles.withlogin}
-                    mainStyle={[
-                      this.state.email.isValid && this.state.password.isValid
-                        ? styles.loginyellow
-                        : styles.logingray,
-                      styles.loginbtn,
-                    ]}
-                    btnStyle={
-                      this.state.email.isValid && this.state.password.isValid
-                        ? styles.withlogin
-                        : styles.withoutlogin
-                    }
+                    mainStyle={[isValid ? styles.loginyellow : styles.logingray, styles.loginbtn]}
+                    btnStyle={isValid ? styles.withlogin : styles.withoutlogin}
                     value={false}
-                    disabled={
-                      !(this.state.email.isValid && this.state.password.isValid)
-                    }
+                    disabled={!isValid}
                     onClick={this.onLogin}
                   />
                 </View>

@@ -61,7 +61,13 @@ export const updateProfilePic = (userId, payload) => ({
     },
 });
 
-
-
-
-
+export const changePassword = (userId, payload) => ({
+    type: types.CHANGE_PASSWORD,
+    meta: {
+        async: true,
+        blocking: true,
+        path: `/users/${userId}/change-password`,
+        method: "PATCH",
+        body: payload
+    },
+});
