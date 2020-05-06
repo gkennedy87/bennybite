@@ -3,14 +3,14 @@
  * https://github.com/facebook/react-native
  **/
 
-import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Provider } from 'react-redux';
+import React, { Component } from "react";
+import { View, StyleSheet } from "react-native";
+import { Provider } from "react-redux";
 import SplashScreen from "react-native-splash-screen";
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import { createAppContainer } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
 
-import { configPushNotification } from './src/config/pushNotification';
+import { configPushNotification } from "./src/config/pushNotification";
 
 import Login from "./src/layouts/Login";
 import Signup from "./src/layouts/Signup";
@@ -28,11 +28,11 @@ import EventsDetails from "./src/layouts/Management/EventsDetails";
 
 import Loader from "./src/components/Loader";
 
-import TermsConditions from './src/layouts/TermsConditions';
+import TermsConditions from "./src/layouts/TermsConditions";
 
-import { isIOS } from './src/utils/theme';
-import GlobalStyles from './src/utils/GlobalStyles';
-import HeaderLeft from './src/components/Header/HeaderLeft';
+import { isIOS } from "./src/utils/theme";
+import GlobalStyles from "./src/utils/GlobalStyles";
+import HeaderLeft from "./src/components/Header/HeaderLeft";
 
 import configureStore from "./src/state/store";
 
@@ -51,7 +51,7 @@ const AppNavigator = createStackNavigator(
     Profile: { screen: Profile },
     EditProfile: { screen: EditProfile },
     EventStudents: { screen: EventStudents },
-    TermsConditions: { screen: TermsConditions }
+    TermsConditions: { screen: TermsConditions },
   },
   {
     initialRouteName: "Login",
@@ -70,7 +70,6 @@ const AppNavigator = createStackNavigator(
 const RootNavigator = createAppContainer(AppNavigator);
 
 export default class App extends Component {
-
   constructor() {
     super();
     configPushNotification();

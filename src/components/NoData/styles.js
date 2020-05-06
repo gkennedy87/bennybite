@@ -5,6 +5,8 @@ const styles = StyleSheet.create({
   NoDataMain: {
     backgroundColor: Color.BACK_WHITE,
     borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
     shadowColor: Color.BACK_BLACK,
     shadowOffset: {
       width: 0,

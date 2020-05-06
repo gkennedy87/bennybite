@@ -1,6 +1,5 @@
-import { StyleSheet } from "react-native";
-import { Color, Font } from "../../utils/variable";
-
+import { StyleSheet, Dimensions } from "react-native";
+import { Color, Font, Globals } from "../../utils/variable";
 const styles = StyleSheet.create({
   toastView: {
     flexDirection: "row",
@@ -12,6 +11,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 3,
+    width: Globals.isIpad ? 400 : Dimensions.get("window").width - 40,
   },
   toasttxt: {
     fontFamily: Font.MYRIAD_SEMIBOLD,

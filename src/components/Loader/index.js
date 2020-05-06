@@ -38,13 +38,13 @@ const styles = StyleSheet.create({
   loadertxt: {
     marginTop: 10,
     fontFamily: Font.MYRIAD_SEMIBOLD,
-    fontSize: Font.FONTSIZE_18,
+    fontSize: Font.FONTSIZE_16,
     color: Color.TXT_WHITE,
   },
 });
 
 export const mapStateToProps = (state) => ({
-  loading : !!state.busy
+  loading: !!state.busy,
 });
 
 const mapDispatchToProps = {};
