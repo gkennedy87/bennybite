@@ -51,7 +51,9 @@ static void InitializeFlipper(UIApplication *application) {
   
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
-  
+  if (@available(iOS 13, *)) {
+      self.window.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+  }
   return YES;
 }
 
