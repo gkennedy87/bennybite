@@ -90,12 +90,25 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: "2%",
   },
+  sendbtngray: {
+    backgroundColor: Color.BACK_LIGHTGRAY,
+    height: 48,
+    borderRadius: 5,
+    marginRight: "2%",
+  },
   sendbtntxt: {
     color: Color.TXT_WHITE,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
     position: "relative",
     top: isIOS() ? 3 : 0,
+  },
+  sendbtntxtdisable: {
+    color: Color.TXT_BLACK,
+    fontSize: Font.FONTSIZE_16,
+    fontFamily: Font.MYRIAD_SEMIBOLD,
+    position: "relative",
+    top: isIOS() ? 2 : 0,
   },
   cancelbtn: {
     marginLeft: "2%",

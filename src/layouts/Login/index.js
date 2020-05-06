@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import { toLower, get } from "lodash"
-import AsyncStorage from "@react-native-community/async-storage"
 import { connect } from "react-redux";
-import {
-  View,
-  Image,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { View, Image, Text, TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { authOperations } from "./../../state/ducks/auth";
 
@@ -19,7 +14,6 @@ import { REGEX } from "../../utils/validation";
 import { ErrorMessage } from "../../utils/message";
 
 import CustomToast from "../../components/CustomToast";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import styles from "./styles";
 
 export class Login extends Component {
@@ -113,6 +107,7 @@ export class Login extends Component {
           message={toastMessage}
           isToastVisible={showToast}
           type={toastType}
+          onHide={() => this.setState({ showToast: false })}
         />
         <KeyboardAwareScrollView
           contentContainerStyle={{

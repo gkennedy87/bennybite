@@ -2,17 +2,15 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import React, { Component } from "react";
 import ImagePicker from "react-native-image-picker";
-import {
-  View,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  Image,
-} from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
-import CustomTextfield from "../../components/CustomTextfield";
-import CustomButton from "../../components/CustomButton";
+import { View, SafeAreaView, Text, TouchableOpacity, Image } from "react-native";
+
 import { authOperations } from "./../../state/ducks/auth";
+import { ErrorMessage } from "../../utils/message";
+
+import CustomToast from "../../components/CustomToast";
+import CustomButton from "../../components/CustomButton";
+import CustomTextfield from "../../components/CustomTextfield";
 import HeaderTitle from "../../components/Header/HeaderTitle";
 import styles from "./styles";
 
@@ -25,6 +23,11 @@ export class EditProfile extends Component {
     super(props);
     this.state = {
       pic: "",
+      name: {
+        value: this.props.user.name,
+        message: [],
+        isValid: false,
+      },
     };
   }
 
@@ -45,6 +48,7 @@ export class EditProfile extends Component {
       } else if (response.customButton) {
         console.log("User tapped custom button: ", response.customButton);
       } else {
+        let toastMessage = '', toastType = '';
         try {
           const payload = new FormData();
           payload.append("pic", {
@@ -56,21 +60,80 @@ export class EditProfile extends Component {
             this.props.user.id,
             payload
           );
-          await AsyncStorage.setItem(
-            "user",
-            JSON.stringify(result.payload.user)
-          );
-        } catch (err) {}
+          toastMessage = result.message;
+          await AsyncStorage.setItem("user", JSON.stringify(result.payload.user));
+        } catch (err) {
+          toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+          toastType = 'warning';
+        }
+        this.setState({
+          showToast: true,
+          toastMessage,
+          toastType
+        })
       }
     });
   };
 
+  onNameChange = (text) => {
+    const name = this.state.name;
+    name.value = text;
+    name.message = [];
+    name.isValid = true;
+
+    if (name.value.length == 0 || name.value == "") {
+      name.message.push(ErrorMessage.EMPTY_USER);
+      name.isValid = false;
+    }
+
+    this.setState({ name });
+  };
+
+  onUpdateName = async () => {
+    let toastMessage = '', toastType = '';
+    try {
+      const { name } = this.state
+      const response = await this.props.updateProfile(this.props.user.id, { name: name.value });
+      toastMessage = response.message;
+      await AsyncStorage.setItem("user", JSON.stringify(response.payload.user));
+      this.setState({
+        name: {
+          value: name.value,
+          message: [],
+          isValid: false,
+        }
+      })
+    } catch (err) {
+      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+      toastType = 'warning';
+    }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType
+    })
+  }
+
+  onCancel = () => {
+    this.onNameChange(this.props.user.name)
+  }
+
   render() {
+    const { user } = this.props;
+    const { name, toastMessage, showToast, toastType } = this.state;
+    const isValid = name.isValid
+
     let pic = require("../../assets/Images/user.png");
-    if (this.props.user.pic) pic = { uri: this.props.user.pic };
+    if (user.pic) pic = { uri: user.pic };
 
     return (
       <View style={styles.safeareaview}>
+        <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+          onHide={() => this.setState({ showToast: false })}
+        />
         <SafeAreaView style={styles.contentcenter}>
           <View style={styles.centeredView}>
             <View style={styles.profilecontentcenter}>
@@ -92,27 +155,27 @@ export class EditProfile extends Component {
                   inputstyle={{ paddingRight: 40 }}
                   ifIcon={true}
                   iconname={"user"}
+                  txtvalue={name.value}
+                  errorMsgs={name.message}
+                  onChangeText={this.onNameChange}
                 />
-                <Text style={styles.emailtxt}>johndoe@gmail.com</Text>
+                <Text style={styles.emailtxt}>{user.email}</Text>
               </View>
               <View style={styles.sendcancelmain}>
                 <CustomButton
                   width="48%"
                   btnText="Save"
-                  mainStyle={styles.sendbtn}
-                  btnStyle={styles.sendbtntxt}
-                  onClick={() => {
-                    this.props.navigation.navigate("Profile");
-                  }}
+                  mainStyle={isValid ? styles.sendbtn : styles.sendbtngray}
+                  btnStyle={isValid ? styles.sendbtntxt : styles.sendbtntxtdisable}
+                  disabled={!isValid}
+                  onClick={this.onUpdateName}
                 />
                 <CustomButton
                   width="48%"
                   btnText="Cancel"
                   mainStyle={styles.cancelbtn}
                   btnStyle={styles.cancelbtntxt}
-                  onClick={() => {
-                    this.props.navigation.navigate("Profile");
-                  }}
+                  onClick={this.onCancel}
                 />
               </View>
             </View>
@@ -129,6 +192,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   uploadProfilePic: authOperations.updateProfilePic,
+  updateProfile: authOperations.updateProfile,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);

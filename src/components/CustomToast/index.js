@@ -8,11 +8,11 @@ const CustomToast = (props) => {
   const [showToast, setShowToast] = useState(props.isToastVisible)
 
   useEffect(() => {
-    console.log('isToastVisible', props.isToastVisible)
-    if(props.isToastVisible && props.isToastVisible != showToast){
-      setShowToast(props.isToastVisible)
-      setTimeout(()=> {
-        setShowToast(false)
+    setShowToast(props.isToastVisible)
+    if (props.isToastVisible) {
+      setTimeout(() => {
+        setShowToast(false);
+        props.onHide()
       }, 5000)
     }
   }, [props.isToastVisible])

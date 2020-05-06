@@ -71,3 +71,14 @@ export const changePassword = (userId, payload) => ({
         body: payload
     },
 });
+
+export const updateProfile = (userId, payload) => ({
+    type: types.UPDATE_PROFILE,
+    meta: {
+        async: true,
+        blocking: true,
+        path: `/users/${userId}`,
+        method: "PATCH",
+        body: payload
+    },
+});

@@ -157,6 +157,7 @@ export class CreateEvent extends Component {
           message={toastMessage}
           isToastVisible={showToast}
           type={toastType}
+          onHide={() => this.setState({ showToast: false })}
         />
         <KeyboardAwareScrollView
           contentContainerStyle={{

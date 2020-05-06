@@ -3,7 +3,7 @@ import {
     login as loginAction,
     logout as logoutAction,
     initializeSession, destroySession, forgotPassword,
-    signup, updateProfilePic, changePassword
+    signup, updateProfilePic, changePassword, updateProfile
 } from "./actions";
 
 const login = (payload) => {
@@ -31,5 +31,6 @@ export {
     initializeSession,
     signup,
     updateProfilePic,
-    changePassword
+    changePassword,
+    updateProfile
 };

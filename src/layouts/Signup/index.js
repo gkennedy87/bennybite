@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { toLower } from "lodash"
 import { connect } from "react-redux";
-import { View, Text, TouchableOpacity, Image } from "react-native";
 import ImagePicker from 'react-native-image-picker';
+import { View, Text, TouchableOpacity, Image } from "react-native";
 
 import { authOperations } from "./../../state/ducks/auth";
 import { commonOperations } from "./../../state/ducks/common";
 
+import CustomToast from "../../components/CustomToast";
 import CustomTextfield from "../../components/CustomTextfield";
-import CustomIcon from "../../components/CustomIcon";
 
 import { REGEX } from "../../utils/validation";
 import { ErrorMessage } from "../../utils/message";
@@ -25,8 +25,6 @@ export class Signup extends Component {
     super(props);
     this.state = {
       hasError: true,
-      // isModalVisible: false,
-      // isToastVisible: false,
       hidePassword: true,
       passVisible: true,
       pic: '',
@@ -73,6 +71,26 @@ export class Signup extends Component {
       password.message.push(ErrorMessage.EMPTY_PASS);
       password.isValid = false;
     }
+    if (password.value.length < 8) {
+      password.message.push(ErrorMessage.PASSWORD_LENGTH);
+      password.isValid = false;
+    }
+    if (
+      !password.value.match(REGEX.LOWERCASE) ||
+      !password.value.match(REGEX.UPPERCASE)
+    ) {
+      password.message.push(ErrorMessage.LOWER_UPPER);
+      password.isValid = false;
+    }
+    if (password.value.match(REGEX.SPECIAL_CHARECTERS)) {
+      password.message.push(ErrorMessage.SPECIAL_CHARACTER);
+      password.isValid = false;
+    }
+    if (!password.value.match(REGEX.MIN_NUMBERS)) {
+      password.message.push(ErrorMessage.MIN_NUMBER);
+      password.isValid = false;
+    }
+
     this.setState({ password });
   };
 
@@ -99,17 +117,25 @@ export class Signup extends Component {
   };
 
   onSignup = async () => {
+    let toastMessage = '', toastType = '';
     try {
-      await this.props.signup({
+      const response = await this.props.signup({
         name: toLower(this.state.username.value),
         email: toLower(this.state.email.value),
         password: this.state.password.value,
         pic: this.state.pic
       });
+      toastMessage = response.message;
       this.props.navigation.navigate('Login');
     } catch (err) {
-      console.log(err)
+      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+      toastType = 'warning';
     }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType
+    })
   }
 
   uploadProfilePic = async () => {
@@ -124,27 +150,44 @@ export class Signup extends Component {
       } else if (response.customButton) {
         console.log('User tapped custom button: ', response.customButton);
       } else {
+        let toastMessage = '', toastType = '';
         try {
           const payload = new FormData()
           payload.append("pic", {
-              uri: response.uri,
-              type: response.type,
-              name: response.fileName || 'pic'
+            uri: response.uri,
+            type: response.type,
+            name: response.fileName || 'pic'
           });
-          await this.props.uploadPic(payload);
-          this.setState({ pic: response.uri})
+          const result = await this.props.uploadPic(payload);
+          toastMessage = result.message;
+          this.setState({ pic: response.uri })
         } catch (err) {
-
+          toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+          toastType = 'warning';
         }
+        this.setState({
+          showToast: true,
+          toastMessage,
+          toastType
+        })
       }
     });
   }
 
   render() {
-    const { username, email, password, pic } = this.state;
-    console.log(pic)
+    const { username, email, password, pic, toastMessage, showToast, toastType } = this.state;
+
+    let profilePic = require("../../assets/Images/user.png");
+    if (pic) profilePic = { uri: pic };
+
     return (
       <View style={styles.safeareaview}>
+        <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+          onHide={() => this.setState({ showToast: false })}
+        />
         <KeyboardAwareScrollView
           contentContainerStyle={{
             alignItems: "center",
@@ -160,8 +203,7 @@ export class Signup extends Component {
               <View style={styles.logocenter}>
                 <Text style={styles.prfltxt}>User Profile</Text>
                 <TouchableOpacity style={styles.profileview} onPress={this.uploadProfilePic}>
-                  <Image source={{ uri: pic }} style={styles.profilepic}></Image>
-                  {/* <CustomIcon style={styles.profileicon} name="profilepic" /> */}
+                  <Image source={profilePic} style={styles.profilepic}></Image>
                 </TouchableOpacity>
               </View>
               <Text style={styles.logintxt}>Enter your details to signup</Text>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { get } from "lodash";
+import { get , cloneDeep} from "lodash";
 import { connect } from "react-redux";
 import { View, Text } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -15,6 +15,27 @@ import { authOperations } from "./../../state/ducks/auth";
 
 import styles from "./styles";
 
+const INITIAL_STATE =  {
+  hidePassword: true,
+  hideCurrentPassword: true,
+  hideConfirmPassword: true,
+  currentPassword: {
+    value: "",
+    message: [],
+    isValid: false,
+  },
+  password: {
+    value: "",
+    message: [],
+    isValid: false,
+  },
+  confirmPassword: {
+    value: "",
+    message: [],
+    isValid: false,
+  },
+};
+
 export class ChangePassword extends Component {
   static navigationOptions = () => {
     return {
@@ -24,26 +45,7 @@ export class ChangePassword extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      hidePassword: true,
-      hideCurrentPassword: true,
-      hideConfirmPassword: true,
-      currentPassword: {
-        value: "",
-        message: [],
-        isValid: false,
-      },
-      password: {
-        value: "",
-        message: [],
-        isValid: false,
-      },
-      confirmPassword: {
-        value: "",
-        message: [],
-        isValid: false,
-      },
-    };
+    this.state = cloneDeep(INITIAL_STATE)
   }
 
   onCurrentPasswordChange = (text) => {
@@ -129,16 +131,24 @@ export class ChangePassword extends Component {
         oldPassword: currentPassword.value,
         password: password.value
       });
-      toastMessage = response.message
+      toastMessage = response.message;
+      const state = cloneDeep(INITIAL_STATE)
+      this.setState({
+        ...state,
+        showToast: true,
+        toastMessage,
+        toastType
+      })
+      this.setState(state)
     } catch (err) {
       toastMessage = get(err, 'response.data.message', 'Something went wrong!')
-      toastType = 'warning'
+      toastType = 'warning';
+      this.setState({
+        showToast: true,
+        toastMessage,
+        toastType
+      })
     }
-    this.setState({
-      showToast: true,
-      toastMessage,
-      toastType
-    })
   }
 
   render() {
@@ -146,12 +156,15 @@ export class ChangePassword extends Component {
       hideCurrentPassword, hidePassword, hideConfirmPassword,
       toastMessage, showToast, toastType } = this.state;
 
+    const isValid = currentPassword.isValid && password.isValid && confirmPassword.isValid
+
     return (
       <View style={styles.safeareaview}>
         <CustomToast
           message={toastMessage}
           isToastVisible={showToast}
           type={toastType}
+          onHide={() => this.setState({ showToast: false })}
         />
         <KeyboardAwareScrollView
           contentContainerStyle={{
@@ -180,6 +193,7 @@ export class ChangePassword extends Component {
                   isPassword={true}
                   onChangeText={this.onCurrentPasswordChange}
                   value={currentPassword.value}
+                  txtvalue={currentPassword.value}
                   errorMsgs={currentPassword.message}
                 ></CustomTextfield>
                 <CustomTextfield
@@ -193,6 +207,7 @@ export class ChangePassword extends Component {
                   isPassword={true}
                   onChangeText={this.onPasswordChange}
                   value={password.value}
+                  txtvalue={password.value}
                   errorMsgs={password.message}
                 ></CustomTextfield>
                 <CustomTextfield
@@ -205,14 +220,16 @@ export class ChangePassword extends Component {
                   isPassword={true}
                   onChangeText={this.onConfrimPasswordChange}
                   value={confirmPassword.value}
+                  txtvalue={confirmPassword.value}
                   errorMsgs={confirmPassword.message}
                 ></CustomTextfield>
 
                 <View style={styles.loginbtnmain}>
                   <CustomButton
                     btnText="Submit"
-                    mainStyle={styles.loginyellow}
-                    btnStyle={styles.withlogin}
+                    mainStyle={[isValid ? styles.loginyellow : styles.logingray, styles.loginbtn]}
+                    btnStyle={isValid ? styles.withlogin : styles.withoutlogin}
+                    disabled={!isValid}
                     onClick={this.onChangePassword}
                   />
                 </View>
