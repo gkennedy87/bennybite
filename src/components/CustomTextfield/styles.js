@@ -1,8 +1,8 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {Color, Font} from '../../utils/variable';
-import {isIOS} from '../../utils/theme';
+import { StyleSheet, Dimensions } from "react-native";
+import { Color, Font } from "../../utils/variable";
+import { isIOS } from "../../utils/theme";
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   inputview: {},
@@ -15,14 +15,14 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     height: 48,
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 5,
   },
   error: {
     color: Color.TXT_RED,
     fontSize: Font.FONTSIZE_13,
     fontFamily: Font.MYRIAD_REGULAR,
-    position: 'relative',
+    position: "relative",
     top: isIOS() ? 2 : 0,
   },
   errorView: {
@@ -33,16 +33,16 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     height: 38,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   showbtn: {
     height: 30,
     width: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     right: 5,
     top: 9,
-    position: 'absolute',
+    position: "absolute",
   },
   showbtnicon: {
     color: Color.PLACEHOLDER,
@@ -51,11 +51,11 @@ const styles = StyleSheet.create({
   inputiconmain: {
     height: 30,
     width: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     right: 5,
-    top: 9,
-    position: 'absolute',
+    top: 8,
+    position: "absolute",
   },
   inputicon: {
     color: Color.PLACEHOLDER,

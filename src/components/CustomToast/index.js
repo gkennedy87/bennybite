@@ -27,7 +27,7 @@ const CustomToast = (props) => {
       hideOnPress={true}
       opacity={1}
       backgroundColor={Color.BACK_WHITE}
-      position={150}
+      position={60}
       textColor={props.type == "warning" ? Color.TXT_RED : Color.TXT_GREEN}
     >
       <Text style={styles.toasttxt}>{props.message}</Text>

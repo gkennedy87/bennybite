@@ -2,15 +2,21 @@ import React, { Component } from 'react';
 import { toLower, get } from "lodash"
 import AsyncStorage from "@react-native-community/async-storage"
 import { connect } from "react-redux";
-import { View, Image, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Image,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 
 import { authOperations } from "./../../state/ducks/auth";
 
-import CustomButton from '../../components/CustomButton';
-import CustomTextfield from '../../components/CustomTextfield';
+import CustomButton from "../../components/CustomButton";
+import CustomTextfield from "../../components/CustomTextfield";
 
-import { REGEX } from '../../utils/validation';
-import { ErrorMessage } from '../../utils/message';
+import { REGEX } from "../../utils/validation";
+import { ErrorMessage } from "../../utils/message";
 
 import CustomToast from "../../components/CustomToast";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -81,12 +87,12 @@ export class Login extends Component {
     try {
       let { user, tokens } = await this.props.login({
         email: toLower(this.state.email.value),
-        password: this.state.password.value
+        password: this.state.password.value,
       });
-      await AsyncStorage.setItem('isAuthenticated', 'true');
-      await AsyncStorage.setItem('user', JSON.stringify(user));
-      await AsyncStorage.setItem('tokens', JSON.stringify(tokens));
-      this.props.navigation.navigate('Events');
+      await AsyncStorage.setItem("isAuthenticated", "true");
+      await AsyncStorage.setItem("user", JSON.stringify(user));
+      await AsyncStorage.setItem("tokens", JSON.stringify(tokens));
+      this.props.navigation.navigate("Events");
     } catch (err) {
       this.setState({
         showToast: true,
@@ -94,7 +100,7 @@ export class Login extends Component {
         toastType: 'warning'
       })
     }
-  }
+  };
 
   render() {
     const { email, password, hidePassword, toastMessage, toastType, showToast } = this.state;

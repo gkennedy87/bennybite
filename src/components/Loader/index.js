@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   loadertxt: {
     marginTop: 10,
     fontFamily: Font.MYRIAD_SEMIBOLD,
-    fontSize: Font.FONTSIZE_18,
+    fontSize: Font.FONTSIZE_16,
     color: Color.TXT_WHITE,
   },
 });

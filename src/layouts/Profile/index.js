@@ -1,11 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { View, SafeAreaView, Text, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 
-import HeaderTitle from '../../components/Header/HeaderTitle';
-import HeaderRight from '../../components/Header/HeaderRight';
-import styles from './styles';
+import HeaderTitle from "../../components/Header/HeaderTitle";
+import HeaderRight from "../../components/Header/HeaderRight";
+import styles from "./styles";
 
 export class Profile extends Component {
   constructor(props) {
@@ -15,13 +21,13 @@ export class Profile extends Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      headerTitle: () => <HeaderTitle title={'Settings'} />,
-      headerTitle: () => <HeaderTitle title={'Settings'} />,
+      headerTitle: () => <HeaderTitle title={"Settings"} />,
+      headerTitle: () => <HeaderTitle title={"Settings"} />,
       headerRight: (
         <HeaderRight
           buttonTitle="Edit"
           onPress={() => {
-            navigation.navigate('EditProfile');
+            navigation.navigate("EditProfile");
           }}
         />
       ),
@@ -50,14 +56,16 @@ export class Profile extends Component {
                   <View style={styles.line}></View>
                   <TouchableOpacity
                     onPress={() => {
-                      this.props.navigation.navigate('ChangePassword');
-                    }}>
+                      this.props.navigation.navigate("ChangePassword");
+                    }}
+                  >
                     <Text style={styles.chnpasstxt}>Change password</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
-                      this.props.navigation.navigate('Login');
-                    }}>
+                      this.props.navigation.navigate("Login");
+                    }}
+                  >
                     <Text style={styles.logouttxt}>Logout</Text>
                   </TouchableOpacity>
                 </View>
@@ -71,7 +79,7 @@ export class Profile extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: get(state, 'auth.session.user', {})
+  user: get(state, "auth.session.user", {}),
 });
 
 const mapDispatchToProps = {};
