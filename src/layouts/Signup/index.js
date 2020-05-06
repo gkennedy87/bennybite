@@ -160,7 +160,7 @@ export class Signup extends Component {
           });
           const result = await this.props.uploadPic(payload);
           toastMessage = result.message;
-          this.setState({ pic: response.uri })
+          this.setState({ pic: result.payload.url })
         } catch (err) {
           toastMessage = get(err, 'response.data.message', 'Something went wrong!')
           toastType = 'warning';
