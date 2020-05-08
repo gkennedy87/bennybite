@@ -268,7 +268,7 @@ export class EventsDetails extends Component {
             <View>
               <Text style={styles.available}>12:30pm</Text>
             </View>
-            {role === userRole[3] &&
+            {role !== userRole[2] &&
               <View style={styles.btnview}>
                 <CustomButton
                   btnText="Send notification"
