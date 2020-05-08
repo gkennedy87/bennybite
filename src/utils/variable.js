@@ -38,3 +38,9 @@ export const Font = {
 export const Globals = {
   isIpad: DeviceInfo.isTablet(),
 };
+
+export const userRole = [
+  'admin',
+  'staff',
+  'user'
+]

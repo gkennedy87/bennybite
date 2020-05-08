@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { get} from "lodash";
+import { get } from "lodash";
 import { View, ScrollView, Modal, Text, Animated, Dimensions, TouchableOpacity } from 'react-native';
 import { eventOperations } from "./../../../state/ducks/event";
 import CustomTextfield from '../../../components/CustomTextfield';
 import CustomButton from '../../../components/CustomButton';
 import CustomIcon from '../../../components/CustomIcon';
 import styles from './styles';
-import { Font } from '../../../utils/variable';
+import { Font, userRole } from '../../../utils/variable';
 
 export class EventsDetails extends Component {
   constructor(props) {
@@ -18,6 +18,10 @@ export class EventsDetails extends Component {
       ActionModalVisible: false,
       scrollOffset: new Animated.Value(0),
       titleWidth: 0,
+      notification: {
+        title: "",
+        body: ""
+      }
     };
   }
 
@@ -27,6 +31,11 @@ export class EventsDetails extends Component {
 
   componentDidMount() {
     this.state.scrollOffset.addListener(({ value }) => (this.offset = value));
+    const { notification } = this.state;
+    notification.title = this.props.navigation.state.params.event.name;
+    this.setState({
+      notification
+    })
   }
 
   onScroll = (e) => {
@@ -64,11 +73,29 @@ export class EventsDetails extends Component {
       return 'Past'
   }
 
+  onNotificationChange = (key, value) => {
+    const { notification } = this.state;
+    if (key === 'title')
+      notification.title = value
+    else
+      notification.body = value
+
+    this.setState({
+      notification
+    })
+  }
+
+  isSendDisabled = () => {
+    const { notification } = this.state;
+    return notification.title.length == 0 || notification.body.length == 0
+  }
+
   render() {
     const screenWidth = Dimensions.get('window').width;
     const event = this.props.navigation.state.params.event;
     const { modalVisible, ActionModalVisible, scrollOffset } = this.state;
     const { role, id } = this.props.user;
+    const { notification } = this.state;
 
     let isEventOwner = false;
     if (role === 'admin')
@@ -117,16 +144,19 @@ export class EventsDetails extends Component {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <CustomTextfield
-                placeholder={event.name}
+                placeholder={'Enter title'}
+                txtvalue={notification.title}
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
                 inputstyle={{
                   fontFamily: Font.MYRIAD_SEMIBOLD,
                   fontSize: Font.FONTSIZE_16,
                 }}
-              ></CustomTextfield>
+                onChangeText={(value) => this.onNotificationChange('title', value)}
+              />
               <CustomTextfield
                 placeholder="Start typing..."
+                txtvalue={notification.body}
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
                 inputstyle={{
@@ -136,13 +166,15 @@ export class EventsDetails extends Component {
                   textAlignVertical: 'top',
                 }}
                 multiline={true}
-              ></CustomTextfield>
+                onChangeText={(value) => this.onNotificationChange('body', value)}
+              />
               <View style={styles.sendcancelmain}>
                 <CustomButton
                   width="48%"
                   btnText="Send"
                   mainStyle={styles.sendbtn}
                   btnStyle={styles.sendbtntxt}
+                  disabled={this.isSendDisabled()}
                   onClick={() => {
                     this.setModalVisible(!modalVisible);
                   }}
@@ -236,16 +268,18 @@ export class EventsDetails extends Component {
             <View>
               <Text style={styles.available}>12:30pm</Text>
             </View>
-            <View style={styles.btnview}>
-              <CustomButton
-                btnText="Send notification"
-                mainStyle={styles.sendnotification}
-                btnStyle={styles.sendnotificationtxt}
-                onClick={() => {
-                  this.setModalVisible(true);
-                }}
-              />
-            </View>
+            {role === userRole[3] &&
+              <View style={styles.btnview}>
+                <CustomButton
+                  btnText="Send notification"
+                  mainStyle={styles.sendnotification}
+                  btnStyle={styles.sendnotificationtxt}
+                  onClick={() => {
+                    this.setModalVisible(true);
+                  }}
+                />
+              </View>
+            }
             <View>
               <Text style={styles.locationtxt}>Location</Text>
               <Text style={styles.addresstxt}>
