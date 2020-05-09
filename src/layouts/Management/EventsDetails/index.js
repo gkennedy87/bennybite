@@ -19,6 +19,7 @@ export class EventsDetails extends Component {
       ActionModalVisible: false,
       scrollOffset: new Animated.Value(0),
       titleWidth: 0,
+      event: {},
       notification: {
         title: "",
         message: ""
@@ -30,13 +31,18 @@ export class EventsDetails extends Component {
     header: null,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    try {
+      const response = await this.props.getEvent(this.props.navigation.state.params.eventId);
+      const { event } = response.payload;
+      this.setState({ event, notification : {
+        title: event.name,
+        message: ""
+      }})
+    } catch (err) {
+
+    }
     this.state.scrollOffset.addListener(({ value }) => (this.offset = value));
-    const { notification } = this.state;
-    notification.title = this.props.navigation.state.params.event.name;
-    this.setState({
-      notification
-    })
   }
 
   onScroll = (e) => {
@@ -51,7 +57,7 @@ export class EventsDetails extends Component {
         {
           modalVisible: visible,
           notification: {
-            title: this.props.navigation.state.params.event.name,
+            title: this.state.event.name,
             message: ''
           }
         }
@@ -121,8 +127,7 @@ export class EventsDetails extends Component {
 
   render() {
     const screenWidth = Dimensions.get('window').width;
-    const event = this.props.navigation.state.params.event;
-    const { modalVisible, ActionModalVisible, scrollOffset } = this.state;
+    const { modalVisible, ActionModalVisible, scrollOffset, event } = this.state;
     const { role, id } = this.props.user;
     const { notification, toastMessage, showToast, toastType } = this.state;
 
@@ -347,7 +352,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   deleteEvent: eventOperations.deleteEvent,
-  sendNotification: eventOperations.sendNotification
+  sendNotification: eventOperations.sendNotification,
+  getEvent: eventOperations.getEvent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventsDetails);

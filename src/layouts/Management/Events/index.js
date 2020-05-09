@@ -220,7 +220,7 @@ export class Events extends Component {
       </View>
       <TouchableHighlight
         onPress={() => {
-          this.props.navigation.navigate('EventsDetails', { event: item });
+          this.props.navigation.navigate('EventsDetails', { eventId: item._id });
         }}
         style={styles.swiperowpadd}
         underlayColor={"#ffffff"}

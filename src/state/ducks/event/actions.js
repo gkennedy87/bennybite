@@ -53,3 +53,12 @@ export const sendNotification = (eventId, notification) => ({
     },
 });
 
+export const getEvent = (eventId) => ({
+    type: types.FETCH,
+    meta: {
+        async: true,
+        blocking: true,
+        path: `/events/${eventId}`,
+        method: "GET"
+    },
+});

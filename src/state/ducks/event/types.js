@@ -17,3 +17,7 @@ export const DELETE_FAILED = "event/DELETE_FAILED";
 export const SEND_NOTIFICATION = "event/SEND_NOTIFICATION";
 export const SEND_NOTIFICATION_COMPLETED = "event/SEND_NOTIFICATION_COMPLETED";
 export const SEND_NOTIFICATION_FAILED = "event/SEND_NOTIFICATION_FAILED";
+
+export const FETCH = "event/FETCH";
+export const FETCH_COMPLETED = "event/FETCH_COMPLETED";
+export const FETCH_FAILED = "event/FETCH_FAILED";
