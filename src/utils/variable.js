@@ -37,6 +37,9 @@ export const Font = {
 
 export const Globals = {
   isIpad: DeviceInfo.isTablet(),
+
+  kDeviceToken: "deviceToken",
+  kDeviceType: "deviceType",
 };
 
 export const userRole = [

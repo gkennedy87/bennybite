@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { View, ScrollView, Modal, Text, Animated, Dimensions, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Modal, Text, Animated, Dimensions, TouchableOpacity, Keyboard } from 'react-native';
 import { eventOperations } from "./../../../state/ducks/event";
 import CustomToast from '../../../components/CustomToast';
 import CustomTextfield from '../../../components/CustomTextfield';
@@ -35,10 +35,12 @@ export class EventsDetails extends Component {
     try {
       const response = await this.props.getEvent(this.props.navigation.state.params.eventId);
       const { event } = response.payload;
-      this.setState({ event, notification : {
-        title: event.name,
-        message: ""
-      }})
+      this.setState({
+        event, notification: {
+          title: event.name,
+          message: ""
+        }
+      })
     } catch (err) {
 
     }
@@ -181,7 +183,7 @@ export class EventsDetails extends Component {
         </Modal>
 
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
-          <View style={styles.centeredView}>
+          <TouchableOpacity style={styles.centeredView} activeOpacity={1} onPress={() => Keyboard.dismiss()}>
             <View style={styles.modalView}>
               <CustomTextfield
                 placeholder={'Enter title'}
@@ -230,7 +232,7 @@ export class EventsDetails extends Component {
                 />
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </Modal>
 
         <View style={styles.eventbackbtn}>

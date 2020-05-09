@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-community/async-storage"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { authOperations } from "./../../state/ducks/auth";
+import { Globals } from '../../utils/variable'
 
 import CustomButton from "../../components/CustomButton";
 import CustomTextfield from "../../components/CustomTextfield";
@@ -79,9 +80,13 @@ export class Login extends Component {
 
   onLogin = async () => {
     try {
+      const device_token = await AsyncStorage.getItem(Globals.kDeviceToken);
+      const device_type = await AsyncStorage.getItem(Globals.kDeviceType);
       let { user, tokens } = await this.props.login({
         email: toLower(this.state.email.value),
         password: this.state.password.value,
+        device_token,
+        device_type
       });
       await AsyncStorage.setItem("isAuthenticated", "true");
       await AsyncStorage.setItem("user", JSON.stringify(user));
@@ -138,10 +143,11 @@ export class Login extends Component {
                   inputstyle={{ paddingRight: 40 }}
                   ifIcon={true}
                   iconname={"email"}
+                  keyboardType={"email-address"}
                   onChangeText={this.onEmailTextChange}
                   value={email.value}
                   errorMsgs={email.message}
-                ></CustomTextfield>
+                />
 
                 <CustomTextfield
                   placeholder="Password"
@@ -155,7 +161,7 @@ export class Login extends Component {
                   onChangeText={this.onPasswordChange}
                   value={password.value}
                   errorMsgs={password.message}
-                ></CustomTextfield>
+                />
 
                 <View style={styles.forgotbtn}>
                   <CustomButton
