@@ -1,8 +1,9 @@
-import { fetchList, insertEvent, updateEvent, deleteEvent } from "./actions";
+import { fetchList, insertEvent, updateEvent, deleteEvent, sendNotification } from "./actions";
 
 export {
     fetchList,
     insertEvent,
     updateEvent,
-    deleteEvent
+    deleteEvent,
+    sendNotification
 };

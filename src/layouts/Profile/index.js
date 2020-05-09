@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import AsyncStorage from "@react-native-community/async-storage"
 import { connect } from "react-redux";
 import { get } from "lodash";
 import {
@@ -62,7 +63,8 @@ export class Profile extends Component {
                     <Text style={styles.chnpasstxt}>Change password</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => {
+                    onPress={async () => {
+                      await AsyncStorage.clear()
                       this.props.navigation.navigate("Login");
                     }}
                   >

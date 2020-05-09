@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { View, ScrollView, Modal, Text, Animated, Dimensions, TouchableOpacity } from 'react-native';
 import { eventOperations } from "./../../../state/ducks/event";
+import CustomToast from '../../../components/CustomToast';
 import CustomTextfield from '../../../components/CustomTextfield';
 import CustomButton from '../../../components/CustomButton';
 import CustomIcon from '../../../components/CustomIcon';
@@ -20,7 +21,7 @@ export class EventsDetails extends Component {
       titleWidth: 0,
       notification: {
         title: "",
-        body: ""
+        message: ""
       }
     };
   }
@@ -45,6 +46,17 @@ export class EventsDetails extends Component {
   };
 
   setModalVisible = (visible) => {
+    if (!visible) {
+      this.setState(
+        {
+          modalVisible: visible,
+          notification: {
+            title: this.props.navigation.state.params.event.name,
+            message: ''
+          }
+        }
+      )
+    }
     this.setState({ modalVisible: visible });
   };
 
@@ -59,6 +71,23 @@ export class EventsDetails extends Component {
     } catch (err) {
       console.log(err)
     }
+  }
+
+  onSendNotification = async (eventId) => {
+    let toastMessage = '', toastType = '';
+    try {
+      const response = await this.props.sendNotification(eventId, this.state.notification)
+      toastMessage = response.message
+    } catch (err) {
+      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+      toastType = 'warning'
+    }
+    this.setModalVisible(false);
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType
+    })
   }
 
   getEventStatus = (startDate, endDate) => {
@@ -78,7 +107,7 @@ export class EventsDetails extends Component {
     if (key === 'title')
       notification.title = value
     else
-      notification.body = value
+      notification.message = value
 
     this.setState({
       notification
@@ -87,7 +116,7 @@ export class EventsDetails extends Component {
 
   isSendDisabled = () => {
     const { notification } = this.state;
-    return notification.title.length == 0 || notification.body.length == 0
+    return notification.title.length == 0 || notification.message.length == 0
   }
 
   render() {
@@ -95,7 +124,7 @@ export class EventsDetails extends Component {
     const event = this.props.navigation.state.params.event;
     const { modalVisible, ActionModalVisible, scrollOffset } = this.state;
     const { role, id } = this.props.user;
-    const { notification } = this.state;
+    const { notification, toastMessage, showToast, toastType } = this.state;
 
     let isEventOwner = false;
     if (role === 'admin')
@@ -105,6 +134,12 @@ export class EventsDetails extends Component {
 
     return (
       <View style={styles.container}>
+        <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+          onHide={() => this.setState({ showToast: false })}
+        />
         <Modal
           animationType="slide"
           transparent={true}
@@ -156,7 +191,7 @@ export class EventsDetails extends Component {
               />
               <CustomTextfield
                 placeholder="Start typing..."
-                txtvalue={notification.body}
+                txtvalue={notification.message}
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
                 inputstyle={{
@@ -166,7 +201,7 @@ export class EventsDetails extends Component {
                   textAlignVertical: 'top',
                 }}
                 multiline={true}
-                onChangeText={(value) => this.onNotificationChange('body', value)}
+                onChangeText={(value) => this.onNotificationChange('message', value)}
               />
               <View style={styles.sendcancelmain}>
                 <CustomButton
@@ -176,7 +211,7 @@ export class EventsDetails extends Component {
                   btnStyle={styles.sendbtntxt}
                   disabled={this.isSendDisabled()}
                   onClick={() => {
-                    this.setModalVisible(!modalVisible);
+                    this.onSendNotification(event._id)
                   }}
                 />
                 <CustomButton
@@ -311,7 +346,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  deleteEvent: eventOperations.deleteEvent
+  deleteEvent: eventOperations.deleteEvent,
+  sendNotification: eventOperations.sendNotification
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventsDetails);

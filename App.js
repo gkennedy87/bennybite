@@ -7,8 +7,9 @@ import React, { Component } from "react";
 import { View, StyleSheet } from "react-native";
 import { Provider } from "react-redux";
 import SplashScreen from "react-native-splash-screen";
-import { createAppContainer } from "react-navigation";
+import { createAppContainer, withNavigation } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
+import AsyncStorage from "@react-native-community/async-storage"
 
 import { configPushNotification } from "./src/config/pushNotification";
 
@@ -38,8 +39,20 @@ import configureStore from "./src/state/store";
 
 const store = configureStore({});
 
+const Authanticate = withNavigation((props) => {
+  AsyncStorage.getItem('isAuthenticated').then(authenticated => {
+    if (authenticated) {
+      props.navigation.navigate('Events')
+    } else {
+      props.navigation.navigate('Login')
+    }
+  })
+  return <></>
+})
+
 const AppNavigator = createStackNavigator(
   {
+    Authanticate: { screen: Authanticate },
     Login: { screen: Login },
     Signup: { screen: Signup },
     ForgotPassword: { screen: ForgotPassword },
@@ -54,7 +67,7 @@ const AppNavigator = createStackNavigator(
     TermsConditions: { screen: TermsConditions },
   },
   {
-    initialRouteName: "Login",
+    initialRouteName: "Authanticate",
     defaultNavigationOptions: ({ navigation }) => ({
       gesturesEnabled: false,
       headerTransparent: false,
@@ -79,7 +92,9 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    SplashScreen.hide();
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 5000)
   }
 
   _handleConnectivityChange = (state) => {

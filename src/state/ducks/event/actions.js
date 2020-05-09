@@ -42,3 +42,14 @@ export const deleteEvent = (eventId) => ({
     },
 });
 
+export const sendNotification = (eventId, notification) => ({
+    type: types.SEND_NOTIFICATION,
+    meta: {
+        async: true,
+        blocking: true,
+        path: `/events/${eventId}/send-notification`,
+        method: "POST",
+        body: notification
+    },
+});
+

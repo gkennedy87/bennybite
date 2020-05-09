@@ -120,6 +120,7 @@ export class CreateEvent extends Component {
   };
 
   onEventStartDate = (date) => {
+    const endDate = this.state.endDate;
     const startDate = this.state.startDate;
     startDate.value = date;
     startDate.message = [];
@@ -128,12 +129,18 @@ export class CreateEvent extends Component {
     if (!startDate.value) {
       startDate.message.push(ErrorMessage.EMPTY_EVENT_START_DATE);
       startDate.isValid = false;
+    } else if (endDate.value && startDate.value.getTime() > endDate.value.getTime()) {
+      startDate.message.push(ErrorMessage.START_DATE);
+      startDate.isValid = false;
+    } else {
+      endDate.message = []
     }
 
-    this.setState({ startDate });
+    this.setState({ startDate, endDate });
   };
 
   onEventEndDate = (date) => {
+    const startDate = this.state.startDate;
     const endDate = this.state.endDate;
     endDate.value = date;
     endDate.message = [];
@@ -142,8 +149,13 @@ export class CreateEvent extends Component {
     if (!endDate.value) {
       endDate.message.push(ErrorMessage.EMPTY_EVENT_END_DATE);
       endDate.isValid = false;
+    } else if (startDate.value && startDate.value.getTime() > endDate.value.getTime()) {
+      endDate.message.push(ErrorMessage.END_DATE);
+      endDate.isValid = false;
+    } else {
+      startDate.message = []
     }
-    this.setState({ endDate });
+    this.setState({ endDate, startDate });
   };
 
   render() {
@@ -153,7 +165,7 @@ export class CreateEvent extends Component {
     const isValid = name.isValid && info.isValid && location.isValid && startDate.isValid && endDate.isValid
     return (
       <View style={styles.safeareaview}>
-         <CustomToast
+        <CustomToast
           message={toastMessage}
           isToastVisible={showToast}
           type={toastType}
@@ -250,6 +262,7 @@ export class CreateEvent extends Component {
                   ifIcon={true}
                   iconname={"map"}
                   txtvalue={endDateValue}
+                  errorMsgs={endDate.message}
                 />
 
                 <TouchableOpacity
