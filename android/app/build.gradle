@@ -192,8 +192,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
     // Firebase remote notifications
-//    implementation 'com.google.firebase:firebase-analytics:+'
-    implementation "com.google.android.gms:play-services-gcm:+"
+    implementation 'com.google.firebase:firebase-analytics:17.3.0'
     // Firebase remote notifications
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
