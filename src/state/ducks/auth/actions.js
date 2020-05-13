@@ -11,8 +11,15 @@ export const login = (payload) => ({
     },
 });
 
-export const logout = () => ({
+export const logout = (payload) => ({
     type: types.LOGOUT,
+    meta: {
+        async: true,
+        blocking: true,
+        path: "/auth/logout",
+        method: "POST",
+        body: payload
+    },
 });
 
 export const authenticated = () => ({

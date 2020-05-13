@@ -9,10 +9,11 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-
+import { authOperations } from "./../../state/ducks/auth";
 import HeaderTitle from "../../components/Header/HeaderTitle";
 import HeaderRight from "../../components/Header/HeaderRight";
 import styles from "./styles";
+import { Globals } from "../../utils/variable";
 
 export class Profile extends Component {
   constructor(props) {
@@ -63,11 +64,7 @@ export class Profile extends Component {
                     <Text style={styles.chnpasstxt}>Change password</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={async () => {
-                      await AsyncStorage.clear()
-                      this.props.navigation.navigate("Login");
-                    }}
-                  >
+                    onPress={this.onLogout}>
                     <Text style={styles.logouttxt}>Logout</Text>
                   </TouchableOpacity>
                 </View>
@@ -78,12 +75,28 @@ export class Profile extends Component {
       </View>
     );
   }
+
+  onLogout = async () => {
+    try {
+      const device_token = await AsyncStorage.getItem(Globals.kDeviceToken);
+      const device_type = await AsyncStorage.getItem(Globals.kDeviceType);
+      await this.props.logout({
+        device_type
+      });
+      await AsyncStorage.clear()
+      await AsyncStorage.setItem(Globals.kDeviceToken, device_token);
+      await AsyncStorage.setItem(Globals.kDeviceType, device_type);
+      this.props.navigation.navigate("Login");
+    } catch (err) {
+      console.log("Errror", err);
+    }
+  };
 }
 
 const mapStateToProps = (state) => ({
   user: get(state, "auth.session.user", {}),
 });
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = { logout: authOperations.logout };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

@@ -19,8 +19,10 @@ const login = (payload) => {
 
 const logout = (payload) => {
     return async (dispatch) => {
-        await dispatch(logoutAction());
-        await dispatch(destroySession())
+        // await dispatch(logoutAction());
+        // await dispatch(destroySession());
+        await dispatch(logoutAction(payload));
+        await dispatch(destroySession());
     };
 }
 
