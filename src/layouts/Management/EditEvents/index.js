@@ -1,15 +1,19 @@
 import React, { Component } from "react";
-import { Modal, View, Text, TouchableOpacity } from "react-native";
-import { connect } from "react-redux";
-import { eventOperations } from "./../../../state/ducks/event";
-import CustomTextfield from "../../../components/CustomTextfield";
-import CustomButton from "../../../components/CustomButton";
-import HeaderTitle from "../../../components/Header/HeaderTitle";
-import { REGEX } from "../../../utils/validation";
-import { ErrorMessage } from "../../../utils/message";
 import moment from "moment";
+import { get } from "lodash";
+import { connect } from "react-redux";
+import { Modal, View, Text, TouchableOpacity } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
+import { eventOperations } from "./../../../state/ducks/event";
+
+import CustomButton from "../../../components/CustomButton";
+import CustomToast from "../../../components/CustomToast";
+import CustomTextfield from "../../../components/CustomTextfield";
+import HeaderTitle from "../../../components/Header/HeaderTitle";
+import { ErrorMessage } from "../../../utils/message";
+
 import styles from "./styles";
 import { Globals } from "../../../utils/variable";
 
@@ -18,14 +22,35 @@ export class EditEvents extends Component {
     super(props);
     const event = this.props.navigation.state.params.event;
     this.state = {
-      isStartDate: false,
-      startDate: "",
-      isEndDate: false,
-      endDate: "",
-      ...event,
-      startDate: new Date(event.startDate),
-      endDate: new Date(event.endDate),
-      ActionModalVisible: false,
+      showStartDate: false,
+      showEndDate: false,
+      showDeleteModel: false,
+      eventId: event._id,
+      name: {
+        value: event.name,
+        message: [],
+        isValid: true,
+      },
+      info: {
+        value: event.info,
+        message: [],
+        isValid: true,
+      },
+      location: {
+        value: event.location,
+        message: [],
+        isValid: true,
+      },
+      startDate: {
+        value: new Date(event.startDate),
+        message: [],
+        isValid: true,
+      },
+      endDate: {
+        value: new Date(event.endDate),
+        message: [],
+        isValid: true,
+      }
     };
   }
 
@@ -36,50 +61,157 @@ export class EditEvents extends Component {
   };
 
   onUpdateEvent = async () => {
+    let toastMessage = '', toastType = '';
+    const { name, info, location, startDate, endDate , eventId} = this.state
     try {
-      await this.props.updateEvent(this.state._id, {
-        name: this.state.name,
-        info: this.state.info,
-        location: this.state.location,
+      const response = await this.props.updateEvent(eventId, {
+        name: name.value,
+        info: info.value,
+        location: location.value,
+        startDate: startDate.value,
+        endDate: endDate.value
       });
+      toastMessage = response.message;
       this.props.navigation.navigate("Events");
     } catch (err) {
-      console.log(err);
+      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+      toastType = 'warning'
     }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType
+    })
   };
 
   onDeleteEvent = async () => {
+    let toastMessage = '', toastType = '';
     try {
-      await this.props.deleteEvent(this.state._id);
+      const response = await this.props.deleteEvent(this.state.eventId);
+      toastMessage = response.message;
       this.props.navigation.navigate("Events");
     } catch (err) {
-      console.log(err);
+      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+      toastType = 'warning'
     }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType,
+      showDeleteModel: false
+    })
   };
 
   setActionModalVisible = (visible) => {
-    this.setState({ ActionModalVisible: visible });
+    this.setState({ showDeleteModel: visible });
+  };
+
+  onEventName = (text) => {
+    const name = this.state.name;
+    name.value = text;
+    name.message = [];
+    name.isValid = true;
+
+    if (name.value.length == 0 || name.value == "") {
+      name.message.push(ErrorMessage.EMPTY_EVENT);
+      name.isValid = false;
+    }
+    this.setState({ name });
+  };
+
+  onEventInfo = (text) => {
+    const info = this.state.info;
+    info.value = text;
+    info.message = [];
+    info.isValid = true;
+
+    if (info.value.length == 0 || info.value == "") {
+      info.message.push(ErrorMessage.EMPTY_EVENT_INFO);
+      info.isValid = false;
+    }
+    this.setState({ info });
+  };
+
+  onEventLocation = (text) => {
+    const location = this.state.location;
+    location.value = text;
+    location.message = [];
+    location.isValid = true;
+
+    if (location.value.length == 0 || location.value == "") {
+      location.message.push(ErrorMessage.EMPTY_EVENT_LOCATION);
+      location.isValid = false;
+    }
+    this.setState({ location });
+  };
+
+  onEventStartDate = (date) => {
+    const endDate = this.state.endDate;
+    const startDate = this.state.startDate;
+    startDate.value = date;
+    startDate.message = [];
+    startDate.isValid = true;
+
+    if (!startDate.value) {
+      startDate.message.push(ErrorMessage.EMPTY_EVENT_START_DATE);
+      startDate.isValid = false;
+    } else if (endDate.value && startDate.value.getTime() > endDate.value.getTime()) {
+      startDate.message.push(ErrorMessage.START_DATE);
+      startDate.isValid = false;
+    } else if (startDate.value.getTime() < new Date(new Date().toISOString().slice(0, 10)).getTime()) {
+      startDate.message.push(ErrorMessage.START_DATE_TODAY);
+      startDate.isValid = false;
+    } else {
+      if (endDate.value && endDate.value.getTime() > new Date(new Date().toISOString().slice(0, 10)).getTime()) {
+        endDate.message = [];
+        endDate.isValid = true;
+      }
+    }
+    this.setState({ startDate, endDate });
+  };
+
+  onEventEndDate = (date) => {
+    const startDate = this.state.startDate;
+    const endDate = this.state.endDate;
+    endDate.value = date;
+    endDate.message = [];
+    endDate.isValid = true;
+
+    if (!endDate.value) {
+      endDate.message.push(ErrorMessage.EMPTY_EVENT_END_DATE);
+      endDate.isValid = false;
+    } else if (startDate.value && startDate.value.getTime() > endDate.value.getTime()) {
+      endDate.message.push(ErrorMessage.END_DATE);
+      endDate.isValid = false;
+    } else if (endDate.value.getTime() < new Date(new Date().toISOString().slice(0, 10)).getTime()) {
+      endDate.message.push(ErrorMessage.END_DATE_TODAY);
+      endDate.isValid = false;
+    } else {
+      if (startDate.value.getTime() > new Date(new Date().toISOString().slice(0, 10)).getTime()) {
+        startDate.message = [];
+        startDate.isValid = true;
+      }
+    }
+    this.setState({ endDate, startDate });
   };
 
   render() {
-    const { navigate } = this.props.navigation;
-    const {
-      startDate,
-      endDate,
-      isStartDate,
-      isEndDate,
-      ActionModalVisible,
-      name,
-      info,
-      location,
-    } = this.state;
-
+    const { startDate, endDate, showStartDate, showEndDate, name, info, location, toastMessage, toastType, showToast, showDeleteModel } = this.state;;
+    const startDateValue = startDate.value ? moment(startDate.value).format("hh:mma, DD-MM-YYYY") : ''
+    const endDateValue = endDate.value ? moment(endDate.value).format("hh:mma, DD-MM-YYYY") : ''
+    const isValid = name.isValid && info.isValid && location.isValid && startDate.isValid && endDate.isValid
     return (
       <View style={styles.safeareaview}>
+        <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+          onHide={() => this.setState({ showToast: false })}
+        />
         <Modal
           animationType="slide"
           transparent={true}
-          visible={ActionModalVisible}
+          visible={showDeleteModel}
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
@@ -93,7 +225,7 @@ export class EditEvents extends Component {
                   mainStyle={styles.actiondelete}
                   btnStyle={styles.actiondeletetxt}
                   onClick={() => {
-                    this.setState({ ActionModalVisible: false }, () =>
+                    this.setState({ showDeleteModel: false }, () =>
                       this.onDeleteEvent()
                     );
                   }}
@@ -104,14 +236,13 @@ export class EditEvents extends Component {
                   mainStyle={styles.actioncancelbtn}
                   btnStyle={styles.actioncancelbtntxt}
                   onClick={() => {
-                    this.setActionModalVisible(!ActionModalVisible);
+                    this.setActionModalVisible(!showDeleteModel);
                   }}
                 />
               </View>
             </View>
           </View>
         </Modal>
-
         <KeyboardAwareScrollView
           contentContainerStyle={{
             alignItems: "center",
@@ -128,24 +259,24 @@ export class EditEvents extends Component {
                 placeholder="Event name"
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
-                txtvalue={name}
-                onChangeText={(name) => this.setState({ name })}
+                onChangeText={this.onEventName}
+                txtvalue={name.value}
+                errorMsgs={name.message}
               ></CustomTextfield>
               <CustomTextfield
                 placeholder="Event info"
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
                 inputstyle={{
-                  height: 150,
+                  height: 130,
                   paddingTop: 14,
                   paddingBottom: 14,
                   textAlignVertical: "top",
                 }}
                 multiline={true}
-                txtvalue={info}
-                onChangeText={(info) => this.setState({ info })}
-                //value={email.value}
-                //errorMsgs={email.message}
+                onChangeText={this.onEventInfo}
+                txtvalue={info.value}
+                errorMsgs={info.message}
               ></CustomTextfield>
               <CustomTextfield
                 placeholder="Event location "
@@ -154,11 +285,9 @@ export class EditEvents extends Component {
                 inputstyle={{ paddingRight: 40 }}
                 ifIcon={true}
                 iconname={"map"}
-                txtvalue={location}
-                onChangeText={(location) => this.setState({ location })}
-                // onChangeText={this.onEmailTextChange}
-                // value={email.value}
-                //errorMsgs={email.message}
+                onChangeText={this.onEventLocation}
+                txtvalue={location.value}
+                errorMsgs={location.message}
               ></CustomTextfield>
 
               <View style={{ position: "relative", marginBottom: 25 }}>
@@ -169,34 +298,29 @@ export class EditEvents extends Component {
                   inputstyle={{}}
                   ifIcon={true}
                   iconname={"map"}
-                  txtvalue={startDate}
+                  txtvalue={startDateValue}
+                  errorMsgs={startDate.message}
                 />
 
                 <TouchableOpacity
                   style={styles.touchableinput}
-                  onPress={() => {
-                    this.setState({
-                      isStartDate: true,
-                    });
-                  }}
+                  onPress={() => { this.setState({ showStartDate: true }) }}
                 ></TouchableOpacity>
               </View>
 
               <DateTimePickerModal
-                isVisible={isStartDate}
+                isVisible={showStartDate}
                 mode="datetime"
                 onConfirm={(date) => {
-                  const formatedDate = moment(date).format(
-                    "hh:mma, DD-MM-YYYY"
-                  );
                   this.setState({
-                    isStartDate: false,
-                    startDate: formatedDate,
+                    showStartDate: false
+                  }, () => {
+                    this.onEventStartDate(date)
                   });
                 }}
                 onCancel={() => {
                   this.setState({
-                    isStartDate: false,
+                    showStartDate: false,
                   });
                 }}
               />
@@ -209,34 +333,29 @@ export class EditEvents extends Component {
                   inputstyle={{}}
                   ifIcon={true}
                   iconname={"map"}
-                  txtvalue={endDate}
+                  txtvalue={endDateValue}
+                  errorMsgs={endDate.message}
                 />
 
                 <TouchableOpacity
                   style={styles.touchableinput}
-                  onPress={() => {
-                    this.setState({
-                      isEndDate: true,
-                    });
-                  }}
+                  onPress={() => { this.setState({ showEndDate: true }) }}
                 ></TouchableOpacity>
               </View>
 
               <DateTimePickerModal
-                isVisible={isEndDate}
+                isVisible={showEndDate}
                 mode="datetime"
                 onConfirm={(date) => {
-                  const formatedDate = moment(date).format(
-                    "hh:mma, DD-MM-YYYY"
-                  );
                   this.setState({
-                    isEndDate: false,
-                    endDate: formatedDate,
+                    showEndDate: false
+                  }, () => {
+                    this.onEventEndDate(date)
                   });
                 }}
                 onCancel={() => {
                   this.setState({
-                    isEndDate: false,
+                    showEndDate: false,
                   });
                 }}
               />
@@ -245,8 +364,16 @@ export class EditEvents extends Component {
                 <CustomButton
                   width="48%"
                   btnText="Save Event"
-                  mainStyle={styles.createvent}
-                  btnStyle={styles.createventxt}
+                  mainStyle={[
+                    isValid ? styles.createventgray : styles.createventyellow,
+                    styles.createvent,
+                  ]}
+                  btnStyle={[
+                    isValid ? styles.createventxtyellow : styles.createventxtgray,
+                    styles.createventxt,
+                  ]}
+                  value={false}
+                  disabled={!isValid}
                   onClick={this.onUpdateEvent}
                 />
                 <CustomButton

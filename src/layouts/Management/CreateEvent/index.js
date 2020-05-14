@@ -132,10 +132,15 @@ export class CreateEvent extends Component {
     } else if (endDate.value && startDate.value.getTime() > endDate.value.getTime()) {
       startDate.message.push(ErrorMessage.START_DATE);
       startDate.isValid = false;
+    } else if (startDate.value.getTime() < new Date(new Date().toISOString().slice(0, 10)).getTime()) {
+      startDate.message.push(ErrorMessage.START_DATE_TODAY);
+      startDate.isValid = false;
     } else {
-      endDate.message = []
+      if (endDate.value && endDate.value.getTime() > new Date(new Date().toISOString().slice(0, 10)).getTime()) {
+        endDate.message = [];
+        endDate.isValid = true;
+      }
     }
-
     this.setState({ startDate, endDate });
   };
 
@@ -152,8 +157,14 @@ export class CreateEvent extends Component {
     } else if (startDate.value && startDate.value.getTime() > endDate.value.getTime()) {
       endDate.message.push(ErrorMessage.END_DATE);
       endDate.isValid = false;
+    } else if (endDate.value.getTime() < new Date(new Date().toISOString().slice(0, 10)).getTime()) {
+      endDate.message.push(ErrorMessage.END_DATE_TODAY);
+      endDate.isValid = false;
     } else {
-      startDate.message = []
+      if (startDate.value.getTime() > new Date(new Date().toISOString().slice(0, 10)).getTime()) {
+        startDate.message = [];
+        startDate.isValid = true;
+      }
     }
     this.setState({ endDate, startDate });
   };

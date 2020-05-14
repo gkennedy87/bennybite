@@ -35,12 +35,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   createvent: {
-    backgroundColor: Color.BACK_DARKYELLOW,
     height: 48,
     borderRadius: 5,
   },
   createventxt: {
-    color: Color.TXT_WHITE,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
     position: "relative",
@@ -115,6 +113,25 @@ const styles = StyleSheet.create({
     fontSize: Font.FONTSIZE_16,
     position: "relative",
     top: isIOS() ? 3 : 0,
+  },
+  touchableinput: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    height: "100%",
+    width: "100%",
+  },
+  createventxtgray: {
+    color: Color.TXT_BLACK,
+  },
+  createventxtyellow: {
+    color: Color.TXT_WHITE,
+  },
+  createventgray: {
+    backgroundColor: Color.BACK_DARKYELLOW,
+  },
+  createventyellow: {
+    backgroundColor: Color.BACK_LIGHTGRAY,
   },
 });
 

@@ -268,17 +268,17 @@ export class EventsDetails extends Component {
           ]}>
           <Animated.Text
             onLayout={(e) => {
-              if (this.offset === 0 && this.state.titleWidth === 0) {
+              // if (this.offset === 0 && this.state.titleWidth === 0) {
                 const titleWidth = e.nativeEvent.layout.width;
                 this.setState({ titleWidth });
-              }
+              // }
             }}
             style={[
               styles.eventitle,
               {
                 fontSize: scrollOffset.interpolate({
                   inputRange: [0, 200],
-                  outputRange: [34, 16],
+                  outputRange: [24, 18],
                   extrapolate: 'clamp',
                 }),
               },
