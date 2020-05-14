@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { toLower, get } from "lodash"
+import React, { Component } from "react";
+import { toLower, get } from "lodash";
 import { connect } from "react-redux";
 import { View, Image, Text, TouchableOpacity } from "react-native";
-import AsyncStorage from "@react-native-community/async-storage"
+import AsyncStorage from "@react-native-community/async-storage";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { authOperations } from "./../../state/ducks/auth";
-import { Globals } from '../../utils/variable'
+import { Globals } from "../../utils/variable";
 
 import CustomButton from "../../components/CustomButton";
 import CustomTextfield from "../../components/CustomTextfield";
@@ -22,8 +22,8 @@ export class Login extends Component {
     super(props);
     this.state = {
       showToast: false,
-      toastMessage: '',
-      toastType: '',
+      toastMessage: "",
+      toastType: "",
       hidePassword: true,
       email: {
         value: "",
@@ -86,7 +86,7 @@ export class Login extends Component {
         email: toLower(this.state.email.value),
         password: this.state.password.value,
         device_token,
-        device_type
+        device_type,
       });
       await AsyncStorage.setItem("isAuthenticated", "true");
       await AsyncStorage.setItem("user", JSON.stringify(user));
@@ -95,16 +95,27 @@ export class Login extends Component {
     } catch (err) {
       this.setState({
         showToast: true,
-        toastMessage: get(err, 'response.data.message', 'Something went wrong!'),
-        toastType: 'warning'
-      })
+        toastMessage: get(
+          err,
+          "response.data.message",
+          "Something went wrong!"
+        ),
+        toastType: "warning",
+      });
     }
   };
 
   render() {
-    const { email, password, hidePassword, toastMessage, toastType, showToast } = this.state;
+    const {
+      email,
+      password,
+      hidePassword,
+      toastMessage,
+      toastType,
+      showToast,
+    } = this.state;
     const { navigate } = this.props.navigation;
-    const isValid = email.isValid && password.isValid
+    const isValid = email.isValid && password.isValid;
 
     return (
       <View style={styles.safeareaview}>
@@ -175,7 +186,10 @@ export class Login extends Component {
                 <View style={styles.loginbtnmain}>
                   <CustomButton
                     btnText="Login"
-                    mainStyle={[isValid ? styles.loginyellow : styles.logingray, styles.loginbtn]}
+                    mainStyle={[
+                      isValid ? styles.loginyellow : styles.logingray,
+                      styles.loginbtn,
+                    ]}
                     btnStyle={isValid ? styles.withlogin : styles.withoutlogin}
                     value={false}
                     disabled={!isValid}

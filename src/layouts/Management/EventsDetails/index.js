@@ -1,14 +1,23 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { View, ScrollView, Modal, Text, Animated, Dimensions, TouchableOpacity, Keyboard } from 'react-native';
+import {
+  View,
+  ScrollView,
+  Modal,
+  Text,
+  Animated,
+  Dimensions,
+  TouchableOpacity,
+  Keyboard,
+} from "react-native";
 import { eventOperations } from "./../../../state/ducks/event";
-import CustomToast from '../../../components/CustomToast';
-import CustomTextfield from '../../../components/CustomTextfield';
-import CustomButton from '../../../components/CustomButton';
-import CustomIcon from '../../../components/CustomIcon';
-import styles from './styles';
-import { Font, userRole } from '../../../utils/variable';
+import CustomToast from "../../../components/CustomToast";
+import CustomTextfield from "../../../components/CustomTextfield";
+import CustomButton from "../../../components/CustomButton";
+import CustomIcon from "../../../components/CustomIcon";
+import styles from "./styles";
+import { Font, userRole } from "../../../utils/variable";
 
 export class EventsDetails extends Component {
   constructor(props) {
@@ -22,8 +31,8 @@ export class EventsDetails extends Component {
       event: {},
       notification: {
         title: "",
-        message: ""
-      }
+        message: "",
+      },
     };
   }
 
@@ -33,17 +42,18 @@ export class EventsDetails extends Component {
 
   async componentDidMount() {
     try {
-      const response = await this.props.getEvent(this.props.navigation.state.params.eventId);
+      const response = await this.props.getEvent(
+        this.props.navigation.state.params.eventId
+      );
       const { event } = response.payload;
       this.setState({
-        event, notification: {
+        event,
+        notification: {
           title: event.name,
-          message: ""
-        }
-      })
-    } catch (err) {
-
-    }
+          message: "",
+        },
+      });
+    } catch (err) {}
     this.state.scrollOffset.addListener(({ value }) => (this.offset = value));
   }
 
@@ -55,15 +65,13 @@ export class EventsDetails extends Component {
 
   setModalVisible = (visible) => {
     if (!visible) {
-      this.setState(
-        {
-          modalVisible: visible,
-          notification: {
-            title: this.state.event.name,
-            message: ''
-          }
-        }
-      )
+      this.setState({
+        modalVisible: visible,
+        notification: {
+          title: this.state.event.name,
+          message: "",
+        },
+      });
     }
     this.setState({ modalVisible: visible });
   };
@@ -75,69 +83,71 @@ export class EventsDetails extends Component {
   onDeleteEvent = async (eventId) => {
     try {
       await this.props.deleteEvent(eventId);
-      this.props.navigation.navigate('Events');
+      this.props.navigation.navigate("Events");
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   onSendNotification = async (eventId) => {
-    let toastMessage = '', toastType = '';
+    let toastMessage = "",
+      toastType = "";
     try {
-      const response = await this.props.sendNotification(eventId, this.state.notification)
-      toastMessage = response.message
+      const response = await this.props.sendNotification(
+        eventId,
+        this.state.notification
+      );
+      toastMessage = response.message;
     } catch (err) {
-      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
-      toastType = 'warning'
+      toastMessage = get(err, "response.data.message", "Something went wrong!");
+      toastType = "warning";
     }
     this.setModalVisible(false);
     this.setState({
       showToast: true,
       toastMessage,
-      toastType
-    })
-  }
+      toastType,
+    });
+  };
 
   getEventStatus = (startDate, endDate) => {
     startDate = new Date(startDate).getTime();
     endDate = new Date(endDate).getTime();
     const current = new Date().getTime();
-    if (startDate > current)
-      return 'Upcoming'
-    else if (startDate < current && endDate > current)
-      return 'On going'
-    else
-      return 'Past'
-  }
+    if (startDate > current) return "Upcoming";
+    else if (startDate < current && endDate > current) return "On going";
+    else return "Past";
+  };
 
   onNotificationChange = (key, value) => {
     const { notification } = this.state;
-    if (key === 'title')
-      notification.title = value
-    else
-      notification.message = value
+    if (key === "title") notification.title = value;
+    else notification.message = value;
 
     this.setState({
-      notification
-    })
-  }
+      notification,
+    });
+  };
 
   isSendDisabled = () => {
     const { notification } = this.state;
-    return notification.title.length == 0 || notification.message.length == 0
-  }
+    return notification.title.length == 0 || notification.message.length == 0;
+  };
 
   render() {
-    const screenWidth = Dimensions.get('window').width;
-    const { modalVisible, ActionModalVisible, scrollOffset, event } = this.state;
+    const screenWidth = Dimensions.get("window").width;
+    const {
+      modalVisible,
+      ActionModalVisible,
+      scrollOffset,
+      event,
+    } = this.state;
     const { role, id } = this.props.user;
     const { notification, toastMessage, showToast, toastType } = this.state;
 
     let isEventOwner = false;
-    if (role === 'admin')
-      isEventOwner = true;
-    else if (role === 'staff' && event.createdBy === id)
-      isEventOwner = true;
+    if (role === "admin") isEventOwner = true;
+    else if (role === "staff" && event.createdBy === id) isEventOwner = true;
 
     return (
       <View style={styles.container}>
@@ -150,7 +160,8 @@ export class EventsDetails extends Component {
         <Modal
           animationType="slide"
           transparent={true}
-          visible={ActionModalVisible}>
+          visible={ActionModalVisible}
+        >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.confirmtxt}>
@@ -164,7 +175,7 @@ export class EventsDetails extends Component {
                   btnStyle={styles.actiondeletetxt}
                   onClick={() => {
                     this.setState({ ActionModalVisible: false }, () => {
-                      this.onDeleteEvent(event._id)
+                      this.onDeleteEvent(event._id);
                     });
                   }}
                 />
@@ -183,10 +194,14 @@ export class EventsDetails extends Component {
         </Modal>
 
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
-          <TouchableOpacity style={styles.centeredView} activeOpacity={1} onPress={() => Keyboard.dismiss()}>
+          <TouchableOpacity
+            style={styles.centeredView}
+            activeOpacity={1}
+            onPress={() => Keyboard.dismiss()}
+          >
             <View style={styles.modalView}>
               <CustomTextfield
-                placeholder={'Enter title'}
+                placeholder={"Enter title"}
                 txtvalue={notification.title}
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
@@ -194,7 +209,9 @@ export class EventsDetails extends Component {
                   fontFamily: Font.MYRIAD_SEMIBOLD,
                   fontSize: Font.FONTSIZE_16,
                 }}
-                onChangeText={(value) => this.onNotificationChange('title', value)}
+                onChangeText={(value) =>
+                  this.onNotificationChange("title", value)
+                }
               />
               <CustomTextfield
                 placeholder="Start typing..."
@@ -205,10 +222,12 @@ export class EventsDetails extends Component {
                   height: 150,
                   paddingTop: 14,
                   paddingBottom: 14,
-                  textAlignVertical: 'top',
+                  textAlignVertical: "top",
                 }}
                 multiline={true}
-                onChangeText={(value) => this.onNotificationChange('message', value)}
+                onChangeText={(value) =>
+                  this.onNotificationChange("message", value)
+                }
               />
               <View style={styles.sendcancelmain}>
                 <CustomButton
@@ -218,7 +237,7 @@ export class EventsDetails extends Component {
                   btnStyle={styles.sendbtntxt}
                   disabled={this.isSendDisabled()}
                   onClick={() => {
-                    this.onSendNotification(event._id)
+                    this.onSendNotification(event._id);
                   }}
                 />
                 <CustomButton
@@ -238,20 +257,24 @@ export class EventsDetails extends Component {
         <View style={styles.eventbackbtn}>
           <TouchableOpacity
             onPress={() => {
-              this.props.navigation.navigate('Events');
-            }}>
+              this.props.navigation.navigate("Events");
+            }}
+          >
             <CustomIcon style={styles.backicon} name="back" />
           </TouchableOpacity>
         </View>
 
-        {isEventOwner && <View style={styles.editbtn}>
-          <TouchableOpacity
-            onPress={() => {
-              this.props.navigation.navigate('EditEvents', { event });
-            }}>
-            <CustomIcon style={styles.editicon} name="edit" />
-          </TouchableOpacity>
-        </View>}
+        {isEventOwner && (
+          <View style={styles.editbtn}>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.navigate("EditEvents", { event });
+              }}
+            >
+              <CustomIcon style={styles.editicon} name="edit" />
+            </TouchableOpacity>
+          </View>
+        )}
 
         <Animated.View
           style={[
@@ -262,15 +285,16 @@ export class EventsDetails extends Component {
               marginTop: scrollOffset.interpolate({
                 inputRange: [0, 200],
                 outputRange: [30, -5],
-                extrapolate: 'clamp',
+                extrapolate: "clamp",
               }),
             },
-          ]}>
+          ]}
+        >
           <Animated.Text
             onLayout={(e) => {
               // if (this.offset === 0 && this.state.titleWidth === 0) {
-                const titleWidth = e.nativeEvent.layout.width;
-                this.setState({ titleWidth });
+              const titleWidth = e.nativeEvent.layout.width;
+              this.setState({ titleWidth });
               // }
             }}
             style={[
@@ -279,38 +303,42 @@ export class EventsDetails extends Component {
                 fontSize: scrollOffset.interpolate({
                   inputRange: [0, 200],
                   outputRange: [24, 18],
-                  extrapolate: 'clamp',
+                  extrapolate: "clamp",
                 }),
               },
-            ]}>
+            ]}
+          >
             {event.name}
           </Animated.Text>
           <Animated.View
             style={{
               width: scrollOffset.interpolate({
                 inputRange: [0, 200],
-                outputRange: [screenWidth * 0.95 - this.state.titleWidth, 0],
-                extrapolate: 'clamp',
+                outputRange: [screenWidth * 0.92 - this.state.titleWidth, 0],
+                extrapolate: "clamp",
               }),
             }}
           />
         </Animated.View>
 
         <ScrollView
-          style={{ flex: 1, width: '100%' }}
-          contentContainerStyle={{ width: '100%' }}
+          style={{ flex: 1, width: "100%" }}
+          contentContainerStyle={{ width: "100%" }}
           onScroll={this.onScroll}
-          scrollEventThrottle={20}>
+          scrollEventThrottle={20}
+        >
           <View style={styles.contentspacing}>
             <View style={styles.timestatus}>
               <Text style={styles.timetitle}>Time</Text>
-              <Text style={styles.eventstatus}>{this.getEventStatus(event.startDate, event.endDate)}</Text>
+              <Text style={styles.eventstatus}>
+                {this.getEventStatus(event.startDate, event.endDate)}
+              </Text>
               <Text style={styles.eventstatus}>Food Available Until:</Text>
             </View>
             <View>
               <Text style={styles.available}>12:30pm</Text>
             </View>
-            {role !== userRole[2] &&
+            {role !== userRole[2] && (
               <View style={styles.btnview}>
                 <CustomButton
                   btnText="Send notification"
@@ -321,41 +349,39 @@ export class EventsDetails extends Component {
                   }}
                 />
               </View>
-            }
+            )}
             <View>
               <Text style={styles.locationtxt}>Location</Text>
-              <Text style={styles.addresstxt}>
-                {event.location}
-              </Text>
+              <Text style={styles.addresstxt}>{event.location}</Text>
               <Text style={styles.eventdetailsttl}>Event Details</Text>
-              <Text style={styles.eventdetailstxt}>
-                {event.info}
-              </Text>
+              <Text style={styles.eventdetailstxt}>{event.info}</Text>
             </View>
           </View>
         </ScrollView>
-        {isEventOwner && <View style={styles.reatbtnview}>
-          <CustomButton
-            btnText="Delete event"
-            mainStyle={styles.createvent}
-            btnStyle={styles.createventxt}
-            onClick={() => {
-              this.setActionModalVisible(true);
-            }}
-          />
-        </View>}
+        {isEventOwner && (
+          <View style={styles.reatbtnview}>
+            <CustomButton
+              btnText="Delete event"
+              mainStyle={styles.createvent}
+              btnStyle={styles.createventxt}
+              onClick={() => {
+                this.setActionModalVisible(true);
+              }}
+            />
+          </View>
+        )}
       </View>
     );
   }
 }
 const mapStateToProps = (state) => ({
-  user: get(state, 'auth.session.user', {})
+  user: get(state, "auth.session.user", {}),
 });
 
 const mapDispatchToProps = {
   deleteEvent: eventOperations.deleteEvent,
   sendNotification: eventOperations.sendNotification,
-  getEvent: eventOperations.getEvent
+  getEvent: eventOperations.getEvent,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventsDetails);
