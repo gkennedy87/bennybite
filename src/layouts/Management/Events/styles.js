@@ -142,7 +142,8 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   usremail: {
-    paddingLeft: 25,
+    paddingLeft: 20,
+    width: "65%",
   },
   usernametxt: {
     fontSize: Globals.isIpad ? 20 : 16,
