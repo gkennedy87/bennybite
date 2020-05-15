@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { toLower } from "lodash"
+import { toLower, get, pickBy, identity } from "lodash"
 import { connect } from "react-redux";
 import ImagePicker from 'react-native-image-picker';
 import { View, Text, TouchableOpacity, Image } from "react-native";
@@ -119,12 +119,12 @@ export class Signup extends Component {
   onSignup = async () => {
     let toastMessage = '', toastType = '';
     try {
-      const response = await this.props.signup({
+      const response = await this.props.signup(pickBy({
         name: toLower(this.state.username.value),
         email: toLower(this.state.email.value),
         password: this.state.password.value,
         pic: this.state.pic
-      });
+      }), identity);
       toastMessage = response.message;
       this.props.navigation.navigate('Login');
     } catch (err) {

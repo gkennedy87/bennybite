@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from "react-redux";
+import moment from "moment";
 import { get } from "lodash";
-import AsyncStorage from "@react-native-community/async-storage"
+import { connect } from "react-redux";
+import React, { Component, useState, useEffect } from 'react';
+import AsyncStorage from "@react-native-community/async-storage";
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view';
 import { View, TouchableOpacity, Text, TouchableHighlight, Image, Modal } from 'react-native';
 
-import { safeJSONParser } from "./../../../utils/helper"
+import { safeJSONParser, sameDayEvent } from "./../../../utils/helper"
 import { authOperations } from "./../../../state/ducks/auth";
 import { userOperations } from "./../../../state/ducks/user";
 import { eventOperations } from "./../../../state/ducks/event";
@@ -17,8 +18,43 @@ import CustomToast from '../../../components/CustomToast';
 
 import styles from './styles';
 import { Color } from '../../../utils/variable';
-import Switch from "./../../../components/Switch"
-import CustomButton from "./../../../components/CustomButton"
+import Switch from "./../../../components/Switch";
+import CustomButton from "./../../../components/CustomButton";
+
+const Timer = (props) => {
+  const TWELVE_HOUR = 60 * 60 * 1000 * 12;
+  const endDate = new Date(props.endDate);
+  const startDate = new Date(props.startDate);
+  const eventTime = startDate.getTime();
+  const currentTime = new Date().getTime();
+  let timeFormat = '';
+
+  if (eventTime - currentTime > TWELVE_HOUR) {
+    timeFormat = `${moment(startDate).format("hh:mma")} - ${moment(endDate).format("hh:mma")}, ${moment(startDate).format("DD/MM/YYYY")}`
+  }
+
+  const [time, setTime] = useState(timeFormat);
+  if (eventTime - currentTime < TWELVE_HOUR) {
+    useEffect(() => {
+      if (eventTime - currentTime < TWELVE_HOUR) {
+        var diffTime = eventTime - currentTime;
+        var duration = moment.duration(diffTime, 'milliseconds');
+        var interval = 1000 * 60;
+        setTime(duration.hours() + ":" + duration.minutes() + " Hours left")
+        setInterval(function () {
+          duration = moment.duration(duration - interval, 'milliseconds');
+          let hours = duration.hours();
+          hours = hours < 10 ? `0${hours}` : hours;
+          let minutes = duration.minutes();
+          minutes = minutes < 10 ? `0${minutes}` : minutes;
+          setTime(hours + ":" + minutes + " Hours left")
+        }, interval);
+      }
+    }, [props.startDate, props.endDate])
+  }
+
+  return <Text style={styles.upcomingtime}>{time}</Text>
+}
 
 export class Events extends Component {
   constructor(props) {
@@ -164,6 +200,10 @@ export class Events extends Component {
     this.setState({ eventId })
   }
 
+  getEventTime = (startDate, endDate) => {
+
+  }
+
   renderUsers = ({ item }) => {
     const isAdmin = this.props.user.role === 'admin';
     const disableLeftSwipe = !isAdmin && item.role !== 'user';
@@ -199,8 +239,9 @@ export class Events extends Component {
     </SwipeRow>
   };
 
-  renderEvents = ({ item }) => (
-    <SwipeRow rightOpenValue={-150} disableLeftSwipe={!this.checkEventOwner(item)}>
+  renderEvents = ({ item }) => {
+    const eventStatus = this.getEventStatus(item.startDate, item.endDate)
+    return <SwipeRow rightOpenValue={-150} disableLeftSwipe={!this.checkEventOwner(item)}>
       <View style={styles.swipeBack}>
         <TouchableOpacity
           style={[styles.SwipeBtn, styles.btndelete]}
@@ -230,7 +271,7 @@ export class Events extends Component {
             <Text numberOfLines={1} style={styles.title}>
               {item.name}
             </Text>
-            <Text style={styles.upcomingtime}>{item.upcomingtime}</Text>
+            {eventStatus === 'Upcoming' && <Timer startDate={item.startDate} endDate={item.endDate}></Timer>}
           </View>
           <Text style={styles.subtxt} numberOfLines={2}>
             {item.info}
@@ -239,12 +280,12 @@ export class Events extends Component {
             <Text numberOfLines={1} style={styles.evtaddress}>
               {item.location}
             </Text>
-            <Text style={styles.evtstatus}>{this.getEventStatus(item.startDate, item.endDate)}</Text>
+            <Text style={styles.evtstatus}>{eventStatus}</Text>
           </View>
         </View>
       </TouchableHighlight>
     </SwipeRow>
-  );
+  };
 
   render() {
     const { selected, FoodModalVisible, UsersModalVisible, toastType, toastMessage, showToast } = this.state;

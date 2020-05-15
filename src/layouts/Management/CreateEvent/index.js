@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import moment from "moment";
-import { get } from "lodash";
+import { get, trim } from "lodash";
 import { connect } from "react-redux";
 import { View, TouchableOpacity } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -82,7 +82,7 @@ export class CreateEvent extends Component {
 
   onEventName = (text) => {
     const name = this.state.name;
-    name.value = text;
+    name.value = trim(text);
     name.message = [];
     name.isValid = true;
 
@@ -95,7 +95,7 @@ export class CreateEvent extends Component {
 
   onEventInfo = (text) => {
     const info = this.state.info;
-    info.value = text;
+    info.value = trim(text);
     info.message = [];
     info.isValid = true;
 
@@ -108,7 +108,7 @@ export class CreateEvent extends Component {
 
   onEventLocation = (text) => {
     const location = this.state.location;
-    location.value = text;
+    location.value = trim(text);
     location.message = [];
     location.isValid = true;
 

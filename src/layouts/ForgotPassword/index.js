@@ -1,13 +1,14 @@
 
-import { toLower } from "lodash";
+import { toLower, get } from "lodash";
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { View, Image, SafeAreaView, Text } from 'react-native';
+import { View, Image,  Text } from 'react-native';
 
 import { authOperations } from "./../../state/ducks/auth";
 
 import { REGEX } from '../../utils/validation';
 import { ErrorMessage } from '../../utils/message';
+import CustomToast from '../../components/CustomToast';
 import CustomButton from '../../components/CustomButton';
 import CustomTextfield from '../../components/CustomTextfield';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -47,20 +48,33 @@ export class ForgotPassword extends Component {
   };
 
   onForgotPassword = async () => {
+    let toastMessage = '', toastType = '';
     try {
-      await this.props.forgotPassword({ email: toLower(this.state.email.value) })
+      const response = await this.props.forgotPassword({ email: toLower(this.state.email.value) })
+      toastMessage = response.message;
       this.props.navigation.navigate('Login');
     } catch (err) {
-      alert(err.response.data.message)
+      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+      toastType = 'warning';
     }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType
+    })
   }
 
   render() {
     const { email } = this.state;
-    const { navigate } = this.props.navigation;
-
+    const { toastMessage, showToast, toastType } = this.state;
     return (
       <View style={styles.safeareaview}>
+         <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+          onHide={() => this.setState({ showToast: false })}
+        />
         <KeyboardAwareScrollView
           contentContainerStyle={{
             alignItems: "center",

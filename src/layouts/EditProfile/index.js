@@ -96,13 +96,7 @@ export class EditProfile extends Component {
       const response = await this.props.updateProfile(this.props.user.id, { name: name.value });
       toastMessage = response.message;
       await AsyncStorage.setItem("user", JSON.stringify(response.payload.user));
-      this.setState({
-        name: {
-          value: name.value,
-          message: [],
-          isValid: false,
-        }
-      })
+      this.props.navigation.navigate('Profile')
     } catch (err) {
       toastMessage = get(err, 'response.data.message', 'Something went wrong!')
       toastType = 'warning';
@@ -115,7 +109,8 @@ export class EditProfile extends Component {
   }
 
   onCancel = () => {
-    this.onNameChange(this.props.user.name)
+    // this.onNameChange(this.props.user.name);
+    this.props.navigation.navigate('Profile')
   }
 
   render() {

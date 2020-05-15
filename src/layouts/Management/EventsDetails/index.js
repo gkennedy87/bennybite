@@ -1,14 +1,52 @@
-import React, { Component } from 'react';
-import { connect } from "react-redux";
+import moment from "moment";
 import { get } from "lodash";
+import { connect } from "react-redux";
+import React, { Component, useState, useEffect } from 'react';
 import { View, ScrollView, Modal, Text, Animated, Dimensions, TouchableOpacity, Keyboard } from 'react-native';
 import { eventOperations } from "./../../../state/ducks/event";
-import CustomToast from '../../../components/CustomToast';
-import CustomTextfield from '../../../components/CustomTextfield';
-import CustomButton from '../../../components/CustomButton';
+
 import CustomIcon from '../../../components/CustomIcon';
+import CustomToast from '../../../components/CustomToast';
+import CustomButton from '../../../components/CustomButton';
+import CustomTextfield from '../../../components/CustomTextfield';
+
 import styles from './styles';
 import { Font, userRole } from '../../../utils/variable';
+
+const Timer = (props) => {
+  const TWELVE_HOUR = 60 * 60 * 1000 * 12;
+  const endDate = new Date(props.endDate);
+  const startDate = new Date(props.startDate);
+  const eventTime = startDate.getTime();
+  const currentTime = new Date().getTime();
+  let timeFormat = '';
+
+  if (eventTime - currentTime > TWELVE_HOUR) {
+    timeFormat = `${moment(startDate).format("hh:mma")} - ${moment(endDate).format("hh:mma")}, ${moment(endDate).format("DD/MM/YYYY")}`
+  }
+
+  const [time, setTime] = useState(timeFormat);
+  if (eventTime - currentTime < TWELVE_HOUR) {
+    useEffect(() => {
+      if (eventTime - currentTime < TWELVE_HOUR) {
+        var diffTime = eventTime - currentTime;
+        var duration = moment.duration(diffTime, 'milliseconds');
+        var interval = 1000 * 60;
+        setTime(duration.hours() + ":" + duration.minutes() + " Hours left")
+        setInterval(function () {
+          duration = moment.duration(duration - interval, 'milliseconds');
+          let hours = duration.hours();
+          hours = hours < 10 ? `0${hours}` : hours;
+          let minutes = duration.minutes();
+          minutes = minutes < 10 ? `0${minutes}` : minutes;
+          setTime(hours + ":" + minutes + " Hours left")
+        }, interval);
+      }
+    }, [props.startDate, props.endDate])
+  }
+
+  return <Text style={styles.upcomingtime}>{time}</Text>
+}
 
 export class EventsDetails extends Component {
   constructor(props) {
@@ -132,6 +170,7 @@ export class EventsDetails extends Component {
     const { modalVisible, ActionModalVisible, scrollOffset, event } = this.state;
     const { role, id } = this.props.user;
     const { notification, toastMessage, showToast, toastType } = this.state;
+    const eventStatus = this.getEventStatus(event.startDate, event.endDate);
 
     let isEventOwner = false;
     if (role === 'admin')
@@ -269,8 +308,8 @@ export class EventsDetails extends Component {
           <Animated.Text
             onLayout={(e) => {
               // if (this.offset === 0 && this.state.titleWidth === 0) {
-                const titleWidth = e.nativeEvent.layout.width;
-                this.setState({ titleWidth });
+              const titleWidth = e.nativeEvent.layout.width;
+              this.setState({ titleWidth });
               // }
             }}
             style={[
@@ -304,12 +343,16 @@ export class EventsDetails extends Component {
           <View style={styles.contentspacing}>
             <View style={styles.timestatus}>
               <Text style={styles.timetitle}>Time</Text>
-              <Text style={styles.eventstatus}>{this.getEventStatus(event.startDate, event.endDate)}</Text>
-              <Text style={styles.eventstatus}>Food Available Until:</Text>
+              <Text style={styles.eventstatus}>{eventStatus}</Text>
+              {eventStatus === 'Upcoming' && <View>
+                <Timer startDate={event.startDate} endDate={event.endDate}></Timer>
+                <Text style={styles.eventstatus}>{moment(event.startDate).format("hh:mma DD/MM/YYYY")}</Text>
+              </View>}
             </View>
-            <View>
-              <Text style={styles.available}>12:30pm</Text>
-            </View>
+            {eventStatus === 'On going' && <View>
+              <Text style={styles.eventstatus}>Food Available Until: {moment(event.endDate).format("hh:mma DD/MM/YYYY")}</Text>
+            </View>}
+
             {role !== userRole[2] &&
               <View style={styles.btnview}>
                 <CustomButton
