@@ -78,8 +78,10 @@ export class Profile extends Component {
 
   onLogout = async () => {
     try {
-      const device_token = await AsyncStorage.getItem(Globals.kDeviceToken);
-      const device_type = await AsyncStorage.getItem(Globals.kDeviceType);
+      // const device_token = await AsyncStorage.getItem(Globals.kDeviceToken);
+      // const device_type = await AsyncStorage.getItem(Globals.kDeviceType);
+      const device_token = 'dddc1d378d18cc562e61d4951536af719c9480abea10bd8c5b234253f1f3803e';
+      const device_type = 'ios';
       await this.props.logout({
         device_type
       });

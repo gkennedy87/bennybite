@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import moment from "moment";
-import { get, trim } from "lodash";
+import { get, trimStart } from "lodash";
 import { connect } from "react-redux";
 import { View, TouchableOpacity } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -82,7 +82,7 @@ export class CreateEvent extends Component {
 
   onEventName = (text) => {
     const name = this.state.name;
-    name.value = trim(text);
+    name.value = trimStart(text);
     name.message = [];
     name.isValid = true;
 
@@ -95,7 +95,7 @@ export class CreateEvent extends Component {
 
   onEventInfo = (text) => {
     const info = this.state.info;
-    info.value = trim(text);
+    info.value = trimStart(text);
     info.message = [];
     info.isValid = true;
 
@@ -108,7 +108,7 @@ export class CreateEvent extends Component {
 
   onEventLocation = (text) => {
     const location = this.state.location;
-    location.value = trim(text);
+    location.value = trimStart(text);
     location.message = [];
     location.isValid = true;
 
@@ -199,7 +199,7 @@ export class CreateEvent extends Component {
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
                 onChangeText={this.onEventName}
-                value={name.value}
+                txtvalue={name.value}
                 errorMsgs={name.message}
               ></CustomTextfield>
               <CustomTextfield
@@ -214,7 +214,7 @@ export class CreateEvent extends Component {
                 }}
                 multiline={true}
                 onChangeText={this.onEventInfo}
-                value={info.value}
+                txtvalue={info.value}
                 errorMsgs={info.message}
               ></CustomTextfield>
               <CustomTextfield
@@ -225,7 +225,7 @@ export class CreateEvent extends Component {
                 ifIcon={true}
                 iconname={"map"}
                 onChangeText={this.onEventLocation}
-                value={location.value}
+                txtvalue={location.value}
                 errorMsgs={location.message}
               ></CustomTextfield>
 
