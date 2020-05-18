@@ -50,7 +50,7 @@ export class EditEvents extends Component {
         value: new Date(event.endDate),
         message: [],
         isValid: true,
-      }
+      },
     };
   }
 
@@ -61,45 +61,47 @@ export class EditEvents extends Component {
   };
 
   onUpdateEvent = async () => {
-    let toastMessage = '', toastType = '';
-    const { name, info, location, startDate, endDate , eventId} = this.state
+    let toastMessage = "",
+      toastType = "";
+    const { name, info, location, startDate, endDate, eventId } = this.state;
     try {
       const response = await this.props.updateEvent(eventId, {
         name: name.value,
         info: info.value,
         location: location.value,
         startDate: startDate.value,
-        endDate: endDate.value
+        endDate: endDate.value,
       });
       toastMessage = response.message;
       this.props.navigation.navigate("Events");
     } catch (err) {
-      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
-      toastType = 'warning'
-    }
-    this.setState({
-      showToast: true,
-      toastMessage,
-      toastType
-    })
-  };
-
-  onDeleteEvent = async () => {
-    let toastMessage = '', toastType = '';
-    try {
-      const response = await this.props.deleteEvent(this.state.eventId);
-      toastMessage = response.message;
-      this.props.navigation.navigate("Events");
-    } catch (err) {
-      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
-      toastType = 'warning'
+      toastMessage = get(err, "response.data.message", "Something went wrong!");
+      toastType = "warning";
     }
     this.setState({
       showToast: true,
       toastMessage,
       toastType,
-      showDeleteModel: false
-    })
+    });
+  };
+
+  onDeleteEvent = async () => {
+    let toastMessage = "",
+      toastType = "";
+    try {
+      const response = await this.props.deleteEvent(this.state.eventId);
+      toastMessage = response.message;
+      this.props.navigation.navigate("Events");
+    } catch (err) {
+      toastMessage = get(err, "response.data.message", "Something went wrong!");
+      toastType = "warning";
+    }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType,
+      showDeleteModel: false,
+    });
   };
 
   setActionModalVisible = (visible) => {
@@ -155,14 +157,24 @@ export class EditEvents extends Component {
     if (!startDate.value) {
       startDate.message.push(ErrorMessage.EMPTY_EVENT_START_DATE);
       startDate.isValid = false;
-    } else if (endDate.value && startDate.value.getTime() > endDate.value.getTime()) {
+    } else if (
+      endDate.value &&
+      startDate.value.getTime() > endDate.value.getTime()
+    ) {
       startDate.message.push(ErrorMessage.START_DATE);
       startDate.isValid = false;
-    } else if (startDate.value.getTime() < new Date(new Date().toISOString().slice(0, 10)).getTime()) {
+    } else if (
+      startDate.value.getTime() <
+      new Date(new Date().toISOString().slice(0, 10)).getTime()
+    ) {
       startDate.message.push(ErrorMessage.START_DATE_TODAY);
       startDate.isValid = false;
     } else {
-      if (endDate.value && endDate.value.getTime() > new Date(new Date().toISOString().slice(0, 10)).getTime()) {
+      if (
+        endDate.value &&
+        endDate.value.getTime() >
+          new Date(new Date().toISOString().slice(0, 10)).getTime()
+      ) {
         endDate.message = [];
         endDate.isValid = true;
       }
@@ -180,14 +192,23 @@ export class EditEvents extends Component {
     if (!endDate.value) {
       endDate.message.push(ErrorMessage.EMPTY_EVENT_END_DATE);
       endDate.isValid = false;
-    } else if (startDate.value && startDate.value.getTime() > endDate.value.getTime()) {
+    } else if (
+      startDate.value &&
+      startDate.value.getTime() > endDate.value.getTime()
+    ) {
       endDate.message.push(ErrorMessage.END_DATE);
       endDate.isValid = false;
-    } else if (endDate.value.getTime() < new Date(new Date().toISOString().slice(0, 10)).getTime()) {
+    } else if (
+      endDate.value.getTime() <
+      new Date(new Date().toISOString().slice(0, 10)).getTime()
+    ) {
       endDate.message.push(ErrorMessage.END_DATE_TODAY);
       endDate.isValid = false;
     } else {
-      if (startDate.value.getTime() > new Date(new Date().toISOString().slice(0, 10)).getTime()) {
+      if (
+        startDate.value.getTime() >
+        new Date(new Date().toISOString().slice(0, 10)).getTime()
+      ) {
         startDate.message = [];
         startDate.isValid = true;
       }
@@ -196,10 +217,31 @@ export class EditEvents extends Component {
   };
 
   render() {
-    const { startDate, endDate, showStartDate, showEndDate, name, info, location, toastMessage, toastType, showToast, showDeleteModel } = this.state;;
-    const startDateValue = startDate.value ? moment(startDate.value).format("hh:mma, DD-MM-YYYY") : ''
-    const endDateValue = endDate.value ? moment(endDate.value).format("hh:mma, DD-MM-YYYY") : ''
-    const isValid = name.isValid && info.isValid && location.isValid && startDate.isValid && endDate.isValid
+    const {
+      startDate,
+      endDate,
+      showStartDate,
+      showEndDate,
+      name,
+      info,
+      location,
+      toastMessage,
+      toastType,
+      showToast,
+      showDeleteModel,
+    } = this.state;
+    const startDateValue = startDate.value
+      ? moment(startDate.value).format("hh:mma, DD-MM-YYYY")
+      : "";
+    const endDateValue = endDate.value
+      ? moment(endDate.value).format("hh:mma, DD-MM-YYYY")
+      : "";
+    const isValid =
+      name.isValid &&
+      info.isValid &&
+      location.isValid &&
+      startDate.isValid &&
+      endDate.isValid;
     return (
       <View style={styles.safeareaview}>
         <CustomToast
@@ -279,6 +321,7 @@ export class EditEvents extends Component {
                 errorMsgs={info.message}
               ></CustomTextfield>
               <CustomTextfield
+                keyboardType={"ascii-capable"}
                 placeholder="Event location "
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
@@ -304,7 +347,9 @@ export class EditEvents extends Component {
 
                 <TouchableOpacity
                   style={styles.touchableinput}
-                  onPress={() => { this.setState({ showStartDate: true }) }}
+                  onPress={() => {
+                    this.setState({ showStartDate: true });
+                  }}
                 ></TouchableOpacity>
               </View>
 
@@ -312,11 +357,14 @@ export class EditEvents extends Component {
                 isVisible={showStartDate}
                 mode="datetime"
                 onConfirm={(date) => {
-                  this.setState({
-                    showStartDate: false
-                  }, () => {
-                    this.onEventStartDate(date)
-                  });
+                  this.setState(
+                    {
+                      showStartDate: false,
+                    },
+                    () => {
+                      this.onEventStartDate(date);
+                    }
+                  );
                 }}
                 onCancel={() => {
                   this.setState({
@@ -339,7 +387,9 @@ export class EditEvents extends Component {
 
                 <TouchableOpacity
                   style={styles.touchableinput}
-                  onPress={() => { this.setState({ showEndDate: true }) }}
+                  onPress={() => {
+                    this.setState({ showEndDate: true });
+                  }}
                 ></TouchableOpacity>
               </View>
 
@@ -347,11 +397,14 @@ export class EditEvents extends Component {
                 isVisible={showEndDate}
                 mode="datetime"
                 onConfirm={(date) => {
-                  this.setState({
-                    showEndDate: false
-                  }, () => {
-                    this.onEventEndDate(date)
-                  });
+                  this.setState(
+                    {
+                      showEndDate: false,
+                    },
+                    () => {
+                      this.onEventEndDate(date);
+                    }
+                  );
                 }}
                 onCancel={() => {
                   this.setState({
@@ -369,7 +422,9 @@ export class EditEvents extends Component {
                     styles.createvent,
                   ]}
                   btnStyle={[
-                    isValid ? styles.createventxtyellow : styles.createventxtgray,
+                    isValid
+                      ? styles.createventxtyellow
+                      : styles.createventxtgray,
                     styles.createventxt,
                   ]}
                   value={false}

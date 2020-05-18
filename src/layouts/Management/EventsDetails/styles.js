@@ -1,9 +1,9 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {Font, Color} from '../../../utils/variable';
-import {ifIphoneX} from 'react-native-iphone-x-helper';
-import {isIOS} from '../../../utils/theme';
+import { StyleSheet, Dimensions } from "react-native";
+import { Font, Color } from "../../../utils/variable";
+import { ifIphoneX } from "react-native-iphone-x-helper";
+import { isIOS } from "../../../utils/theme";
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   eventbackbtn: {
@@ -13,11 +13,11 @@ const styles = StyleSheet.create({
       },
       {
         paddingTop: 25,
-      },
+      }
     ),
-    alignSelf: 'flex-start',
-    position: 'absolute',
-    left: 15,
+    alignSelf: "flex-start",
+    position: "absolute",
+    left: 5,
     zIndex: 1,
   },
   backicon: {
@@ -31,18 +31,21 @@ const styles = StyleSheet.create({
       },
       {
         paddingTop: 25,
-      },
+      }
     ),
-    alignSelf: 'flex-start',
-    position: 'absolute',
-    right: 15,
+    alignSelf: "flex-start",
+    position: "absolute",
+    right: 5,
     zIndex: 1,
   },
   editicon: {
-    position: 'relative',
+    position: "relative",
     top: 3,
     fontSize: Font.FONTSIZE_18,
     color: Color.TXT_BLACK,
+  },
+  btnpad: {
+    padding: 10,
   },
   container: {
     flex: 1,
@@ -58,11 +61,11 @@ const styles = StyleSheet.create({
       },
       {
         paddingTop: 35,
-      },
+      }
     ),
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "center",
   },
   eventitle: {
     color: Color.TXT_BLACK,
@@ -70,9 +73,9 @@ const styles = StyleSheet.create({
   },
   timestatus: {
     marginTop: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   timetitle: {
     color: Color.TXT_BLACK,
@@ -88,7 +91,7 @@ const styles = StyleSheet.create({
     color: Color.TXT_BLACK,
     fontFamily: Font.MYRIAD_REGULAR,
     fontSize: Font.FONTSIZE_12,
-    textAlign: 'right',
+    textAlign: "right",
   },
   // titlecount: {
   //   flexDirection: 'row',
@@ -133,7 +136,7 @@ const styles = StyleSheet.create({
     color: Color.TXT_DARKYELLOW,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
-    position: 'relative',
+    position: "relative",
     top: isIOS() ? 2 : 0,
   },
   locationtxt: {
@@ -171,16 +174,16 @@ const styles = StyleSheet.create({
     borderBottomColor: Color.BACK_LIGHTGRAY,
   },
   listingtitle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
     marginBottom: 10,
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    alignItems: "center",
   },
   title: {
     fontSize: Font.FONTSIZE_16,
@@ -210,10 +213,16 @@ const styles = StyleSheet.create({
   },
 
   centeredView: {
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.4)",
+  },
+  centeredViewsend: {
+    height: "100%",
+    alignItems: "center",
+    paddingTop: "30%",
+    backgroundColor: "rgba(0,0,0,0.4)",
   },
   modalView: {
     width: 312,
@@ -225,12 +234,12 @@ const styles = StyleSheet.create({
     paddingRight: 16,
   },
   sendcancelmain: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   sendbtn: {
-    width: '50%',
+    width: "50%",
     backgroundColor: Color.BACK_DARKYELLOW,
     height: 48,
     borderRadius: 5,
@@ -239,7 +248,7 @@ const styles = StyleSheet.create({
     color: Color.TXT_WHITE,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
-    position: 'relative',
+    position: "relative",
     top: isIOS() ? 3 : 0,
   },
   cancelbtn: {
@@ -253,47 +262,47 @@ const styles = StyleSheet.create({
     color: Color.TXT_DARKYELLOW,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
-    position: 'relative',
+    position: "relative",
     top: isIOS() ? 3 : 0,
   },
   reatbtnview: {
-    width: '100%',
+    width: "100%",
   },
   createvent: {
     backgroundColor: Color.BACK_WHITE,
     borderColor: Color.BACK_RED,
     borderTopWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     ...ifIphoneX(
       {
         height: 70,
       },
       {
         height: 48,
-      },
+      }
     ),
   },
   createventxt: {
     color: Color.TXT_RED,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
-    position: 'relative',
+    position: "relative",
     ...ifIphoneX(
       {
         top: isIOS() ? -3 : 0,
       },
       {
         top: isIOS() ? 3 : 0,
-      },
+      }
     ),
   },
   actiontxt: {
     color: Color.TXT_BLACK,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingTop: 3,
   },
   actionmodal: {
@@ -306,18 +315,18 @@ const styles = StyleSheet.create({
     color: Color.TXT_RED,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
-    textAlign: 'center',
+    textAlign: "center",
     paddingLeft: 20,
     paddingRight: 20,
     marginBottom: 30,
   },
   actionbuttons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   actiondelete: {
-    width: '50%',
+    width: "50%",
     backgroundColor: Color.BACK_RED,
     height: 45,
     borderRadius: 5,
@@ -326,7 +335,7 @@ const styles = StyleSheet.create({
     color: Color.TXT_WHITE,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
-    position: 'relative',
+    position: "relative",
     top: isIOS() ? 3 : 0,
   },
   actioncancelbtn: {
@@ -340,7 +349,7 @@ const styles = StyleSheet.create({
     color: Color.TXT_DARKYELLOW,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
-    position: 'relative',
+    position: "relative",
     top: isIOS() ? 3 : 0,
   },
 });

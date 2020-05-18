@@ -1,17 +1,26 @@
 import moment from "moment";
 import { get } from "lodash";
 import { connect } from "react-redux";
-import React, { Component, useState, useEffect } from 'react';
-import { View, ScrollView, Modal, Text, Animated, Dimensions, TouchableOpacity, Keyboard } from 'react-native';
+import React, { Component, useState, useEffect } from "react";
+import {
+  View,
+  ScrollView,
+  Modal,
+  Text,
+  Animated,
+  Dimensions,
+  TouchableOpacity,
+  Keyboard,
+} from "react-native";
 import { eventOperations } from "./../../../state/ducks/event";
 
-import CustomIcon from '../../../components/CustomIcon';
-import CustomToast from '../../../components/CustomToast';
-import CustomButton from '../../../components/CustomButton';
-import CustomTextfield from '../../../components/CustomTextfield';
+import CustomIcon from "../../../components/CustomIcon";
+import CustomToast from "../../../components/CustomToast";
+import CustomButton from "../../../components/CustomButton";
+import CustomTextfield from "../../../components/CustomTextfield";
 
-import styles from './styles';
-import { Font, userRole } from '../../../utils/variable';
+import styles from "./styles";
+import { Font, userRole } from "../../../utils/variable";
 
 const Timer = (props) => {
   const TWELVE_HOUR = 60 * 60 * 1000 * 12;
@@ -19,29 +28,29 @@ const Timer = (props) => {
   const startDate = new Date(props.startDate);
   const eventTime = startDate.getTime();
   const currentTime = new Date().getTime();
-  let timeFormat = '';
+  let timeFormat = "";
   const [time, setTime] = useState(timeFormat);
   if (eventTime - currentTime < TWELVE_HOUR) {
     useEffect(() => {
       if (eventTime - currentTime < TWELVE_HOUR) {
         var diffTime = eventTime - currentTime;
-        var duration = moment.duration(diffTime, 'milliseconds');
+        var duration = moment.duration(diffTime, "milliseconds");
         var interval = 1000 * 60;
-        setTime(duration.hours() + ":" + duration.minutes() + " Hours left")
+        setTime(duration.hours() + ":" + duration.minutes() + " Hours left");
         setInterval(function () {
-          duration = moment.duration(duration - interval, 'milliseconds');
+          duration = moment.duration(duration - interval, "milliseconds");
           let hours = duration.hours();
           hours = hours < 10 ? `0${hours}` : hours;
           let minutes = duration.minutes();
           minutes = minutes < 10 ? `0${minutes}` : minutes;
-          setTime(hours + ":" + minutes + " Hours left")
+          setTime(hours + ":" + minutes + " Hours left");
         }, interval);
       }
-    }, [props.startDate, props.endDate])
+    }, [props.startDate, props.endDate]);
   }
 
-  return <Text style={styles.upcomingtime}>{time}</Text>
-}
+  return <Text style={styles.upcomingtime}>{time}</Text>;
+};
 
 export class EventsDetails extends Component {
   constructor(props) {
@@ -77,7 +86,7 @@ export class EventsDetails extends Component {
           message: "",
         },
       });
-    } catch (err) { }
+    } catch (err) {}
     this.state.scrollOffset.addListener(({ value }) => (this.offset = value));
   }
 
@@ -220,7 +229,7 @@ export class EventsDetails extends Component {
 
         <Modal animationType="slide" transparent={true} visible={modalVisible}>
           <TouchableOpacity
-            style={styles.centeredView}
+            style={styles.centeredViewsend}
             activeOpacity={1}
             onPress={() => Keyboard.dismiss()}
           >
@@ -244,7 +253,7 @@ export class EventsDetails extends Component {
                 editable={true}
                 inputmainstyle={{ marginBottom: 20 }}
                 inputstyle={{
-                  height: 150,
+                  height: 120,
                   paddingTop: 14,
                   paddingBottom: 14,
                   textAlignVertical: "top",
@@ -281,6 +290,7 @@ export class EventsDetails extends Component {
 
         <View style={styles.eventbackbtn}>
           <TouchableOpacity
+            style={styles.btnpad}
             onPress={() => {
               this.props.navigation.navigate("Events");
             }}
@@ -292,6 +302,7 @@ export class EventsDetails extends Component {
         {isEventOwner && (
           <View style={styles.editbtn}>
             <TouchableOpacity
+              style={styles.btnpad}
               onPress={() => {
                 this.props.navigation.navigate("EditEvents", { event });
               }}
@@ -309,7 +320,7 @@ export class EventsDetails extends Component {
               width: screenWidth,
               marginTop: scrollOffset.interpolate({
                 inputRange: [0, 200],
-                outputRange: [30, -5],
+                outputRange: [40, -0],
                 extrapolate: "clamp",
               }),
             },
@@ -356,14 +367,26 @@ export class EventsDetails extends Component {
             <View style={styles.timestatus}>
               <Text style={styles.timetitle}>Time</Text>
               <Text style={styles.eventstatus}>{eventStatus}</Text>
-              {eventStatus === 'Upcoming' && <View>
-                <Timer startDate={event.startDate} endDate={event.endDate}></Timer>
-                <Text style={styles.eventstatus}>{moment(event.startDate).format("hh:mma DD/MM/YYYY")}</Text>
-              </View>}
+              {eventStatus === "Upcoming" && (
+                <View>
+                  <Timer
+                    startDate={event.startDate}
+                    endDate={event.endDate}
+                  ></Timer>
+                  <Text style={styles.eventstatus}>
+                    {moment(event.startDate).format("hh:mma DD/MM/YYYY")}
+                  </Text>
+                </View>
+              )}
             </View>
-            {eventStatus === 'On going' && <View>
-              <Text style={styles.eventstatus}>Food Available Until: {moment(event.endDate).format("hh:mma DD/MM/YYYY")}</Text>
-            </View>}
+            {eventStatus === "On going" && (
+              <View>
+                <Text style={styles.eventstatus}>
+                  Food Available Until:
+                  {moment(event.endDate).format("hh:mma DD/MM/YYYY")}
+                </Text>
+              </View>
+            )}
           </View>
 
           {role !== userRole[2] && (
@@ -378,28 +401,26 @@ export class EventsDetails extends Component {
               />
             </View>
           )}
-          <View>
+          <View style={styles.contentspacing}>
             <Text style={styles.locationtxt}>Location</Text>
             <Text style={styles.addresstxt}>{event.location}</Text>
             <Text style={styles.eventdetailsttl}>Event Details</Text>
             <Text style={styles.eventdetailstxt}>{event.info}</Text>
           </View>
         </ScrollView>
-        {
-          isEventOwner && (
-            <View style={styles.reatbtnview}>
-              <CustomButton
-                btnText="Delete event"
-                mainStyle={styles.createvent}
-                btnStyle={styles.createventxt}
-                onClick={() => {
-                  this.setActionModalVisible(true);
-                }}
-              />
-            </View>
-          )
-        }
-      </View >
+        {isEventOwner && (
+          <View style={styles.reatbtnview}>
+            <CustomButton
+              btnText="Delete event"
+              mainStyle={styles.createvent}
+              btnStyle={styles.createventxt}
+              onClick={() => {
+                this.setActionModalVisible(true);
+              }}
+            />
+          </View>
+        )}
+      </View>
     );
   }
 }

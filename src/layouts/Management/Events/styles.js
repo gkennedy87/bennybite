@@ -111,6 +111,11 @@ const styles = StyleSheet.create({
     fontFamily: Font.MYRIAD_REGULAR,
     color: Color.TXT_GREEN,
   },
+  evtstatusup: {
+    fontSize: Globals.isIpad ? 16 : 12,
+    fontFamily: Font.MYRIAD_REGULAR,
+    color: Color.TXT_LIGHTYELLOW,
+  },
 
   //**** user listong ***/
   swipebtnusers: {
