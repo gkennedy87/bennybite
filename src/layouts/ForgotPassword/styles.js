@@ -30,11 +30,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 60,
   },
-  logo: {
-    width: 265,
-    height: 58,
-    resizeMode: "contain",
-  },
+  // logo: {
+  //   width: 265,
+  //   height: 58,
+  //   resizeMode: "contain",
+  // },
   logintxt: {
     fontSize: Font.FONTSIZE_16,
     color: Color.TXT_BLACK,

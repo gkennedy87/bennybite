@@ -27,6 +27,7 @@ import styles from "./styles";
 import { Color } from "../../../utils/variable";
 import Switch from "./../../../components/Switch";
 import CustomButton from "./../../../components/CustomButton";
+import DummyProfile from "../../../assets/Images/user.png";
 
 const Timer = (props) => {
   const TWELVE_HOUR = 60 * 60 * 1000 * 12;
@@ -239,9 +240,19 @@ export class Events extends Component {
           style={styles.swiperowpadd}
           underlayColor={"#ffffff"}
         >
-          <View style={styles.swiperowborder}>
+          <View
+            style={
+              disableLeftSwipe
+                ? styles.swiperowborderdis
+                : styles.swiperowborder
+            }
+          >
             <View style={styles.userlistingborder}>
-              <Image source={{ uri: item.pic }} style={styles.userprofile} />
+              <Image
+                source={item.pic ? { uri: item.pic } : DummyProfile}
+                // source={{ uri: item.pic }}
+                style={styles.userprofile}
+              />
               <View style={styles.usremail}>
                 <Text style={styles.usernametxt}>{item.name}</Text>
                 <Text style={styles.usertxtemail}>{item.email}</Text>
@@ -289,6 +300,7 @@ export class Events extends Component {
             <Text style={styles.swipetxt}>Edit</Text>
           </TouchableOpacity>
         </View>
+
         <TouchableHighlight
           onPress={() => {
             this.props.navigation.navigate("EventsDetails", {
@@ -317,11 +329,15 @@ export class Events extends Component {
               <Text numberOfLines={1} style={styles.evtaddress}>
                 {item.location}
               </Text>
-              {eventStatus === "Upcoming" ? (
-                <Text style={styles.evtstatusup}>{eventStatus}</Text>
-              ) : (
-                <Text style={styles.evtstatus}>{eventStatus} </Text>
-              )}
+              <Text
+                style={
+                  eventStatus === "Upcoming"
+                    ? styles.evtstatusup
+                    : styles.evtstatus
+                }
+              >
+                {eventStatus}
+              </Text>
             </View>
           </View>
         </TouchableHighlight>

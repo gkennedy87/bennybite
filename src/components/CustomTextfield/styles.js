@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   },
   error: {
     color: Color.TXT_RED,
-    fontSize: Font.FONTSIZE_13,
+    fontSize: Font.FONTSIZE_15,
     fontFamily: Font.MYRIAD_REGULAR,
     position: "relative",
     top: isIOS() ? 2 : 0,
@@ -30,9 +30,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     borderColor: Color.TXT_RED,
-    paddingLeft: 15,
-    paddingRight: 15,
-    height: 38,
+    paddingLeft: 10,
+    paddingRight: 10,
+    height: 35,
     justifyContent: "center",
   },
   showbtn: {

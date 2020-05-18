@@ -1,28 +1,31 @@
-import React, {Component} from 'react';
-import {ScrollView, Text, View} from 'react-native';
-import CustomButton from '../../components/CustomButton';
-
-import styles from './styles';
+import React, { Component } from "react";
+import { ScrollView, Text, View } from "react-native";
+import CustomButton from "../../components/CustomButton";
+import HeaderTitle from "../../components/Header/HeaderTitle";
+import styles from "./styles";
 
 export default class TermsConditions extends Component {
   constructor(props) {
     super(props);
   }
 
-  static navigationOptions = {
-    header: null,
+  static navigationOptions = () => {
+    return {
+      headerTitle: () => (
+        <HeaderTitle
+          title={"Read this document carefully before checking the box"}
+        />
+      ),
+    };
   };
 
   render() {
-    const {navigate} = this.props.navigation;
+    const { navigate } = this.props.navigation;
 
     return (
       <View style={styles.container}>
         <ScrollView style={styles.container}>
           <View style={styles.contentpadd}>
-            <Text style={styles.maintitle}>
-              READ THIS DOCUMENT CAREFULLY BEFORE CHECKING THE BOX
-            </Text>
             <Text style={styles.txtcontent}>
               By checking this box you acknowledge that you have made a
               conscious and voluntary decision to use the Benny’s Bites mobile
@@ -68,7 +71,7 @@ export default class TermsConditions extends Component {
             mainStyle={styles.createvent}
             btnStyle={styles.createventxt}
             onClick={() => {
-              this.props.navigation.navigate('Events');
+              this.props.navigation.navigate("Signup");
             }}
           />
         </View>

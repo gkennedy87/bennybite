@@ -15,6 +15,9 @@ import { REGEX } from "../../utils/validation";
 import { ErrorMessage } from "../../utils/message";
 
 import CustomToast from "../../components/CustomToast";
+
+import Logo from "../../assets/Images/logo.svg";
+
 import styles from "./styles";
 
 export class Login extends Component {
@@ -138,10 +141,7 @@ export class Login extends Component {
           <View style={styles.contentcenter}>
             <View style={styles.container}>
               <View style={styles.logocenter}>
-                <Image
-                  style={styles.logo}
-                  source={require("../../assets/Images/logo.png")}
-                ></Image>
+                <Logo width={265} height={58} />
               </View>
               <Text style={styles.logintxt}>
                 Enter your credentials to login
@@ -202,7 +202,7 @@ export class Login extends Component {
               <Text style={styles.newusertxt}>New user ?</Text>
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.navigate("Signup");
+                  this.props.navigation.navigate("TermsConditions");
                 }}
               >
                 <Text style={styles.signuptxt}>Signup</Text>

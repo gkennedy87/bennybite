@@ -7,9 +7,13 @@ import React, { Component } from "react";
 import { View, StyleSheet, Platform } from "react-native";
 import { Provider } from "react-redux";
 import SplashScreen from "react-native-splash-screen";
-import { createAppContainer, withNavigation, NavigationActions } from "react-navigation";
+import {
+  createAppContainer,
+  withNavigation,
+  NavigationActions,
+} from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
-import AsyncStorage from "@react-native-community/async-storage"
+import AsyncStorage from "@react-native-community/async-storage";
 
 import { configPushNotification } from "./src/config/pushNotification";
 
@@ -40,19 +44,19 @@ import configureStore from "./src/state/store";
 const store = configureStore({});
 
 const Authanticate = withNavigation((props) => {
-  AsyncStorage.getItem('isAuthenticated').then(authenticated => {
+  AsyncStorage.getItem("isAuthenticated").then((authenticated) => {
     if (authenticated) {
-      props.navigation.replace('Events')
+      props.navigation.replace("Events");
     } else {
-      props.navigation.replace('Login')
+      props.navigation.replace("Login");
     }
-  })
-  return <></>
-})
+  });
+  return <></>;
+});
 
 Authanticate.navigationOptions = {
-  header: null
-}
+  header: null,
+};
 
 const AppNavigator = createStackNavigator(
   {
@@ -97,7 +101,9 @@ export default class App extends Component {
   }
 
   componentDidMount() {
-    SplashScreen.hide();
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 5000);
   }
 
   _handleConnectivityChange = (state) => {
@@ -110,21 +116,24 @@ export default class App extends Component {
   //Gets called when the notification comes in
   onNotification = async (notif) => {
     console.log("onNotification receive", notif);
-    const authenticate = await AsyncStorage.getItem('isAuthenticated')
+    const authenticate = await AsyncStorage.getItem("isAuthenticated");
     if (authenticate) {
-      console.log('Authenticate :', authenticate);
+      console.log("Authenticate :", authenticate);
       if (notif.userInteraction) {
-        let eventId = Platform.OS === 'ios' ? notif.data.eventId : notif.eventId;
-        console.log('EventId :', eventId);
+        let eventId =
+          Platform.OS === "ios" ? notif.data.eventId : notif.eventId;
+        console.log("EventId :", eventId);
         if (eventId) {
-          this.navigation.dispatch(NavigationActions.navigate({
-            routeName: 'EventsDetails',
-            params: { eventId }
-          }));
+          this.navigation.dispatch(
+            NavigationActions.navigate({
+              routeName: "EventsDetails",
+              params: { eventId },
+            })
+          );
         }
       }
     }
-  }
+  };
 
   render() {
     const { isConnected } = this.state;
@@ -132,7 +141,12 @@ export default class App extends Component {
       <Provider store={store}>
         <Loader></Loader>
         <View style={styles.container}>
-          <RootNavigator screenProps={{ isConnected: isConnected }} ref={nav => { this.navigation = nav }} />
+          <RootNavigator
+            screenProps={{ isConnected: isConnected }}
+            ref={(nav) => {
+              this.navigation = nav;
+            }}
+          />
         </View>
       </Provider>
     );

@@ -26,6 +26,7 @@ export const Font = {
   FONTSIZE_12: 12,
   FONTSIZE_13: 13,
   FONTSIZE_14: 14,
+  FONTSIZE_15: 15,
   FONTSIZE_16: 16,
   FONTSIZE_18: 18,
   FONTSIZE_20: 20,
@@ -42,8 +43,4 @@ export const Globals = {
   kDeviceType: "deviceType",
 };
 
-export const userRole = [
-  'admin',
-  'staff',
-  'user'
-]
+export const userRole = ["admin", "staff", "user"];

@@ -1,17 +1,17 @@
-
 import { toLower, get } from "lodash";
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import { connect } from "react-redux";
-import { View, Image,  Text } from 'react-native';
+import { View, Image, Text } from "react-native";
 
 import { authOperations } from "./../../state/ducks/auth";
 
-import { REGEX } from '../../utils/validation';
-import { ErrorMessage } from '../../utils/message';
-import CustomToast from '../../components/CustomToast';
-import CustomButton from '../../components/CustomButton';
-import CustomTextfield from '../../components/CustomTextfield';
+import { REGEX } from "../../utils/validation";
+import { ErrorMessage } from "../../utils/message";
+import CustomToast from "../../components/CustomToast";
+import CustomButton from "../../components/CustomButton";
+import CustomTextfield from "../../components/CustomTextfield";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Logo from "../../assets/Images/logo.svg";
 
 import styles from "./styles";
 
@@ -48,28 +48,31 @@ export class ForgotPassword extends Component {
   };
 
   onForgotPassword = async () => {
-    let toastMessage = '', toastType = '';
+    let toastMessage = "",
+      toastType = "";
     try {
-      const response = await this.props.forgotPassword({ email: toLower(this.state.email.value) })
+      const response = await this.props.forgotPassword({
+        email: toLower(this.state.email.value),
+      });
       toastMessage = response.message;
-      this.props.navigation.navigate('Login');
+      this.props.navigation.navigate("Login");
     } catch (err) {
-      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
-      toastType = 'warning';
+      toastMessage = get(err, "response.data.message", "Something went wrong!");
+      toastType = "warning";
     }
     this.setState({
       showToast: true,
       toastMessage,
-      toastType
-    })
-  }
+      toastType,
+    });
+  };
 
   render() {
     const { email } = this.state;
     const { toastMessage, showToast, toastType } = this.state;
     return (
       <View style={styles.safeareaview}>
-         <CustomToast
+        <CustomToast
           message={toastMessage}
           isToastVisible={showToast}
           type={toastType}
@@ -88,10 +91,7 @@ export class ForgotPassword extends Component {
           <View style={styles.contentcenter}>
             <View style={styles.container}>
               <View style={styles.logocenter}>
-                <Image
-                  style={styles.logo}
-                  source={require("../../assets/Images/logo.png")}
-                ></Image>
+                <Logo width={265} height={58} />
               </View>
               <View style={styles.form}>
                 <Text style={styles.logintxt}>

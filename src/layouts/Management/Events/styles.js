@@ -70,6 +70,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Color.BACK_LIGHTGRAY,
   },
+  swiperowborderdis: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: Color.BACK_LIGHTGRAY,
+    opacity: 0.3,
+  },
 
   listingtitle: {
     flexDirection: "row",
