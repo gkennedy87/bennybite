@@ -1,29 +1,60 @@
 import React, { Component } from "react";
+import { get } from "lodash";
+import { connect } from "react-redux";
 import { ScrollView, Text, View } from "react-native";
+
+import { authOperations } from "./../../state/ducks/auth";
+
+import CustomToast from "../../components/CustomToast";
 import CustomButton from "../../components/CustomButton";
 import HeaderTitle from "../../components/Header/HeaderTitle";
 import styles from "./styles";
 
-export default class TermsConditions extends Component {
+export class TermsConditions extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      toastMessage: '',
+      toastType: '',
+      showToast: false
+    }
   }
 
   static navigationOptions = () => {
     return {
-      headerTitle: () => (
-        <HeaderTitle
-          title={"Read this document carefully before checking the box"}
-        />
-      ),
+      headerTitle: () => <HeaderTitle title={"Read this document carefully before checking the box"} />
     };
   };
 
+  onAgree = async () => {
+    const user = this.props.navigation.state.params.user;
+    let toastMessage = '', toastType = '';
+    try {
+      const response = await this.props.signup(user);
+      toastMessage = response.message;
+      this.props.navigation.navigate('Login');
+    } catch (err) {
+      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
+      toastType = 'warning';
+    }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType
+    })
+  }
+
   render() {
-    const { navigate } = this.props.navigation;
+    const { toastMessage, toastType, showToast } = this.state;
 
     return (
       <View style={styles.container}>
+        <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+          onHide={() => this.setState({ showToast: false })}
+        />
         <ScrollView style={styles.container}>
           <View style={styles.contentpadd}>
             <Text style={styles.txtcontent}>
@@ -67,15 +98,20 @@ export default class TermsConditions extends Component {
         </ScrollView>
         <View style={styles.reatbtnview}>
           <CustomButton
-            btnText="Agree & Continue "
+            btnText="Agree & Continue"
             mainStyle={styles.createvent}
             btnStyle={styles.createventxt}
-            onClick={() => {
-              this.props.navigation.navigate("Signup");
-            }}
+            onClick={this.onAgree}
           />
         </View>
       </View>
     );
   }
 }
+export const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = {
+  signup: authOperations.signup
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TermsConditions);
