@@ -24,7 +24,6 @@ export class Signup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasError: true,
       hidePassword: true,
       passVisible: true,
       pic: '',
@@ -117,25 +116,14 @@ export class Signup extends Component {
   };
 
   onSignup = async () => {
-    let toastMessage = '', toastType = '';
-    try {
-      const response = await this.props.signup(pickBy({
+    this.props.navigation.navigate('TermsConditions', {
+      user: pickBy({
         name: toLower(this.state.username.value),
         email: toLower(this.state.email.value),
         password: this.state.password.value,
         pic: this.state.pic
-      }), identity);
-      toastMessage = response.message;
-      this.props.navigation.navigate('Login');
-    } catch (err) {
-      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
-      toastType = 'warning';
-    }
-    this.setState({
-      showToast: true,
-      toastMessage,
-      toastType
-    })
+      }, identity)
+    });
   }
 
   uploadProfilePic = async () => {

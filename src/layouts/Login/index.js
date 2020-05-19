@@ -202,7 +202,7 @@ export class Login extends Component {
               <Text style={styles.newusertxt}>New user ?</Text>
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.navigate("TermsConditions");
+                  this.props.navigation.navigate("Signup");
                 }}
               >
                 <Text style={styles.signuptxt}>Signup</Text>
