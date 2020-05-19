@@ -78,7 +78,7 @@ const AppNavigator = createStackNavigator(
     TermsConditions: { screen: TermsConditions },
   },
   {
-    initialRouteName: "Resetpassword",
+    initialRouteName: "Authanticate",
     defaultNavigationOptions: ({ navigation }) => ({
       gesturesEnabled: false,
       headerTransparent: false,
