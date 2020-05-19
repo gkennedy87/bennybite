@@ -250,7 +250,6 @@ export class Events extends Component {
             <View style={styles.userlistingborder}>
               <Image
                 source={item.pic ? { uri: item.pic } : DummyProfile}
-                // source={{ uri: item.pic }}
                 style={styles.userprofile}
               />
               <View style={styles.usremail}>
@@ -315,12 +314,14 @@ export class Events extends Component {
               <Text numberOfLines={1} style={styles.title}>
                 {item.name}
               </Text>
-              {eventStatus === "Upcoming" && (
-                <Timer
-                  startDate={item.startDate}
-                  endDate={item.endDate}
-                ></Timer>
-              )}
+              <Text style={styles.titleright}>
+                {eventStatus === "Upcoming" && (
+                  <Timer
+                    startDate={item.startDate}
+                    endDate={item.endDate}
+                  ></Timer>
+                )}
+              </Text>
             </View>
             <Text style={styles.subtxt} numberOfLines={2}>
               {item.info}
@@ -339,6 +340,9 @@ export class Events extends Component {
                 {eventStatus}
               </Text>
             </View>
+            {eventStatus === "On going" && (
+              <Text style={styles.foodavailable}>Food Available Until:</Text>
+            )}
           </View>
         </TouchableHighlight>
       </SwipeRow>

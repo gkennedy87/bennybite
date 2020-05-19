@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { get , cloneDeep} from "lodash";
+import { get, cloneDeep } from "lodash";
 import { connect } from "react-redux";
 import { View, Text } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -15,7 +15,7 @@ import { authOperations } from "./../../state/ducks/auth";
 
 import styles from "./styles";
 
-const INITIAL_STATE =  {
+const INITIAL_STATE = {
   hidePassword: true,
   hideCurrentPassword: true,
   hideConfirmPassword: true,
@@ -45,7 +45,7 @@ export class ChangePassword extends Component {
 
   constructor(props) {
     super(props);
-    this.state = cloneDeep(INITIAL_STATE)
+    this.state = cloneDeep(INITIAL_STATE);
   }
 
   onCurrentPasswordChange = (text) => {
@@ -109,27 +109,28 @@ export class ChangePassword extends Component {
   };
 
   onCurrentPasswordVisible = () => {
-    const { hideCurrentPassword } = this.state
+    const { hideCurrentPassword } = this.state;
     this.setState({ hideCurrentPassword: !hideCurrentPassword });
   };
 
   onPasswordVisible = () => {
-    const { hidePassword } = this.state
+    const { hidePassword } = this.state;
     this.setState({ hidePassword: !hidePassword });
   };
 
   onConfirmPasswordVisible = () => {
-    const { hideConfirmPassword } = this.state
+    const { hideConfirmPassword } = this.state;
     this.setState({ hideConfirmPassword: !hideConfirmPassword });
   };
 
   onChangePassword = async () => {
-    let toastMessage = '', toastType = '';
+    let toastMessage = "",
+      toastType = "";
     try {
-      const { currentPassword, password } = this.state
+      const { currentPassword, password } = this.state;
       const response = await this.props.changePassword(this.props.user.id, {
         oldPassword: currentPassword.value,
-        password: password.value
+        password: password.value,
       });
       toastMessage = response.message;
       // const state = cloneDeep(INITIAL_STATE)
@@ -140,24 +141,33 @@ export class ChangePassword extends Component {
       //   toastType
       // })
       // this.setState(state)
-      this.props.navigation.navigate('Profile')
+      this.props.navigation.navigate("Profile");
     } catch (err) {
-      toastMessage = get(err, 'response.data.message', 'Something went wrong!')
-      toastType = 'warning';
+      toastMessage = get(err, "response.data.message", "Something went wrong!");
+      toastType = "warning";
     }
     this.setState({
       showToast: true,
       toastMessage,
-      toastType
-    })
-  }
+      toastType,
+    });
+  };
 
   render() {
-    const { password, confirmPassword, currentPassword,
-      hideCurrentPassword, hidePassword, hideConfirmPassword,
-      toastMessage, showToast, toastType } = this.state;
+    const {
+      password,
+      confirmPassword,
+      currentPassword,
+      hideCurrentPassword,
+      hidePassword,
+      hideConfirmPassword,
+      toastMessage,
+      showToast,
+      toastType,
+    } = this.state;
 
-    const isValid = currentPassword.isValid && password.isValid && confirmPassword.isValid
+    const isValid =
+      currentPassword.isValid && password.isValid && confirmPassword.isValid;
 
     return (
       <View style={styles.safeareaview}>
@@ -170,7 +180,6 @@ export class ChangePassword extends Component {
         <KeyboardAwareScrollView
           contentContainerStyle={{
             alignItems: "center",
-            justifyContent: "center",
             flexGrow: 1,
           }}
           scrollEnabled={true}
@@ -228,7 +237,10 @@ export class ChangePassword extends Component {
                 <View style={styles.loginbtnmain}>
                   <CustomButton
                     btnText="Submit"
-                    mainStyle={[isValid ? styles.loginyellow : styles.logingray, styles.loginbtn]}
+                    mainStyle={[
+                      isValid ? styles.loginyellow : styles.logingray,
+                      styles.loginbtn,
+                    ]}
                     btnStyle={isValid ? styles.withlogin : styles.withoutlogin}
                     disabled={!isValid}
                     onClick={this.onChangePassword}
@@ -238,13 +250,13 @@ export class ChangePassword extends Component {
             </View>
           </View>
         </KeyboardAwareScrollView>
-      </View >
+      </View>
     );
   }
 }
 
 const mapStateToProps = (state) => ({
-  user: get(state, 'auth.session.user', {})
+  user: get(state, "auth.session.user", {}),
 });
 
 const mapDispatchToProps = {

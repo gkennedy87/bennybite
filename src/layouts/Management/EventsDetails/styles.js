@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   eventstatus: {
     color: Color.TXT_BLACK,
     fontFamily: Font.MYRIAD_REGULAR,
-    fontSize: Font.FONTSIZE_12,
+    fontSize: Font.FONTSIZE_14,
   },
   available: {
     color: Color.TXT_BLACK,

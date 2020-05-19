@@ -39,6 +39,8 @@ import { isIOS } from "./src/utils/theme";
 import GlobalStyles from "./src/utils/GlobalStyles";
 import HeaderLeft from "./src/components/Header/HeaderLeft";
 
+import Resetpassword from "./src/layouts/Resetpassword";
+
 import configureStore from "./src/state/store";
 
 const store = configureStore({});
@@ -71,11 +73,12 @@ const AppNavigator = createStackNavigator(
     ChangePassword: { screen: ChangePassword },
     Profile: { screen: Profile },
     EditProfile: { screen: EditProfile },
+    Resetpassword: { screen: Resetpassword },
     EventStudents: { screen: EventStudents },
     TermsConditions: { screen: TermsConditions },
   },
   {
-    initialRouteName: "Authanticate",
+    initialRouteName: "Resetpassword",
     defaultNavigationOptions: ({ navigation }) => ({
       gesturesEnabled: false,
       headerTransparent: false,

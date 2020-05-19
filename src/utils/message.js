@@ -24,8 +24,11 @@ export const ErrorMessage = {
   LAST_EMPTY: "Last Name is requied",
   PHONE_EMPTY: "Phone Number is requied",
   PHONE_LENGTH: "Phone Number must be between 10-13 digits.",
-  START_DATE_TODAY : "Start date should be greater than today",
-  END_DATE_TODAY : "End date should be greater than today",
+  START_DATE_TODAY: "Start date should be greater than today",
+  END_DATE_TODAY: "End date should be greater than today",
   START_DATE: "Start date should be less than end date.",
   END_DATE: "End date should be greater than start date.",
+  NEW_PASS_EMPTY: "New password cannot be empty",
+  CONFIRM_PASS: "Confirm password cannot be empty",
+  CONFIRM_PASS_NOT_MATCH: "Confirm password didn’t match",
 };

@@ -90,10 +90,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   title: {
-    width: "60%",
+    width: "55%",
     fontSize: Globals.isIpad ? 20 : 16,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     color: Color.TXT_BLACK,
+  },
+  titleright: {
+    width: "45%",
+    textAlign: "right",
   },
   upcomingtime: {
     position: "relative",
@@ -117,6 +121,13 @@ const styles = StyleSheet.create({
     fontSize: Globals.isIpad ? 16 : 12,
     fontFamily: Font.MYRIAD_REGULAR,
     color: Color.TXT_GREEN,
+  },
+  foodavailable: {
+    marginTop: 5,
+    fontSize: Globals.isIpad ? 16 : 12,
+    fontFamily: Font.MYRIAD_REGULAR,
+    color: Color.TXT_BLACK,
+    textAlign: "right",
   },
   evtstatusup: {
     fontSize: Globals.isIpad ? 16 : 12,

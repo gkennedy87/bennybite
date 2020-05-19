@@ -366,27 +366,28 @@ export class EventsDetails extends Component {
           <View style={styles.contentspacing}>
             <View style={styles.timestatus}>
               <Text style={styles.timetitle}>Time</Text>
-              <Text style={styles.eventstatus}>{eventStatus}</Text>
-              {eventStatus === "Upcoming" && (
+              {eventStatus === "On going" && (
                 <View>
-                  <Timer
-                    startDate={event.startDate}
-                    endDate={event.endDate}
-                  ></Timer>
+                  <Text style={styles.eventstatus}>Food Available Until:</Text>
                   <Text style={styles.eventstatus}>
+                    {moment(event.endDate).format("hh:mma DD/MM/YYYY")}
+                  </Text>
+                </View>
+              )}
+              {/* <Text style={styles.eventstatus}>{eventStatus}</Text> */}
+              {eventStatus === "Upcoming" && (
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={styles.eventstatus}>Food Available Until:</Text>
+                  <Text style={styles.eventstatus}>
+                    <Timer
+                      startDate={event.startDate}
+                      endDate={event.endDate}
+                    ></Timer>
                     {moment(event.startDate).format("hh:mma DD/MM/YYYY")}
                   </Text>
                 </View>
               )}
             </View>
-            {eventStatus === "On going" && (
-              <View>
-                <Text style={styles.eventstatus}>
-                  Food Available Until:
-                  {moment(event.endDate).format("hh:mma DD/MM/YYYY")}
-                </Text>
-              </View>
-            )}
           </View>
 
           {role !== userRole[2] && (
