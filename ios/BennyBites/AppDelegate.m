@@ -5,6 +5,7 @@
 #import <React/RCTRootView.h>
 #import <RNCPushNotificationIOS.h>
 #import <UserNotifications/UserNotifications.h>
+#import "RNSplashScreen.h"  // here
 
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
@@ -13,7 +14,6 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
-#import "RNSplashScreen.h"  // here
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -46,14 +46,14 @@ static void InitializeFlipper(UIApplication *application) {
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-  //[RNSplashScreen show];
+  [RNSplashScreen show];
   //[RNSplashScreen showSplash:@"LaunchScreen" inRootView:rootView];
   
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
-//  if (@available(iOS 13, *)) {
-//      self.window.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
-//  }
+  if (@available(iOS 13, *)) {
+      self.window.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+  }
   return YES;
 }
 

@@ -118,10 +118,10 @@ export default class App extends Component {
 
   //Gets called when the notification comes in
   onNotification = async (notif) => {
-    console.log("onNotification receive", notif);
+    //console.log("onNotification receive", notif);
     const authenticate = await AsyncStorage.getItem("isAuthenticated");
     if (authenticate) {
-      console.log("Authenticate :", authenticate);
+      //console.log("Authenticate :", authenticate);
       if (notif.userInteraction) {
         let eventId =
           Platform.OS === "ios" ? notif.data.eventId : notif.eventId;
