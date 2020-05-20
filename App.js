@@ -106,7 +106,7 @@ export default class App extends Component {
   componentDidMount() {
     setTimeout(() => {
       SplashScreen.hide();
-    }, 5000);
+    }, 3000);
   }
 
   _handleConnectivityChange = (state) => {
