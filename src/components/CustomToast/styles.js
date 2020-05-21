@@ -1,13 +1,15 @@
 import { StyleSheet, Dimensions } from "react-native";
 import { Color, Font, Globals } from "../../utils/variable";
+import { isIOS } from "../../utils/theme";
+
 const styles = StyleSheet.create({
   toastView: {
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "center",
-    paddingTop: 15,
+    paddingTop: isIOS() ? 15 : 13,
     paddingRight: 15,
-    paddingBottom: 10,
+    paddingBottom: 15,
     paddingLeft: 15,
     shadowColor: Color.BACK_BLACK,
     shadowOffset: { width: 0, height: 1 },
