@@ -117,7 +117,7 @@ export class ResetPassword extends Component {
       toastType = "";
     try {
       const { newPassword } = this.state;
-      const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWMzNzAyZWY3ZjJmNzAwMTc5YzkyNDAiLCJpYXQiOjE1OTAwMzY0NTIsImV4cCI6MTU5MDAzNzA1Mn0.NvREdCvuqZpBtan8CMVocXpJOOGGmZJitqNptnyuGcA"//this.props.navigation.state.params;
+      const token = get(this.props, 'navigation.state.params.token',  '');
       const response = await this.props.resetPassword(token, {
         password: newPassword.value,
       });

@@ -20,14 +20,23 @@
 	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>bennybite</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
-  <key>NSCameraUsageDescription</key>
-  <string>$(PRODUCT_NAME) would like to use your camera to change your profile picture</string>
-  <key>NSPhotoLibraryUsageDescription</key>
-  <string>$(PRODUCT_NAME) would like to use your photo gallery to change your profile picture</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -43,10 +52,12 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>$(PRODUCT_NAME) would like to use your camera to change your profile picture</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-  <string></string>
-  <key>NSCameraUsageDescription</key>
-  <string>$(PRODUCT_NAME) would like to use your camera to change your profile picture</string>
+	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) would like to use your photo gallery to change your profile picture</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

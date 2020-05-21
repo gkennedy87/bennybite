@@ -73,7 +73,7 @@ const AppNavigator = createStackNavigator(
     ChangePassword: { screen: ChangePassword },
     Profile: { screen: Profile },
     EditProfile: { screen: EditProfile },
-    ResetPassword: { screen: ResetPassword },
+    ResetPassword: { screen: ResetPassword, path: "ResetPassword/:token" },
     EventStudents: { screen: EventStudents },
     TermsConditions: { screen: TermsConditions },
   },
