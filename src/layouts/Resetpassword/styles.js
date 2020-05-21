@@ -1,7 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 import { Font, Color, Globals } from "../../utils/variable";
 import { isIOS } from "../../utils/theme";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const { width } = Dimensions.get("window");
 

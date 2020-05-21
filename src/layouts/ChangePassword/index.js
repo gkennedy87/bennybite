@@ -133,14 +133,6 @@ export class ChangePassword extends Component {
         password: password.value,
       });
       toastMessage = response.message;
-      // const state = cloneDeep(INITIAL_STATE)
-      // this.setState({
-      //   ...state,
-      //   showToast: true,
-      //   toastMessage,
-      //   toastType
-      // })
-      // this.setState(state)
       this.props.navigation.navigate("Profile");
     } catch (err) {
       toastMessage = get(err, "response.data.message", "Something went wrong!");

@@ -2,7 +2,7 @@ import { get } from "lodash"
 import {
     login as loginAction,
     logout as logoutAction,
-    initializeSession, destroySession, forgotPassword,
+    initializeSession, destroySession, forgotPassword, resetPassword,
     signup, updateProfilePic, changePassword, updateProfile
 } from "./actions";
 
@@ -34,5 +34,6 @@ export {
     signup,
     updateProfilePic,
     changePassword,
-    updateProfile
+    updateProfile,
+    resetPassword
 };

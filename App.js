@@ -39,7 +39,7 @@ import { isIOS } from "./src/utils/theme";
 import GlobalStyles from "./src/utils/GlobalStyles";
 import HeaderLeft from "./src/components/Header/HeaderLeft";
 
-import Resetpassword from "./src/layouts/Resetpassword";
+import ResetPassword from "./src/layouts/ResetPassword";
 
 import configureStore from "./src/state/store";
 
@@ -73,7 +73,7 @@ const AppNavigator = createStackNavigator(
     ChangePassword: { screen: ChangePassword },
     Profile: { screen: Profile },
     EditProfile: { screen: EditProfile },
-    Resetpassword: { screen: Resetpassword },
+    ResetPassword: { screen: ResetPassword },
     EventStudents: { screen: EventStudents },
     TermsConditions: { screen: TermsConditions },
   },

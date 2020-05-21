@@ -1,13 +1,18 @@
 import React, { Component } from "react";
-import { cloneDeep } from "lodash";
+import { get, cloneDeep } from "lodash";
+import { connect } from "react-redux";
 import { View, Text } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { REGEX } from "../../utils/validation";
 import { ErrorMessage } from "../../utils/message";
+import CustomToast from "../../components/CustomToast";
 import CustomButton from "../../components/CustomButton";
 import CustomTextfield from "../../components/CustomTextfield";
 import HeaderTitle from "../../components/Header/HeaderTitle";
+
+import { authOperations } from "./../../state/ducks/auth";
 
 import styles from "./styles";
 
@@ -26,7 +31,7 @@ const INITIAL_STATE = {
   },
 };
 
-export class Resetpassword extends Component {
+export class ResetPassword extends Component {
   static navigationOptions = () => {
     return {
       headerTitle: () => <HeaderTitle title={"Reset password"} />,
@@ -107,18 +112,50 @@ export class Resetpassword extends Component {
     this.setState({ hideConfirmPassword: !hideConfirmPassword });
   };
 
+  onResetPassword = async () => {
+    let toastMessage = "",
+      toastType = "";
+    try {
+      const { newPassword } = this.state;
+      const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWMzNzAyZWY3ZjJmNzAwMTc5YzkyNDAiLCJpYXQiOjE1OTAwMzY0NTIsImV4cCI6MTU5MDAzNzA1Mn0.NvREdCvuqZpBtan8CMVocXpJOOGGmZJitqNptnyuGcA"//this.props.navigation.state.params;
+      const response = await this.props.resetPassword(token, {
+        password: newPassword.value,
+      });
+      toastMessage = response.message;
+      await AsyncStorage.clear();
+      this.props.navigation.navigate("Login");
+    } catch (err) {
+      toastMessage = get(err, "response.data.message", "Something went wrong!");
+      toastType = "warning";
+    }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType,
+    });
+  };
+
   render() {
     const {
       newPassword,
       confirmPassword,
       hideNewPassword,
       hideConfirmPassword,
+      toastMessage,
+      showToast,
+      toastType,
     } = this.state;
 
     const isValid = newPassword.isValid && confirmPassword.isValid;
 
     return (
       <View style={styles.safeareaview}>
+        <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+          onHide={() => this.setState({ showToast: false })}
+        />
         <KeyboardAwareScrollView
           contentContainerStyle={{
             alignItems: "center",
@@ -171,7 +208,7 @@ export class Resetpassword extends Component {
                     ]}
                     btnStyle={isValid ? styles.withlogin : styles.withoutlogin}
                     disabled={!isValid}
-                    onClick={this.onChangePassword}
+                    onClick={this.onResetPassword}
                   />
                 </View>
               </View>
@@ -183,4 +220,10 @@ export class Resetpassword extends Component {
   }
 }
 
-export default Resetpassword;
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = {
+  resetPassword: authOperations.resetPassword,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword);

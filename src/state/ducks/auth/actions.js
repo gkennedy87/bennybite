@@ -89,3 +89,14 @@ export const updateProfile = (userId, payload) => ({
         body: payload
     },
 });
+
+export const resetPassword = (token, payload) => ({
+    type: types.RESET_PASSWORD,
+    meta: {
+        async: true,
+        blocking: true,
+        path: "/auth/reset-password?token=" + token,
+        method: "POST",
+        body: payload
+    },
+});
