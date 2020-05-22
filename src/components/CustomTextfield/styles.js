@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   },
   error: {
     color: Color.TXT_RED,
-    fontSize: Font.FONTSIZE_15,
+    fontSize: Font.FONTSIZE_14,
     fontFamily: Font.MYRIAD_REGULAR,
     position: "relative",
     top: isIOS() ? 2 : 0,

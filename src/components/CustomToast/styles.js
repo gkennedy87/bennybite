@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "center",
-    paddingTop: isIOS() ? 15 : 13,
+    paddingTop: 15,
     paddingRight: 15,
     paddingBottom: 15,
     paddingLeft: 15,
