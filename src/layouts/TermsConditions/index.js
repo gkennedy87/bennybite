@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { get } from "lodash";
 import { connect } from "react-redux";
 import { ScrollView, Text, View } from "react-native";
+import { StackActions, NavigationActions } from "react-navigation"
 
 import { authOperations } from "./../../state/ducks/auth";
 
@@ -32,7 +33,12 @@ export class TermsConditions extends Component {
     try {
       const response = await this.props.signup(user);
       toastMessage = response.message;
-      this.props.navigation.navigate('Login');
+      // this.props.navigation.navigate('Login');  
+      const loginAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName: 'Authenticate' })],
+      });
+      this.props.navigation.dispatch(loginAction);
     } catch (err) {
       toastMessage = get(err, 'response.data.message', 'Something went wrong!')
       toastType = 'warning';

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import AsyncStorage from "@react-native-community/async-storage"
+import AsyncStorage from "@react-native-community/async-storage";
+import { StackActions, NavigationActions } from "react-navigation"
 import { connect } from "react-redux";
 import { get } from "lodash";
 import {
@@ -78,17 +79,22 @@ export class Profile extends Component {
 
   onLogout = async () => {
     try {
-      // const device_token = await AsyncStorage.getItem(Globals.kDeviceToken);
-      // const device_type = await AsyncStorage.getItem(Globals.kDeviceType);
-      const device_token = 'dddc1d378d18cc562e61d4951536af719c9480abea10bd8c5b234253f1f3803e';
-      const device_type = 'ios';
+      const device_token = await AsyncStorage.getItem(Globals.kDeviceToken);
+      const device_type = await AsyncStorage.getItem(Globals.kDeviceType);
+      // const device_token = 'dddc1d378d18cc562e61d4951536af719c9480abea10bd8c5b234253f1f3803e';
+      // const device_type = 'ios';
       await this.props.logout({
         device_type
       });
       await AsyncStorage.clear()
       await AsyncStorage.setItem(Globals.kDeviceToken, device_token);
       await AsyncStorage.setItem(Globals.kDeviceType, device_type);
-      this.props.navigation.navigate("Login");
+      const logoutAction = StackActions.reset({
+        index: 0,
+        actions: [NavigationActions.navigate({ routeName: 'Authenticate' })],
+      });
+      this.props.navigation.dispatch(logoutAction);
+      // this.props.navigation.navigate("Login");
     } catch (err) {
       console.log("Errror", err);
     }

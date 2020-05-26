@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { toLower, get, pickBy, identity } from "lodash"
+import { toLower, get, pickBy, identity, trimStart } from "lodash"
 import { connect } from "react-redux";
 import ImagePicker from 'react-native-image-picker';
 import { View, Text, TouchableOpacity, Image } from "react-native";
@@ -49,7 +49,7 @@ export class Signup extends Component {
 
   onUserTextChange = (text) => {
     const username = this.state.username;
-    username.value = text;
+    username.value = trimStart(text);
     username.message = [];
     username.isValid = true;
 
@@ -95,7 +95,7 @@ export class Signup extends Component {
 
   onEmailTextChange = (text) => {
     const email = this.state.email;
-    email.value = text;
+    email.value = trimStart(text);
     email.message = [];
     email.isValid = true;
 
@@ -204,7 +204,7 @@ export class Signup extends Component {
                   ifIcon={true}
                   iconname={"user"}
                   onChangeText={this.onUserTextChange}
-                  value={username.value}
+                  txtvalue={username.value}
                   errorMsgs={username.message}
                 ></CustomTextfield>
 
@@ -216,7 +216,7 @@ export class Signup extends Component {
                   ifIcon={true}
                   iconname={"email"}
                   onChangeText={this.onEmailTextChange}
-                  value={email.value}
+                  txtvalue={email.value}
                   errorMsgs={email.message}
                 ></CustomTextfield>
 
@@ -230,7 +230,7 @@ export class Signup extends Component {
                   onPassVisi={this.onPassVisi}
                   isPassword={true}
                   onChangeText={this.onPasswordChange}
-                  value={password.value}
+                  txtvalue={password.value}
                   errorMsgs={password.message}
                 ></CustomTextfield>
 

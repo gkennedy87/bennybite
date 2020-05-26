@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { get } from "lodash";
+import { get, trimStart , trim} from "lodash";
 import React, { Component } from "react";
 import ImagePicker from "react-native-image-picker";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -24,7 +24,7 @@ export class EditProfile extends Component {
     this.state = {
       pic: "",
       name: {
-        value: this.props.user.name,
+        value: trim(this.props.user.name),
         message: [],
         isValid: false,
       },
@@ -77,7 +77,7 @@ export class EditProfile extends Component {
 
   onNameChange = (text) => {
     const name = this.state.name;
-    name.value = text;
+    name.value = trimStart(text);
     name.message = [];
     name.isValid = true;
 

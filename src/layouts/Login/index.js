@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { toLower, get } from "lodash";
+import { toLower, get, pickBy, identity } from "lodash";
 import { connect } from "react-redux";
 import { View, Image, Text, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
@@ -85,12 +85,14 @@ export class Login extends Component {
     try {
       const device_token = await AsyncStorage.getItem(Globals.kDeviceToken);
       const device_type = await AsyncStorage.getItem(Globals.kDeviceType);
-      let { user, tokens } = await this.props.login({
+      // const device_token = 'dddc1d378d18cc562e61d4951536af719c9480abea10bd8c5b234253f1f3803e';
+      // const device_type = 'ios';
+      let { user, tokens } = await this.props.login(pickBy({
         email: toLower(this.state.email.value),
         password: this.state.password.value,
         device_token,
         device_type,
-      });
+      }, identity));
       await AsyncStorage.setItem("isAuthenticated", "true");
       await AsyncStorage.setItem("user", JSON.stringify(user));
       await AsyncStorage.setItem("tokens", JSON.stringify(tokens));

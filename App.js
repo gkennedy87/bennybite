@@ -45,7 +45,7 @@ import configureStore from "./src/state/store";
 
 const store = configureStore({});
 
-const Authanticate = withNavigation((props) => {
+const Authenticate = withNavigation((props) => {
   AsyncStorage.getItem("isAuthenticated").then((authenticated) => {
     if (authenticated) {
       props.navigation.replace("Events");
@@ -56,13 +56,13 @@ const Authanticate = withNavigation((props) => {
   return <></>;
 });
 
-Authanticate.navigationOptions = {
+Authenticate.navigationOptions = {
   header: null,
 };
 
 const AppNavigator = createStackNavigator(
   {
-    Authanticate: { screen: Authanticate },
+    Authenticate: { screen: Authenticate },
     Login: { screen: Login },
     Signup: { screen: Signup },
     ForgotPassword: { screen: ForgotPassword },
@@ -78,7 +78,7 @@ const AppNavigator = createStackNavigator(
     TermsConditions: { screen: TermsConditions },
   },
   {
-    initialRouteName: "Authanticate",
+    initialRouteName: "Authenticate",
     defaultNavigationOptions: ({ navigation }) => ({
       gesturesEnabled: false,
       headerTransparent: false,
