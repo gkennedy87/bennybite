@@ -1,42 +1,66 @@
-import React, {Component} from 'react';
-import {View, Image, SafeAreaView, Text} from 'react-native';
-import CustomTextfield from '../../components/CustomTextfield';
-import {REGEX} from '../../utils/validation';
-import {ErrorMessage} from '../../utils/message';
-import CustomButton from '../../components/CustomButton';
+import React, { Component } from "react";
+import { get, cloneDeep } from "lodash";
+import { connect } from "react-redux";
+import { View, Text } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-import HeaderTitle from '../../components/Header/HeaderTitle';
+import { REGEX } from "../../utils/validation";
+import { ErrorMessage } from "../../utils/message";
+import CustomButton from "../../components/CustomButton";
+import CustomTextfield from "../../components/CustomTextfield";
+import HeaderTitle from "../../components/Header/HeaderTitle";
+import CustomToast from "../../components/CustomToast";
 
-import styles from './styles';
+import { authOperations } from "./../../state/ducks/auth";
 
-export default class ChangePassword extends Component {
-  static navigationOptions = ({}) => {
+import styles from "./styles";
+
+const INITIAL_STATE = {
+  hidePassword: true,
+  hideCurrentPassword: true,
+  hideConfirmPassword: true,
+  currentPassword: {
+    value: "",
+    message: [],
+    isValid: false,
+  },
+  password: {
+    value: "",
+    message: [],
+    isValid: false,
+  },
+  confirmPassword: {
+    value: "",
+    message: [],
+    isValid: false,
+  },
+};
+
+export class ChangePassword extends Component {
+  static navigationOptions = () => {
     return {
-      headerTitle: () => <HeaderTitle title={'Change password'} />,
+      headerTitle: () => <HeaderTitle title={"Change password"} />,
     };
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-      hasError: true,
-      // isModalVisible: false,
-      isToastVisible: false,
-      hidePassword: true,
-      oldPass: true,
-      passVisible: false,
-      password: {
-        value: '',
-        message: [],
-        isValid: false,
-      },
-      ConfirmPassword: {
-        value: '',
-        message: [],
-        isValid: false,
-      },
-    };
+    this.state = cloneDeep(INITIAL_STATE);
   }
+
+  onCurrentPasswordChange = (text) => {
+    const currentPassword = this.state.currentPassword;
+    currentPassword.value = text;
+    currentPassword.message = [];
+    currentPassword.isValid = true;
+
+    if (currentPassword.value.length == 0 || currentPassword.value == "") {
+      currentPassword.message.push(ErrorMessage.EMPTY_PASS);
+      currentPassword.isValid = false;
+    }
+
+    this.setState({ currentPassword });
+  };
 
   onPasswordChange = (text) => {
     const password = this.state.password;
@@ -44,8 +68,7 @@ export default class ChangePassword extends Component {
     password.message = [];
     password.isValid = true;
 
-    if (password.value.length == 0 || password.value == '') {
-      // email.message = ErrorMsg.emailRequired // import
+    if (password.value.length == 0 || password.value == "") {
       password.message.push(ErrorMessage.EMPTY_PASS);
       password.isValid = false;
     }
@@ -61,115 +84,175 @@ export default class ChangePassword extends Component {
       password.isValid = false;
     }
     if (password.value.match(REGEX.SPECIAL_CHARECTERS)) {
-      // email.message = ErrorMsg.emailInvalid
       password.message.push(ErrorMessage.SPECIAL_CHARACTER);
       password.isValid = false;
     }
     if (!password.value.match(REGEX.MIN_NUMBERS)) {
-      // email.message = ErrorMsg.emailInvalid
       password.message.push(ErrorMessage.MIN_NUMBER);
       password.isValid = false;
     }
 
-    this.setState({password});
+    this.setState({ password });
   };
-  onConfrimPasswordChange = (text) => {
-    const ConfirmPassword = this.state.ConfirmPassword;
-    ConfirmPassword.value = text;
-    ConfirmPassword.message = [];
-    ConfirmPassword.isValid = true;
 
-    if (this.state.password.value != ConfirmPassword.value) {
-      // email.message = ErrorMsg.emailRequired // import
-      this.state.ConfirmPassword.message.push(ErrorMessage.CONFIRM_PASS);
-      this.state.ConfirmPassword.isValid = false;
+  onConfrimPasswordChange = (text) => {
+    const { confirmPassword, password } = this.state;
+    confirmPassword.value = text;
+    confirmPassword.message = [];
+    confirmPassword.isValid = true;
+
+    if (password.value != confirmPassword.value) {
+      confirmPassword.message.push(ErrorMessage.CONFIRM_PASS);
+      confirmPassword.isValid = false;
     }
-    this.setState({ConfirmPassword});
+    this.setState({ confirmPassword });
   };
-  onPassVisi = () => {
+
+  onCurrentPasswordVisible = () => {
+    const { hideCurrentPassword } = this.state;
+    this.setState({ hideCurrentPassword: !hideCurrentPassword });
+  };
+
+  onPasswordVisible = () => {
+    const { hidePassword } = this.state;
+    this.setState({ hidePassword: !hidePassword });
+  };
+
+  onConfirmPasswordVisible = () => {
+    const { hideConfirmPassword } = this.state;
+    this.setState({ hideConfirmPassword: !hideConfirmPassword });
+  };
+
+  onChangePassword = async () => {
+    let toastMessage = "",
+      toastType = "";
+    try {
+      const { currentPassword, password } = this.state;
+      const response = await this.props.changePassword(this.props.user.id, {
+        oldPassword: currentPassword.value,
+        password: password.value,
+      });
+      toastMessage = response.message;
+      this.props.navigation.navigate("Profile");
+    } catch (err) {
+      toastMessage = get(err, "response.data.message", "Something went wrong!");
+      toastType = "warning";
+    }
     this.setState({
-      passVisible: !this.state.passVisible,
+      showToast: true,
+      toastMessage,
+      toastType,
     });
   };
+
   render() {
-    const {password, ConfirmPassword} = this.state;
-    const {navigate} = this.props.navigation;
+    const {
+      password,
+      confirmPassword,
+      currentPassword,
+      hideCurrentPassword,
+      hidePassword,
+      hideConfirmPassword,
+      toastMessage,
+      showToast,
+      toastType,
+    } = this.state;
+
+    const isValid =
+      currentPassword.isValid && password.isValid && confirmPassword.isValid;
 
     return (
       <View style={styles.safeareaview}>
-        <SafeAreaView style={styles.contentcenter}>
-          <View style={styles.container}>
-            <Text style={styles.logintxt}>
-              Please enter old password to change your password
-            </Text>
-            <View style={styles.form}>
-              <CustomTextfield
-                placeholder="Current Password"
-                inputmainstyle={{marginBottom: 25}}
-                inputstyle={{paddingRight: 40}}
-                editable={true}
-                passwordField={true}
-                passVisible={this.state.oldPass}
-                onPassVisi={this.onPassVisi}
-                isPassword={false}
-                value={password.value}
-                txtfieldStyle={styles.txtfieldStyle}></CustomTextfield>
-              <CustomTextfield
-                placeholder="New Password"
-                inputmainstyle={{marginBottom: 25}}
-                inputstyle={{paddingRight: 40}}
-                editable={true}
-                passwordField={true}
-                passVisible={this.state.passVisible}
-                onPassVisi={this.onPassVisi}
-                isPassword={true}
-                onChangeText={this.onPasswordChange}
-                value={password.value}
-                errorMsgs={password.message}></CustomTextfield>
-              <CustomTextfield
-                placeholder="Confirm Password"
-                inputstyle={{paddingRight: 40}}
-                editable={true}
-                passwordField={true}
-                onChangeText={this.onConfrimPasswordChange}
-                value={ConfirmPassword.value}
-                errorMsgs={ConfirmPassword.message}></CustomTextfield>
+        <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+          onHide={() => this.setState({ showToast: false })}
+        />
+        <KeyboardAwareScrollView
+          contentContainerStyle={{
+            alignItems: "center",
+            flexGrow: 1,
+          }}
+          scrollEnabled={true}
+          enableOnAndroid={false}
+          showsVerticalScrollIndicator={true}
+        >
+          <View style={styles.contentcenter}>
+            <View style={styles.container}>
+              <Text style={styles.logintxt}>
+                Please enter old password to change your password
+              </Text>
+              <View style={styles.form}>
+                <CustomTextfield
+                  placeholder="Current Password"
+                  inputmainstyle={{ marginBottom: 25 }}
+                  inputstyle={{ paddingRight: 40 }}
+                  editable={true}
+                  passwordField={true}
+                  passVisible={hideCurrentPassword}
+                  onPassVisi={this.onCurrentPasswordVisible}
+                  isPassword={true}
+                  onChangeText={this.onCurrentPasswordChange}
+                  value={currentPassword.value}
+                  txtvalue={currentPassword.value}
+                  errorMsgs={currentPassword.message}
+                ></CustomTextfield>
+                <CustomTextfield
+                  placeholder="New Password"
+                  inputmainstyle={{ marginBottom: 25 }}
+                  inputstyle={{ paddingRight: 40 }}
+                  editable={true}
+                  passwordField={true}
+                  passVisible={hidePassword}
+                  onPassVisi={this.onPasswordVisible}
+                  isPassword={true}
+                  onChangeText={this.onPasswordChange}
+                  value={password.value}
+                  txtvalue={password.value}
+                  errorMsgs={password.message}
+                ></CustomTextfield>
+                <CustomTextfield
+                  placeholder="Confirm Password"
+                  inputstyle={{ paddingRight: 40 }}
+                  editable={true}
+                  passwordField={true}
+                  passVisible={hideConfirmPassword}
+                  onPassVisi={this.onConfirmPasswordVisible}
+                  isPassword={true}
+                  onChangeText={this.onConfrimPasswordChange}
+                  value={confirmPassword.value}
+                  txtvalue={confirmPassword.value}
+                  errorMsgs={confirmPassword.message}
+                ></CustomTextfield>
 
-              <View style={styles.loginbtnmain}>
-                <CustomButton
-                  btnText="Submit"
-                  mainStyle={styles.loginyellow}
-                  btnStyle={styles.withlogin}
-                  // mainStyle={[
-                  //   this.state.email.isValid
-                  //     ? styles.loginyellow
-                  //     : styles.logingray,
-                  //   styles.loginbtn,
-                  // ]}
-                  // btnStyle={
-                  //   this.state.email.isValid
-                  //     ? styles.withlogin
-                  //     : styles.withoutlogin
-                  // }
-                  //value={false}
-                  //disabled={!this.state.email.isValid}
-                  onClick={() => {
-                    // this.setState({isToastVisible: true});
-                    // setTimeout(
-                    //   () =>
-                    //     this.setState({
-                    //       isToastVisible: false,
-                    //     }),
-                    //   2000,
-                    // );
-                    this.props.navigation.navigate('ResetPassword');
-                  }}
-                />
+                <View style={styles.loginbtnmain}>
+                  <CustomButton
+                    btnText="Submit"
+                    mainStyle={[
+                      isValid ? styles.loginyellow : styles.logingray,
+                      styles.loginbtn,
+                    ]}
+                    btnStyle={isValid ? styles.withlogin : styles.withoutlogin}
+                    disabled={!isValid}
+                    onClick={this.onChangePassword}
+                  />
+                </View>
               </View>
             </View>
           </View>
-        </SafeAreaView>
+        </KeyboardAwareScrollView>
       </View>
     );
   }
 }
+
+const mapStateToProps = (state) => ({
+  user: get(state, "auth.session.user", {}),
+});
+
+const mapDispatchToProps = {
+  changePassword: authOperations.changePassword,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChangePassword);

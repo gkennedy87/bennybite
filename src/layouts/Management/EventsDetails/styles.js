@@ -1,15 +1,51 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {Font, Color} from '../../../utils/variable';
-const {width} = Dimensions.get('window');
+import { StyleSheet, Dimensions } from "react-native";
+import { Font, Color } from "../../../utils/variable";
+import { ifIphoneX } from "react-native-iphone-x-helper";
+import { isIOS } from "../../../utils/theme";
+
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   eventbackbtn: {
-    paddingTop: 55,
-    paddingLeft: 15,
-    paddingRight: 15,
+    ...ifIphoneX(
+      {
+        paddingTop: 45,
+      },
+      {
+        paddingTop: 25,
+      }
+    ),
+    alignSelf: "flex-start",
+    position: "absolute",
+    left: 5,
+    zIndex: 1,
   },
-  backbtnicon: {
+  backicon: {
     fontSize: Font.FONTSIZE_20,
+    color: Color.TXT_BLACK,
+  },
+  editbtn: {
+    ...ifIphoneX(
+      {
+        paddingTop: 45,
+      },
+      {
+        paddingTop: 25,
+      }
+    ),
+    alignSelf: "flex-start",
+    position: "absolute",
+    right: 5,
+    zIndex: 1,
+  },
+  editicon: {
+    position: "relative",
+    top: 3,
+    fontSize: Font.FONTSIZE_18,
+    color: Color.TXT_BLACK,
+  },
+  btnpad: {
+    padding: 10,
   },
   container: {
     flex: 1,
@@ -19,10 +55,17 @@ const styles = StyleSheet.create({
     paddingRight: 15,
   },
   header: {
-    backgroundColor: 'whitesmoke',
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'center',
+    ...ifIphoneX(
+      {
+        paddingTop: 55,
+      },
+      {
+        paddingTop: 35,
+      }
+    ),
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "center",
   },
   eventitle: {
     color: Color.TXT_BLACK,
@@ -30,9 +73,9 @@ const styles = StyleSheet.create({
   },
   timestatus: {
     marginTop: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   timetitle: {
     color: Color.TXT_BLACK,
@@ -40,44 +83,42 @@ const styles = StyleSheet.create({
     fontSize: Font.FONTSIZE_16,
   },
   eventstatus: {
-    color: Color.TXT_GREEN,
+    color: Color.TXT_BLACK,
     fontFamily: Font.MYRIAD_REGULAR,
-    fontSize: Font.FONTSIZE_12,
+    fontSize: Font.FONTSIZE_14,
   },
   available: {
     color: Color.TXT_BLACK,
     fontFamily: Font.MYRIAD_REGULAR,
     fontSize: Font.FONTSIZE_12,
-    textAlign: 'right',
-    marginTop: 10,
-    marginBottom: 25,
+    textAlign: "right",
   },
-  titlecount: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  conftitle: {
-    color: Color.TXT_BLACK,
-    fontFamily: Font.MYRIAD_SEMIBOLD,
-    fontSize: Font.FONTSIZE_16,
-    position: 'relative',
-    top: 3.5,
-  },
-  countmain: {
-    padding: 10,
-    backgroundColor: Color.BACK_DARKYELLOW,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  count: {
-    color: Color.TXT_WHITE,
-    fontFamily: Font.MYRIAD_SEMIBOLD,
-    fontSize: Font.FONTSIZE_16,
-    position: 'relative',
-    top: 3,
-  },
+  // titlecount: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  // },
+  // conftitle: {
+  //   color: Color.TXT_BLACK,
+  //   fontFamily: Font.MYRIAD_SEMIBOLD,
+  //   fontSize: Font.FONTSIZE_16,
+  //   position: 'relative',
+  //   top: 3.5,
+  // },
+  // countmain: {
+  //   padding: 10,
+  //   backgroundColor: Color.BACK_DARKYELLOW,
+  //   borderRadius: 5,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  // count: {
+  //   color: Color.TXT_WHITE,
+  //   fontFamily: Font.MYRIAD_SEMIBOLD,
+  //   fontSize: Font.FONTSIZE_16,
+  //   position: 'relative',
+  //   top: isIOS() ? 3 : 0,
+  // },
   btnview: {
     paddingTop: 25,
     paddingBottom: 25,
@@ -88,14 +129,15 @@ const styles = StyleSheet.create({
     backgroundColor: Color.BACK_WHITE,
     borderColor: Color.BACK_DARKYELLOW,
     borderWidth: 1,
-    paddingTop: 17,
-    paddingBottom: 13,
+    height: 48,
     borderRadius: 5,
   },
   sendnotificationtxt: {
     color: Color.TXT_DARKYELLOW,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
+    position: "relative",
+    top: isIOS() ? 2 : 0,
   },
   locationtxt: {
     fontSize: Font.FONTSIZE_16,
@@ -132,16 +174,16 @@ const styles = StyleSheet.create({
     borderBottomColor: Color.BACK_LIGHTGRAY,
   },
   listingtitle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
     marginBottom: 10,
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    alignItems: "center",
   },
   title: {
     fontSize: Font.FONTSIZE_16,
@@ -169,30 +211,18 @@ const styles = StyleSheet.create({
     fontFamily: Font.MYRIAD_REGULAR,
     color: Color.TXT_GREEN,
   },
-  reatbtnview: {
-    position: 'absolute',
-    left: 0,
-    bottom: 50,
-    width: '100%',
-    paddingLeft: 30,
-    paddingRight: 30,
-  },
-  createvent: {
-    backgroundColor: Color.BACK_DARKYELLOW,
-    paddingTop: 17,
-    paddingBottom: 13,
-    borderRadius: 5,
-  },
-  createventxt: {
-    color: Color.TXT_WHITE,
-    fontFamily: Font.MYRIAD_SEMIBOLD,
-    fontSize: Font.FONTSIZE_16,
-  },
+
   centeredView: {
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.4)",
+  },
+  centeredViewsend: {
+    height: "100%",
+    alignItems: "center",
+    paddingTop: "30%",
+    backgroundColor: "rgba(0,0,0,0.4)",
   },
   modalView: {
     width: 312,
@@ -203,35 +233,124 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
   },
-  CreateEventMain: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  sendcancelmain: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
-  createvent: {
-    width: '50%',
+  sendbtn: {
+    width: "50%",
     backgroundColor: Color.BACK_DARKYELLOW,
-    paddingTop: 16,
-    paddingBottom: 11,
+    height: 48,
     borderRadius: 5,
   },
-  createventxt: {
+  sendbtntxt: {
     color: Color.TXT_WHITE,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
+    position: "relative",
+    top: isIOS() ? 3 : 0,
   },
-  deleteevent: {
+  cancelbtn: {
     backgroundColor: Color.BACK_WHITE,
     borderColor: Color.BACK_DARKYELLOW,
     borderWidth: 1,
-    paddingTop: 16,
-    paddingBottom: 11,
+    height: 48,
     borderRadius: 5,
   },
-  deleteeventxt: {
+  cancelbtntxt: {
     color: Color.TXT_DARKYELLOW,
     fontFamily: Font.MYRIAD_SEMIBOLD,
     fontSize: Font.FONTSIZE_16,
+    position: "relative",
+    top: isIOS() ? 3 : 0,
+  },
+  reatbtnview: {
+    width: "100%",
+  },
+  createvent: {
+    backgroundColor: Color.BACK_WHITE,
+    borderColor: Color.BACK_RED,
+    borderTopWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    ...ifIphoneX(
+      {
+        height: 70,
+      },
+      {
+        height: 48,
+      }
+    ),
+  },
+  createventxt: {
+    color: Color.TXT_RED,
+    fontFamily: Font.MYRIAD_SEMIBOLD,
+    fontSize: Font.FONTSIZE_16,
+    position: "relative",
+    ...ifIphoneX(
+      {
+        top: isIOS() ? -3 : 0,
+      },
+      {
+        top: isIOS() ? 3 : 0,
+      }
+    ),
+  },
+  actiontxt: {
+    color: Color.TXT_BLACK,
+    fontFamily: Font.MYRIAD_SEMIBOLD,
+    fontSize: Font.FONTSIZE_16,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 3,
+  },
+  actionmodal: {
+    width: 312,
+    backgroundColor: Color.BACK_WHITE,
+    borderRadius: 5,
+    padding: 20,
+  },
+  confirmtxt: {
+    color: Color.TXT_RED,
+    fontFamily: Font.MYRIAD_SEMIBOLD,
+    fontSize: Font.FONTSIZE_16,
+    textAlign: "center",
+    paddingLeft: 20,
+    paddingRight: 20,
+    marginBottom: 30,
+  },
+  actionbuttons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  actiondelete: {
+    width: "50%",
+    backgroundColor: Color.BACK_RED,
+    height: 45,
+    borderRadius: 5,
+  },
+  actiondeletetxt: {
+    color: Color.TXT_WHITE,
+    fontFamily: Font.MYRIAD_SEMIBOLD,
+    fontSize: Font.FONTSIZE_16,
+    position: "relative",
+    top: isIOS() ? 3 : 0,
+  },
+  actioncancelbtn: {
+    backgroundColor: Color.BACK_WHITE,
+    borderColor: Color.BACK_DARKYELLOW,
+    borderWidth: 1,
+    height: 45,
+    borderRadius: 5,
+  },
+  actioncancelbtntxt: {
+    color: Color.TXT_DARKYELLOW,
+    fontFamily: Font.MYRIAD_SEMIBOLD,
+    fontSize: Font.FONTSIZE_16,
+    position: "relative",
+    top: isIOS() ? 3 : 0,
   },
 });
 

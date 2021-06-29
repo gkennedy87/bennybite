@@ -1,25 +1,40 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {Font, Color} from '../../utils/variable';
-const {width} = Dimensions.get('window');
+import { StyleSheet, Dimensions } from "react-native";
+import { Font, Color, Globals } from "../../utils/variable";
+import { isIOS } from "../../utils/theme";
+
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   safeareaview: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   contentcenter: {
-    width: Dimensions.get('window').width - 40,
+    marginTop: -45,
+    backgroundColor: Globals.isIpad ? Color.BACK_WHITE : "transparent",
+    width: Globals.isIpad ? 400 : Dimensions.get("window").width - 40,
+    paddingLeft: Globals.isIpad ? 45 : 0,
+    paddingRight: Globals.isIpad ? 45 : 0,
+    paddingTop: Globals.isIpad ? 50 : 0,
+    paddingBottom: Globals.isIpad ? 50 : 0,
+    borderRadius: Globals.isIpad ? 4 : 0,
+    shadowColor: Globals.isIpad ? Color.BACK_BLACK : "transparent",
+    shadowOffset: {
+      width: 0,
+      height: Globals.isIpad ? 1 : 0,
+    },
+    shadowOpacity: Globals.isIpad ? 0.2 : 0,
+    shadowRadius: Globals.isIpad ? 2 : 0,
+    elevation: Globals.isIpad ? 3 : 0,
   },
   logocenter: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 60,
   },
-  logo: {
-    width: 265,
-    height: 58,
-    resizeMode: 'contain',
-  },
+  // logo: {
+  //   width: 265,
+  //   height: 58,
+  //   resizeMode: "contain",
+  // },
   logintxt: {
     fontSize: Font.FONTSIZE_16,
     color: Color.TXT_BLACK,
@@ -27,7 +42,7 @@ const styles = StyleSheet.create({
     fontFamily: Font.MYRIAD_REGULAR,
   },
   forgotbtn: {
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     fontFamily: Font.MYRIAD_REGULAR,
   },
   loginbtnmain: {
@@ -37,22 +52,24 @@ const styles = StyleSheet.create({
     color: Color.TXT_BLACK,
     fontSize: Font.FONTSIZE_16,
     fontFamily: Font.MYRIAD_SEMIBOLD,
+    position: "relative",
+    top: isIOS() ? 2 : 0,
   },
   withlogin: {
     fontSize: Font.FONTSIZE_16,
     color: Color.TXT_WHITE,
     fontFamily: Font.MYRIAD_SEMIBOLD,
+    position: "relative",
+    top: isIOS() ? 2 : 0,
   },
   logingray: {
     backgroundColor: Color.BACK_LIGHTGRAY,
-    paddingTop: 17,
-    paddingBottom: 13,
+    height: 48,
     borderRadius: 5,
   },
   loginyellow: {
     backgroundColor: Color.BACK_DARKYELLOW,
-    paddingTop: 17,
-    paddingBottom: 13,
+    height: 48,
     borderRadius: 5,
   },
 });

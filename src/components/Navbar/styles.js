@@ -1,13 +1,21 @@
 import {StyleSheet, Dimensions} from 'react-native';
 import {Color, Font} from '../../utils/variable';
-
+import {ifIphoneX} from 'react-native-iphone-x-helper';
 const {width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   headermain: {
     paddingLeft: 16,
     paddingRight: 16,
-    paddingTop: 45,
+
+    ...ifIphoneX(
+      {
+        paddingTop: 45,
+      },
+      {
+        paddingTop: 20,
+      },
+    ),
     paddingBottom: 10,
   },
   userview: {
@@ -44,39 +52,6 @@ const styles = StyleSheet.create({
   },
   notificationicon: {
     fontSize: Font.FONTSIZE_24,
-    color: Color.TXT_BLACK,
-  },
-  centeredView: {
-    height: '100%',
-    backgroundColor: Color.BACK_WHITE,
-  },
-  profiletop: {
-    paddingTop: 45,
-    paddingLeft: 15,
-    paddingRight: 15,
-  },
-  profiletopview: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  closebtn: {
-    padding: 5,
-    fontSize: Font.FONTSIZE_24,
-    color: Color.TXT_BLACK,
-  },
-  settingtitle: {
-    position: 'relative',
-    top: 3,
-    fontSize: Font.FONTSIZE_16,
-    fontFamily: Font.MYRIAD_SEMIBOLD,
-    color: Color.TXT_BLACK,
-  },
-  edittxt: {
-    position: 'relative',
-    top: 3,
-    fontSize: Font.FONTSIZE_16,
-    fontFamily: Font.MYRIAD_SEMIBOLD,
     color: Color.TXT_BLACK,
   },
 });

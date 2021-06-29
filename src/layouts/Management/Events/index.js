@@ -1,219 +1,436 @@
-import React, {Component} from 'react';
-import {View, FlatList, Text, Image} from 'react-native';
-import Navbar from '../../../components/Navbar';
-import CustomButton from '../../../components/CustomButton';
-import Tabbutton from '../../../components/Tabbutton';
-import styles from './styles';
-import {Color} from '../../../utils/variable';
+import moment from "moment";
+import { get } from "lodash";
+import { connect } from "react-redux";
+import React, { Component, useState, useEffect } from "react";
+import AsyncStorage from "@react-native-community/async-storage";
+import { SwipeListView, SwipeRow } from "react-native-swipe-list-view";
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  TouchableHighlight,
+  Image,
+  Modal,
+} from "react-native";
 
-import {RectButton, TouchableOpacity} from 'react-native-gesture-handler';
+import { safeJSONParser, sameDayEvent } from "./../../../utils/helper";
+import { authOperations } from "./../../../state/ducks/auth";
+import { userOperations } from "./../../../state/ducks/user";
+import { eventOperations } from "./../../../state/ducks/event";
 
-import AppleStyleSwipeableRow from './AppleStyleSwipeableRow';
+import Navbar from "../../../components/Navbar";
+import Tabbutton from "../../../components/Tabbutton";
+import CustomIcon from "../../../components/CustomIcon";
+import CustomToast from "../../../components/CustomToast";
 
-const Eventlist = [
-  {
-    id: '1',
-    title: 'TEDx talks',
-    subtxt:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'On going',
-    upcomingtime: '',
-  },
-  {
-    id: '2',
-    title: 'College campus farmer’s dsd  ff f ds ss gsdg s',
-    subtxt:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'On going',
-    upcomingtime: '',
-  },
-  {
-    id: '3',
-    title: 'Community service events Community service events',
-    subtxt:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'Upcoming',
-    upcomingtime: '1pm-3pm, 23/12/2020',
-    upcomingtime: '',
-  },
-  {
-    id: '4',
-    title: 'Craft workshops',
-    subtxt:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'Upcoming',
-    upcomingtime: '1pm-3pm, 23/12/2020',
-    upcomingtime: '',
-  },
-  {
-    id: '1',
-    title: 'TEDx talks',
-    subtxt:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'On going',
-    upcomingtime: '',
-  },
-  {
-    id: '2',
-    title: 'College campus farmer’s',
-    subtxt:
-      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'On going',
-    upcomingtime: '',
-  },
-  {
-    id: '3',
-    title: 'Community service events',
-    subtxt:
-      'Millennials love expressing their values online, but 80% of them feel it’s essential for people to come together in',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'Upcoming',
-    upcomingtime: '1pm-3pm, 23/12/2020',
-  },
-  {
-    id: '4',
-    title: 'Craft workshops 123',
-    subtxt:
-      'Host a workshop where students can make their own dorm room décor — think plant hangers, terrariu...',
-    evtaddress: 'Ryder Avenue Seattle, WA 98109',
-    evtstatus: 'Upcoming',
-    upcomingtime: '1pm-3pm, 23/12/2020',
-  },
-];
+import styles from "./styles";
+import { Color } from "../../../utils/variable";
+import Switch from "./../../../components/Switch";
+import CustomButton from "./../../../components/CustomButton";
+import DummyProfile from "../../../assets/Images/user.png";
 
-function Item({title, subtxt, evtaddress, evtstatus, upcomingtime}) {
-  return (
-    <TouchableOpacity
-      onPress={() => {
-        this.props.navigation.navigate('EventsDetails');
-      }}
-      style={styles.listingspace}>
-      <View style={styles.listingborder}>
-        <View style={styles.listingtitle}>
-          <Text numberOfLines={1} style={styles.title}>
-            {title}
-          </Text>
-          <Text style={styles.upcomingtime}>{upcomingtime}</Text>
-        </View>
-        <Text style={styles.subtxt} numberOfLines={2}>
-          {subtxt}
-        </Text>
-        <View style={styles.row}>
-          <Text numberOfLines={1} style={styles.evtaddress}>
-            {evtaddress}
-          </Text>
-          <Text style={styles.evtstatus}>{evtstatus}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-}
+const Timer = (props) => {
+  const TWELVE_HOUR = 60 * 60 * 1000 * 12;
+  const endDate = new Date(props.endDate);
+  const startDate = new Date(props.startDate);
+  const eventTime = startDate.getTime();
+  const currentTime = new Date().getTime();
+  let timeFormat = "";
 
-const Userlist = [
-  {
-    name: 'Miyah Myles',
-    email: 'miyah.myles@gmail.com',
-    userprofile:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=707b9c33066bf8808c934c8ab394dff6',
-  },
-  {
-    name: 'June Cha',
-    email: 'june.cha@gmail.com',
-    userprofile: 'https://randomuser.me/api/portraits/women/44.jpg',
-  },
-  {
-    name: 'Iida Niskanen',
-    email: 'iida.niskanen@gmail.com',
-    userprofile: 'https://randomuser.me/api/portraits/women/68.jpg',
-  },
-  {
-    name: 'Renee Sims',
-    email: 'renee.sims@gmail.com',
-    userprofile: 'https://randomuser.me/api/portraits/women/65.jpg',
-  },
-  {
-    name: 'Jonathan Nu\u00f1ez',
-    email: 'jonathan.nu\u00f1ez@gmail.com',
-    userprofile: 'https://randomuser.me/api/portraits/men/43.jpg',
-  },
-  {
-    name: 'Sasha Ho',
-    email: 'sasha.ho@gmail.com',
-    userprofile:
-      'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?h=350&auto=compress&cs=tinysrgb',
-  },
-  {
-    name: 'Abdullah Hadley',
-    email: 'abdullah.hadley@gmail.com',
-    userprofile:
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=a72ca28288878f8404a795f39642a46f',
-  },
-  {
-    name: 'Thomas Stock',
-    email: 'thomas.stock@gmail.com',
-    userprofile:
-      'https://tinyfac.es/data/avatars/B0298C36-9751-48EF-BE15-80FB9CD11143-500w.jpeg',
-  },
-  {
-    name: 'Veeti Seppanen',
-    email: 'veeti.seppanen@gmail.com',
-    userprofile: 'https://randomuser.me/api/portraits/men/97.jpg',
-  },
-  {
-    name: 'Bonnie Riley',
-    email: 'bonnie.riley@gmail.com',
-    userprofile: 'https://randomuser.me/api/portraits/women/26.jpg',
-  },
-];
+  if (eventTime - currentTime > TWELVE_HOUR) {
+    timeFormat = `${moment(startDate).format("hh:mma")} - ${moment(
+      endDate
+    ).format("hh:mma")}, ${moment(startDate).format("DD/MM/YYYY")}`;
+  }
 
-const Row = ({item}) => (
-  <RectButton
-    style={styles.userlistingspace}
-    //onPress={() => alert(item.userprofile, item.name, item.email)}
-  >
-    <View style={styles.userlistingborder}>
-      <Image source={{uri: item.userprofile}} style={styles.userprofile} />
-      <View style={styles.usremail}>
-        <Text style={styles.usernametxt}>{item.name}</Text>
-        <Text style={styles.usertxtemail}>{item.email}</Text>
-      </View>
-    </View>
-  </RectButton>
-);
+  const [time, setTime] = useState(timeFormat);
+  if (eventTime - currentTime < TWELVE_HOUR) {
+    useEffect(() => {
+      if (eventTime - currentTime < TWELVE_HOUR) {
+        var diffTime = eventTime - currentTime;
+        var duration = moment.duration(diffTime, "milliseconds");
+        var interval = 1000 * 60;
+        setTime(duration.hours() + ":" + duration.minutes() + " Hours left");
+        setInterval(function () {
+          duration = moment.duration(duration - interval, "milliseconds");
+          let hours = duration.hours();
+          hours = hours < 10 ? `0${hours}` : hours;
+          let minutes = duration.minutes();
+          minutes = minutes < 10 ? `0${minutes}` : minutes;
+          setTime(hours + ":" + minutes + " Hours left");
+        }, interval);
+      }
+    }, [props.startDate, props.endDate]);
+  }
 
-const SwipeableRow = ({item, index}) => {
-  return (
-    <AppleStyleSwipeableRow>
-      <Row item={item} />
-    </AppleStyleSwipeableRow>
-  );
+  return <Text style={styles.upcomingtime}>{time}</Text>;
 };
 
-export default class Events extends Component {
+export class Events extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: 'FoodonCampus',
+      FoodModalVisible: false,
+      UsersModalVisible: false,
+      selected: "FoodonCampus",
+      userId: null,
+      eventId: null,
     };
+  }
+
+  async componentDidMount() {
+    const isAuthenticated = safeJSONParser(
+      await AsyncStorage.getItem("isAuthenticated")
+    );
+    const user = safeJSONParser(await AsyncStorage.getItem("user"));
+    const tokens = safeJSONParser(await AsyncStorage.getItem("tokens"));
+    if (isAuthenticated) {
+      this.props.initializeSession({ user, tokens });
+      this.props.fetchEventList();
+      if (user.role != "user") this.props.fetchUserList();
+    }
   }
 
   static navigationOptions = {
     header: null,
   };
 
-  render() {
-    const {navigate} = this.props.navigation;
-    const {selected} = this.state;
-    const {children} = this.props;
+  getEventStatus = (startDate, endDate) => {
+    startDate = new Date(startDate).getTime();
+    endDate = new Date(endDate).getTime();
+    const current = new Date().getTime();
+    if (startDate > current) return "Upcoming";
+    else if (startDate < current && endDate > current) return "On going";
+    else return "Past";
+  };
+
+  onDeleteEvent = async () => {
+    let toastMessage = "",
+      toastType = "";
+    try {
+      const response = await this.props.deleteEvent(this.state.eventId);
+      this.setEventModalVisible(false);
+      toastMessage = response.message;
+    } catch (err) {
+      toastMessage = get(err, "response.data.message", "Something went wrong!");
+      toastType = "warning";
+    }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType,
+    });
+  };
+
+  setEventModalVisible = (visible) => {
+    this.setState({ FoodModalVisible: visible });
+  };
+
+  setUsersModalVisible = (visible) => {
+    const state = { UsersModalVisible: visible };
+    if (!visible) state.userId = null;
+    this.setState(state);
+  };
+
+  checkEventOwner = (event) => {
+    const { role, id } = this.props.user;
+
+    let isEventOwner = false;
+    if (role === "admin") isEventOwner = true;
+    else if (role === "staff" && event.createdBy === id) isEventOwner = true;
+
+    return isEventOwner;
+  };
+
+  onRoleChange = async (userId, value) => {
+    let toastMessage = "",
+      toastType = "";
+    const role = value ? "user" : "staff";
+    try {
+      const response = await this.props.assignRole(userId, role);
+      toastMessage = response.message;
+    } catch (err) {
+      toastMessage = get(err, "response.data.message", "Something went wrong!");
+      toastType = "warning";
+    }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType,
+    });
+  };
+
+  onDeleteUser = async () => {
+    let toastMessage = "",
+      toastType = "";
+    try {
+      const response = await this.props.deleteUser(this.state.userId);
+      toastMessage = response.message;
+      this.setUsersModalVisible(false);
+    } catch (err) {
+      toastMessage = get(err, "response.data.message", "Something went wrong!");
+      toastType = "warning";
+    }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType,
+    });
+  };
+
+  changeUserStatus = async (user) => {
+    let toastMessage = "",
+      toastType = "";
+    let response;
+    try {
+      if (user.status === 1) {
+        response = await this.props.disableUser(user.id);
+      } else if (user.status === 0) {
+        response = await this.props.enableUser(user.id);
+      }
+      toastMessage = response.message;
+    } catch (err) {
+      toastMessage = get(err, "response.data.message", "Something went wrong!");
+      toastType = "warning";
+    }
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType,
+    });
+  };
+
+  showDeleteUserModel = (userId) => {
+    this.setUsersModalVisible(true);
+    this.setState({ userId });
+  };
+
+  showDeleteEventModel = (eventId) => {
+    this.setEventModalVisible(true);
+    this.setState({ eventId });
+  };
+
+  getEventTime = (startDate, endDate) => {};
+
+  renderUsers = ({ item }) => {
+    const isAdmin = this.props.user.role === "admin";
+    const disableLeftSwipe = !isAdmin && item.role !== "user";
 
     return (
-      <View style={{flex: 1}}>
+      <SwipeRow rightOpenValue={-170} disableLeftSwipe={disableLeftSwipe}>
+        <View style={styles.swipeBack}>
+          <TouchableOpacity
+            style={[styles.swipebtnusers, styles.btnusers]}
+            onPress={() => this.changeUserStatus(item)}
+          >
+            <CustomIcon style={styles.swipeicon} name="user" />
+            <Text style={styles.swipetxt}>
+              {item.status === 1 ? "Disable User" : "Enable User"}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.swipebtnusers, styles.btndeleteusers]}
+            onPress={() => this.showDeleteUserModel(item.id)}
+          >
+            <CustomIcon style={styles.swipeicon} name="delete" />
+            <Text style={styles.swipetxt}>Delete</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableHighlight
+          style={styles.swiperowpadd}
+          underlayColor={"#ffffff"}
+        >
+          <View
+            style={
+              disableLeftSwipe
+                ? styles.swiperowborderdis
+                : styles.swiperowborder
+            }
+          >
+            <View style={styles.userlistingborder}>
+              <Image
+                source={item.pic ? { uri: item.pic } : DummyProfile}
+                style={styles.userprofile}
+              />
+              <View style={styles.usremail}>
+                <Text style={styles.usernametxt}>{item.name}</Text>
+                <Text style={styles.usertxtemail}>{item.email}</Text>
+              </View>
+              {isAdmin && (
+                <Switch
+                  showLabel={true}
+                  trueLabel={"staff"}
+                  falseLabel={"student"}
+                  defaultValue={item.role === "staff"}
+                  onChange={(value) => this.onRoleChange(item.id, value)}
+                ></Switch>
+              )}
+            </View>
+          </View>
+        </TouchableHighlight>
+      </SwipeRow>
+    );
+  };
+
+  renderEvents = ({ item }) => {
+    const eventStatus = this.getEventStatus(item.startDate, item.endDate);
+    return (
+      <SwipeRow
+        rightOpenValue={-150}
+        disableLeftSwipe={!this.checkEventOwner(item)}
+      >
+        <View style={styles.swipeBack}>
+          <TouchableOpacity
+            style={[styles.SwipeBtn, styles.btndelete]}
+            onPress={() => {
+              this.showDeleteEventModel(item._id);
+            }}
+          >
+            <CustomIcon style={styles.swipeicon} name="delete" />
+            <Text style={styles.swipetxt}>Delete</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.SwipeBtn, styles.btnedit]}
+            onPress={() => {
+              this.props.navigation.navigate("EditEvents", { event: item });
+            }}
+          >
+            <CustomIcon style={styles.swipeicon} name="edit" />
+            <Text style={styles.swipetxt}>Edit</Text>
+          </TouchableOpacity>
+        </View>
+
+        <TouchableHighlight
+          onPress={() => {
+            this.props.navigation.navigate("EventsDetails", {
+              eventId: item._id,
+            });
+          }}
+          style={styles.swiperowpadd}
+          underlayColor={"#ffffff"}
+        >
+          <View style={styles.swiperowborder}>
+            <View style={styles.listingtitle}>
+              <Text numberOfLines={1} style={styles.title}>
+                {item.name}
+              </Text>
+              <Text style={styles.titleright}>
+                {eventStatus === "Upcoming" && (
+                  <Timer
+                    startDate={item.startDate}
+                    endDate={item.endDate}
+                  ></Timer>
+                )}
+              </Text>
+            </View>
+            <Text style={styles.subtxt} numberOfLines={2}>
+              {item.info}
+            </Text>
+            <View style={styles.row}>
+              <Text numberOfLines={1} style={styles.evtaddress}>
+                {item.location}
+              </Text>
+              <Text
+                style={
+                  eventStatus === "Upcoming"
+                    ? styles.evtstatusup
+                    : styles.evtstatus
+                }
+              >
+                {eventStatus}
+              </Text>
+            </View>
+            {eventStatus === "On going" && (
+              <Text style={styles.foodavailable}>Food Available Until:</Text>
+            )}
+          </View>
+        </TouchableHighlight>
+      </SwipeRow>
+    );
+  };
+
+  render() {
+    const {
+      selected,
+      FoodModalVisible,
+      UsersModalVisible,
+      toastType,
+      toastMessage,
+      showToast,
+    } = this.state;
+    const isStudent = this.props.user.role === "user";
+    return (
+      <View style={{ flex: 1 }}>
+        <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+          onHide={() => this.setState({ showToast: false })}
+        />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={FoodModalVisible}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.confirmtxt}>
+                Are you sure you want to delete this event
+              </Text>
+              <View style={styles.actionbuttons}>
+                <CustomButton
+                  width="48%"
+                  btnText="Delete"
+                  mainStyle={styles.actiondelete}
+                  btnStyle={styles.actiondeletetxt}
+                  onClick={this.onDeleteEvent}
+                />
+                <CustomButton
+                  width="48%"
+                  btnText="Cancel"
+                  mainStyle={styles.actioncancelbtn}
+                  btnStyle={styles.actioncancelbtntxt}
+                  onClick={() => {
+                    this.setEventModalVisible(!FoodModalVisible);
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={UsersModalVisible}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.confirmtxt}>
+                Are you sure you want to delete this user
+              </Text>
+              <View style={styles.actionbuttons}>
+                <CustomButton
+                  width="48%"
+                  btnText="Delete"
+                  mainStyle={styles.actiondelete}
+                  btnStyle={styles.actiondeletetxt}
+                  onClick={this.onDeleteUser}
+                />
+                <CustomButton
+                  width="48%"
+                  btnText="Cancel"
+                  mainStyle={styles.actioncancelbtn}
+                  btnStyle={styles.actioncancelbtntxt}
+                  onClick={() => {
+                    this.setUsersModalVisible(!UsersModalVisible);
+                  }}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
+
         <Navbar />
 
         <View style={styles.tabmain}>
@@ -222,75 +439,72 @@ export default class Events extends Component {
               MenubuttonStyle={{}}
               MenutextStyle={{
                 color:
-                  selected === 'FoodonCampus'
+                  selected === "FoodonCampus"
                     ? Color.TXT_BLACK
                     : Color.TXT_DARKGRAY,
               }}
               MenuactiveStyle={{
                 backgroundColor:
-                  selected === 'FoodonCampus' ? Color.TXT_BLACK : 'transparent',
+                  selected === "FoodonCampus" ? Color.TXT_BLACK : "transparent",
               }}
               onClick={() => {
                 this.setState({
-                  selected: 'FoodonCampus',
+                  selected: "FoodonCampus",
                 });
               }}
-              Menutext="Food on Campus"></Tabbutton>
-            <Tabbutton
-              MenubuttonStyle={{}}
-              MenutextStyle={{
-                color:
-                  selected === 'Users' ? Color.TXT_BLACK : Color.TXT_DARKGRAY,
-              }}
-              MenuactiveStyle={{
-                backgroundColor:
-                  selected === 'Users' ? Color.TXT_BLACK : 'transparent',
-              }}
-              onClick={() => {
-                this.setState({
-                  selected: 'Users',
-                });
-              }}
-              Menutext="Users"></Tabbutton>
+              Menutext="Food on Campus"
+            ></Tabbutton>
+            {!isStudent && (
+              <Tabbutton
+                MenubuttonStyle={{}}
+                MenutextStyle={{
+                  color:
+                    selected === "Users" ? Color.TXT_BLACK : Color.TXT_DARKGRAY,
+                }}
+                MenuactiveStyle={{
+                  backgroundColor:
+                    selected === "Users" ? Color.TXT_BLACK : "transparent",
+                }}
+                onClick={() => {
+                  this.setState({
+                    selected: "Users",
+                  });
+                }}
+                Menutext="Users"
+              ></Tabbutton>
+            )}
           </View>
         </View>
-        {selected === 'FoodonCampus' && (
-          <View style={{flex: 1}}>
-            <FlatList
-              data={Eventlist}
-              renderItem={({item}) => (
-                <Item
-                  title={item.title}
-                  subtxt={item.subtxt}
-                  evtaddress={item.evtaddress}
-                  evtstatus={item.evtstatus}
-                  upcomingtime={item.upcomingtime}
-                  id={item.id}
-                />
-              )}
-              keyExtractor={(item) => item.id}
+        {selected === "FoodonCampus" && (
+          <View style={{ flex: 1 }}>
+            <SwipeListView
+              data={this.props.events.map((e) => ({ ...e, key: e._id }))}
+              previewRowKey={"0"}
+              previewOpenValue={-40}
+              previewOpenDelay={3000}
+              renderItem={this.renderEvents}
             />
-            <View style={styles.reatbtnview}>
-              <CustomButton
-                btnText="Create Event"
-                mainStyle={styles.createvent}
-                btnStyle={styles.createventxt}
-                onClick={() => {
-                  this.props.navigation.navigate('CreateEvent');
-                }}
-              />
-            </View>
+            {!isStudent && (
+              <View style={styles.reatbtnview}>
+                <CustomButton
+                  btnText="Create Event"
+                  mainStyle={styles.createvent}
+                  btnStyle={styles.createventxt}
+                  onClick={() => {
+                    this.props.navigation.navigate("CreateEvent");
+                  }}
+                />
+              </View>
+            )}
           </View>
         )}
-        {selected === 'Users' && (
-          <View style={{flex: 1}}>
-            <FlatList
-              data={Userlist}
-              ItemSeparatorComponent={() => <View style={styles.separator} />}
-              renderItem={({item, index}) => (
-                <SwipeableRow item={item} index={index} />
-              )}
-              keyExtractor={(item, index) => `message ${index}`}
+        {selected === "Users" && !isStudent && (
+          <View style={{ flex: 1 }}>
+            <SwipeListView
+              data={this.props.users
+                .filter((u) => u.id != this.props.user.id)
+                .map((e) => ({ ...e, key: e.id }))}
+              renderItem={this.renderUsers}
             />
           </View>
         )}
@@ -298,3 +512,24 @@ export default class Events extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    users: state.user.list,
+    events: state.event.list,
+    user: get(state, "auth.session.user", {}),
+  };
+};
+
+const mapDispatchToProps = {
+  fetchUserList: userOperations.fetchList,
+  fetchEventList: eventOperations.fetchList,
+  deleteEvent: eventOperations.deleteEvent,
+  initializeSession: authOperations.initializeSession,
+  assignRole: userOperations.assignRole,
+  deleteUser: userOperations.deleteUser,
+  enableUser: userOperations.enableUser,
+  disableUser: userOperations.disableUser,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Events);

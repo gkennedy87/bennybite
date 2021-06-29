@@ -1,4 +1,7 @@
-import React, {Component} from 'react';
+import moment from "moment";
+import { get } from "lodash";
+import { connect } from "react-redux";
+import React, { Component, useState, useEffect } from "react";
 import {
   View,
   ScrollView,
@@ -7,22 +10,62 @@ import {
   Animated,
   Dimensions,
   TouchableOpacity,
-} from 'react-native';
-import CustomTextfield from '../../../components/CustomTextfield';
-import CustomButton from '../../../components/CustomButton';
-import CustomIcon from '../../../components/CustomIcon';
-import styles from './styles';
-import {Color, Font} from '../../../utils/variable';
+  Keyboard,
+} from "react-native";
+import { eventOperations } from "./../../../state/ducks/event";
 
-export default class EventsDetails extends Component {
+import CustomIcon from "../../../components/CustomIcon";
+import CustomToast from "../../../components/CustomToast";
+import CustomButton from "../../../components/CustomButton";
+import CustomTextfield from "../../../components/CustomTextfield";
+
+import styles from "./styles";
+import { Font, userRole } from "../../../utils/variable";
+
+const Timer = (props) => {
+  const TWELVE_HOUR = 60 * 60 * 1000 * 12;
+  const endDate = new Date(props.endDate);
+  const startDate = new Date(props.startDate);
+  const eventTime = startDate.getTime();
+  const currentTime = new Date().getTime();
+  let timeFormat = "";
+  const [time, setTime] = useState(timeFormat);
+  if (eventTime - currentTime < TWELVE_HOUR) {
+    useEffect(() => {
+      if (eventTime - currentTime < TWELVE_HOUR) {
+        var diffTime = eventTime - currentTime;
+        var duration = moment.duration(diffTime, "milliseconds");
+        var interval = 1000 * 60;
+        setTime(duration.hours() + ":" + duration.minutes() + " Hours left");
+        setInterval(function () {
+          duration = moment.duration(duration - interval, "milliseconds");
+          let hours = duration.hours();
+          hours = hours < 10 ? `0${hours}` : hours;
+          let minutes = duration.minutes();
+          minutes = minutes < 10 ? `0${minutes}` : minutes;
+          setTime(hours + ":" + minutes + " Hours left");
+        }, interval);
+      }
+    }, [props.startDate, props.endDate]);
+  }
+
+  return <Text style={styles.upcomingtime}>{time}</Text>;
+};
+
+export class EventsDetails extends Component {
   constructor(props) {
     super(props);
-
     this.offset = 0;
-
     this.state = {
+      modalVisible: false,
+      ActionModalVisible: false,
       scrollOffset: new Animated.Value(0),
       titleWidth: 0,
+      event: {},
+      notification: {
+        title: "",
+        message: "",
+      },
     };
   }
 
@@ -30,8 +73,21 @@ export default class EventsDetails extends Component {
     header: null,
   };
 
-  componentDidMount() {
-    this.state.scrollOffset.addListener(({value}) => (this.offset = value));
+  async componentDidMount() {
+    try {
+      const response = await this.props.getEvent(
+        this.props.navigation.state.params.eventId
+      );
+      const { event } = response.payload;
+      this.setState({
+        event,
+        notification: {
+          title: event.name,
+          message: "",
+        },
+      });
+    } catch (err) {}
+    this.state.scrollOffset.addListener(({ value }) => (this.offset = value));
   }
 
   onScroll = (e) => {
@@ -40,84 +96,221 @@ export default class EventsDetails extends Component {
     this.state.scrollOffset.setValue(offset);
   };
 
-  // state = {
-  //   modalVisible: false,
-  // };
+  setModalVisible = (visible) => {
+    if (!visible) {
+      this.setState({
+        modalVisible: visible,
+        notification: {
+          title: this.state.event.name,
+          message: "",
+        },
+      });
+    }
+    this.setState({ modalVisible: visible });
+  };
 
-  // setModalVisible = (visible) => {
-  //   this.setState({modalVisible: visible});
-  // };
+  setActionModalVisible = (visible) => {
+    this.setState({ ActionModalVisible: visible });
+  };
+
+  onDeleteEvent = async (eventId) => {
+    try {
+      await this.props.deleteEvent(eventId);
+      this.props.navigation.navigate("Events");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  onSendNotification = async (eventId) => {
+    let toastMessage = "",
+      toastType = "";
+    try {
+      const response = await this.props.sendNotification(
+        eventId,
+        this.state.notification
+      );
+      toastMessage = response.message;
+    } catch (err) {
+      toastMessage = get(err, "response.data.message", "Something went wrong!");
+      toastType = "warning";
+    }
+    this.setModalVisible(false);
+    this.setState({
+      showToast: true,
+      toastMessage,
+      toastType,
+    });
+  };
+
+  getEventStatus = (startDate, endDate) => {
+    startDate = new Date(startDate).getTime();
+    endDate = new Date(endDate).getTime();
+    const current = new Date().getTime();
+    if (startDate > current) return "Upcoming";
+    else if (startDate < current && endDate > current) return "On going";
+    else return "Past";
+  };
+
+  onNotificationChange = (key, value) => {
+    const { notification } = this.state;
+    if (key === "title") notification.title = value;
+    else notification.message = value;
+
+    this.setState({
+      notification,
+    });
+  };
+
+  isSendDisabled = () => {
+    const { notification } = this.state;
+    return notification.title.length == 0 || notification.message.length == 0;
+  };
 
   render() {
-    const {navigate} = this.props.navigation;
-    //const {modalVisible} = this.state;
+    const screenWidth = Dimensions.get("window").width;
+    const {
+      modalVisible,
+      ActionModalVisible,
+      scrollOffset,
+      event,
+    } = this.state;
+    const { role, id } = this.props.user;
+    const { notification, toastMessage, showToast, toastType } = this.state;
+    const eventStatus = this.getEventStatus(event.startDate, event.endDate);
 
-    const {scrollOffset} = this.state;
-    const screenWidth = Dimensions.get('window').width;
+    let isEventOwner = false;
+    if (role === "admin") isEventOwner = true;
+    else if (role === "staff" && event.createdBy === id) isEventOwner = true;
 
     return (
       <View style={styles.container}>
-        {/* <Modal
+        <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+          onHide={() => this.setState({ showToast: false })}
+        />
+        <Modal
           animationType="slide"
           transparent={true}
-          //visible={modalVisible}
+          visible={ActionModalVisible}
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <CustomTextfield
-                placeholder="TEDx talks"
-                editable={true}
-                inputmainstyle={{marginBottom: 20}}
-                inputstyle={{
-                  fontFamily: Font.MYRIAD_SEMIBOLD,
-                  fontSize: Font.FONTSIZE_16,
-                }}
-                //onChangeText={this.onEmailTextChange}
-                //value={email.value}
-                //errorMsgs={email.message}
-              ></CustomTextfield>
-              <CustomTextfield
-                placeholder="Start typing..."
-                editable={true}
-                inputmainstyle={{marginBottom: 20}}
-                inputstyle={{height: 150}}
-                multiline={true}
-                //onChangeText={this.onEmailTextChange}
-                //value={email.value}
-                //errorMsgs={email.message}
-              ></CustomTextfield>
-              <View style={styles.CreateEventMain}>
+              <Text style={styles.confirmtxt}>
+                Are you sure you want to delete this event
+              </Text>
+              <View style={styles.actionbuttons}>
                 <CustomButton
                   width="48%"
-                  btnText="Send"
-                  mainStyle={styles.createvent}
-                  btnStyle={styles.createventxt}
-                  // onClick={() => {
-                  //   this.setModalVisible(!modalVisible);
-                  // }}
+                  btnText="Delete"
+                  mainStyle={styles.actiondelete}
+                  btnStyle={styles.actiondeletetxt}
+                  onClick={() => {
+                    this.setState({ ActionModalVisible: false }, () => {
+                      this.onDeleteEvent(event._id);
+                    });
+                  }}
                 />
                 <CustomButton
                   width="48%"
                   btnText="Cancel"
-                  mainStyle={styles.deleteevent}
-                  btnStyle={styles.deleteeventxt}
-                  // onClick={() => {
-                  //   this.setModalVisible(!modalVisible);
-                  // }}
+                  mainStyle={styles.actioncancelbtn}
+                  btnStyle={styles.actioncancelbtntxt}
+                  onClick={() => {
+                    this.setActionModalVisible(!ActionModalVisible);
+                  }}
                 />
               </View>
             </View>
           </View>
-        </Modal> */}
+        </Modal>
+
+        <Modal animationType="slide" transparent={true} visible={modalVisible}>
+          <TouchableOpacity
+            style={styles.centeredViewsend}
+            activeOpacity={1}
+            onPress={() => Keyboard.dismiss()}
+          >
+            <View style={styles.modalView}>
+              <CustomTextfield
+                placeholder={"Enter title"}
+                txtvalue={notification.title}
+                editable={true}
+                inputmainstyle={{ marginBottom: 20 }}
+                inputstyle={{
+                  fontFamily: Font.MYRIAD_SEMIBOLD,
+                  fontSize: Font.FONTSIZE_16,
+                }}
+                onChangeText={(value) =>
+                  this.onNotificationChange("title", value)
+                }
+              />
+              <CustomTextfield
+                placeholder="Start typing..."
+                txtvalue={notification.message}
+                editable={true}
+                inputmainstyle={{ marginBottom: 20 }}
+                inputstyle={{
+                  height: 120,
+                  paddingTop: 14,
+                  paddingBottom: 14,
+                  textAlignVertical: "top",
+                }}
+                multiline={true}
+                onChangeText={(value) =>
+                  this.onNotificationChange("message", value)
+                }
+              />
+              <View style={styles.sendcancelmain}>
+                <CustomButton
+                  width="48%"
+                  btnText="Send"
+                  mainStyle={styles.sendbtn}
+                  btnStyle={styles.sendbtntxt}
+                  disabled={this.isSendDisabled()}
+                  onClick={() => {
+                    this.onSendNotification(event._id);
+                  }}
+                />
+                <CustomButton
+                  width="48%"
+                  btnText="Cancel"
+                  mainStyle={styles.cancelbtn}
+                  btnStyle={styles.cancelbtntxt}
+                  onClick={() => {
+                    this.setModalVisible(!modalVisible);
+                  }}
+                />
+              </View>
+            </View>
+          </TouchableOpacity>
+        </Modal>
 
         <View style={styles.eventbackbtn}>
           <TouchableOpacity
+            style={styles.btnpad}
             onPress={() => {
-              this.props.navigation.navigate('Events');
-            }}>
-            <CustomIcon style={styles.backbtnicon} name="back" />
+              this.props.navigation.navigate("Events");
+            }}
+          >
+            <CustomIcon style={styles.backicon} name="back" />
           </TouchableOpacity>
         </View>
+
+        {isEventOwner && (
+          <View style={styles.editbtn}>
+            <TouchableOpacity
+              style={styles.btnpad}
+              onPress={() => {
+                this.props.navigation.navigate("EditEvents", { event });
+              }}
+            >
+              <CustomIcon style={styles.editicon} name="edit" />
+            </TouchableOpacity>
+          </View>
+        )}
 
         <Animated.View
           style={[
@@ -127,130 +320,119 @@ export default class EventsDetails extends Component {
               width: screenWidth,
               marginTop: scrollOffset.interpolate({
                 inputRange: [0, 200],
-                outputRange: [10, -10],
-                extrapolate: 'clamp',
+                outputRange: [40, -0],
+                extrapolate: "clamp",
               }),
             },
-          ]}>
+          ]}
+        >
           <Animated.Text
             onLayout={(e) => {
-              if (this.offset === 0 && this.state.titleWidth === 0) {
-                const titleWidth = e.nativeEvent.layout.width;
-                this.setState({titleWidth});
-              }
+              // if (this.offset === 0 && this.state.titleWidth === 0) {
+              const titleWidth = e.nativeEvent.layout.width;
+              this.setState({ titleWidth });
+              // }
             }}
             style={[
               styles.eventitle,
               {
                 fontSize: scrollOffset.interpolate({
                   inputRange: [0, 200],
-                  outputRange: [34, 16],
-                  extrapolate: 'clamp',
+                  outputRange: [24, 18],
+                  extrapolate: "clamp",
                 }),
               },
-            ]}>
-            TEDx talks
+            ]}
+          >
+            {event.name}
           </Animated.Text>
           <Animated.View
             style={{
               width: scrollOffset.interpolate({
                 inputRange: [0, 200],
-                outputRange: [screenWidth * 0.95 - this.state.titleWidth, 0],
-                extrapolate: 'clamp',
+                outputRange: [screenWidth * 0.92 - this.state.titleWidth, 0],
+                extrapolate: "clamp",
               }),
             }}
           />
         </Animated.View>
 
         <ScrollView
-          style={{flex: 1, width: '100%'}}
-          contentContainerStyle={{width: '100%'}}
+          style={{ flex: 1, width: "100%" }}
+          contentContainerStyle={{ width: "100%" }}
           onScroll={this.onScroll}
-          scrollEventThrottle={20}>
+          scrollEventThrottle={20}
+        >
           <View style={styles.contentspacing}>
             <View style={styles.timestatus}>
               <Text style={styles.timetitle}>Time</Text>
-              <Text style={styles.eventstatus}>On going</Text>
+              {eventStatus === "On going" && (
+                <View>
+                  <Text style={styles.eventstatus}>Food Available Until:</Text>
+                  <Text style={styles.eventstatus}>
+                    {moment(event.endDate).format("hh:mma DD/MM/YYYY")}
+                  </Text>
+                </View>
+              )}
+              {/* <Text style={styles.eventstatus}>{eventStatus}</Text> */}
+              {eventStatus === "Upcoming" && (
+                <View style={{ alignItems: "flex-end" }}>
+                  <Text style={styles.eventstatus}>Food Available Until:</Text>
+                  <Text style={styles.eventstatus}>
+                    <Timer
+                      startDate={event.startDate}
+                      endDate={event.endDate}
+                    ></Timer>
+                    {moment(event.startDate).format("hh:mma DD/MM/YYYY")}
+                  </Text>
+                </View>
+              )}
             </View>
-            <View>
-              <Text style={styles.available}>Food available until</Text>
-            </View>
-            <View style={styles.titlecount}>
-              <Text style={styles.conftitle}>RSVP Confirmed</Text>
-              <View style={styles.countmain}>
-                <Text style={styles.count}>10</Text>
-              </View>
-            </View>
+          </View>
+
+          {role !== userRole[2] && (
             <View style={styles.btnview}>
               <CustomButton
                 btnText="Send notification"
                 mainStyle={styles.sendnotification}
                 btnStyle={styles.sendnotificationtxt}
-                // onClick={() => {
-                //   this.setModalVisible(true);
-                // }}
+                onClick={() => {
+                  this.setModalVisible(true);
+                }}
               />
             </View>
-            <View>
-              <Text style={styles.locationtxt}>Location</Text>
-              <Text style={styles.addresstxt}>
-                Ryder Avenue Seattle, WA 98109
-              </Text>
-              <Text style={styles.eventdetailsttl}>Event Details</Text>
-              <Text style={styles.eventdetailstxt}>
-                Millennials love expressing their values online, but 80% of them
-                feel it’s essential for people to come together in Did you know
-                that the iconic idea-sharing forum TEDx started as a campus
-                event at USC in 2009? Now, the platform encourages campuses to
-                start their own version of the digitally evolved lecture series.
-                Capturing such talks on video makes for powerful, potentially
-                viral social media. For details on how to start a campus TEDx,
-                visit the website.Lorem Ipsum is simply dummy text of the
-                printing and typesetting industry.
-              </Text>
-              <Text style={styles.eventdetailstxt}>
-                Lorem Ipsum has been the industry's standard dummy text ever
-                since the 1500s, when an unknown printer took a galley of type
-                and scrambled it to make a type specimen book. It has survived
-                not only five centuries, but also the leap into electronic
-                typesetting, remaining essentially unchanged. It was popularised
-                in the 1960s with the release of Letraset sheets containing
-                Lorem Ipsum passages,Lorem Ipsum is simply dummy text of the
-                printing and typesetting industry. Lorem Ipsum has been the
-                industry's standard dummy text ever since the 1500s, when an
-                unknown printer took a galley of type and scrambled it to make a
-                type specimen book. It has survived not only five centuries, but
-                also the leap into electronic typesetting, remaining essentially
-                unchanged. It was popularised in the 1960s with the release of
-                Letraset sheets containing Lorem Ipsum passages,Lorem Ipsum is
-                simply dummy text of the printing and typesetting industry.
-                Lorem Ipsum has been the industry's standard dummy text ever
-                since the 1500s, when an unknown printer took a galley of type
-                and scrambled it to make a type specimen book. It has survived
-                not only five centuries, but also the leap into electronic
-                typesetting, remaining essentially unchanged. It was popularised
-                in the 1960s with the release of Letraset sheets containing
-                Lorem Ipsum passages,simply dummy text of the printing and
-                typesetting industry. Lorem Ipsum has been the industry's
-                standard dummy text ever since the 1500s, when an unknown
-                printer took a galley of type and scrambled it to make a type
-                specimen book. It has survived not only five centuries, but also
-                the leap into electronic typesetting, remaining essentially
-                unchanged. It was popularised in the 1960s with the release of
-                Letraset sheets containing Lorem Ipsum passages,Lorem Ipsum is
-                simply dummy text of the printing and typesetting industry.
-                Lorem Ipsum has been the industry's standard dummy text ever
-                since the 1500s, when an unknown printer took a galley of type
-                and scrambled it to make a type specimen book. It has survived
-                not only five centuries, but also the leap into electronic
-                typesetting, remaining essentially unchanged. It was popularised
-                in the 1960s with the release of Letraset sheets containing
-                Lorem Ipsum passages,
-              </Text>
-            </View>
+          )}
+          <View style={styles.contentspacing}>
+            <Text style={styles.locationtxt}>Location</Text>
+            <Text style={styles.addresstxt}>{event.location}</Text>
+            <Text style={styles.eventdetailsttl}>Event Details</Text>
+            <Text style={styles.eventdetailstxt}>{event.info}</Text>
           </View>
         </ScrollView>
+        {isEventOwner && (
+          <View style={styles.reatbtnview}>
+            <CustomButton
+              btnText="Delete event"
+              mainStyle={styles.createvent}
+              btnStyle={styles.createventxt}
+              onClick={() => {
+                this.setActionModalVisible(true);
+              }}
+            />
+          </View>
+        )}
       </View>
     );
   }
 }
+const mapStateToProps = (state) => ({
+  user: get(state, "auth.session.user", {}),
+});
+
+const mapDispatchToProps = {
+  deleteEvent: eventOperations.deleteEvent,
+  sendNotification: eventOperations.sendNotification,
+  getEvent: eventOperations.getEvent,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EventsDetails);

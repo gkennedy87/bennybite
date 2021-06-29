@@ -5,6 +5,7 @@ export default Style = {
   headerStyle: {
     backgroundColor: Color.BACK_WHITE,
     borderBottomWidth: 0,
+    elevation: 0,
   },
   headerTitleViewStyle: {
     flex: 1,
@@ -29,19 +30,4 @@ export default Style = {
   iconRightStyle: {
     fontSize: 20,
   },
-  bottomButtonStyle: {
-    backgroundColor: Color.BACK_WHITE,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...ifIphoneX(
-      {
-        height: 84,
-      },
-      {
-        height: 64,
-      },
-    ),
-  },
-  //Button css
 };

@@ -1,173 +1,229 @@
-import React, {Component} from 'react';
-import {View, Image, SafeAreaView, Text} from 'react-native';
-import CustomTextfield from '../../components/CustomTextfield';
-import {REGEX} from '../../utils/validation';
-import {ErrorMessage} from '../../utils/message';
-import CustomButton from '../../components/CustomButton';
+import React, { Component } from "react";
+import { get, cloneDeep } from "lodash";
+import { connect } from "react-redux";
+import { View, Text } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-import HeaderTitle from '../../components/Header/HeaderTitle';
+import { REGEX } from "../../utils/validation";
+import { ErrorMessage } from "../../utils/message";
+import CustomToast from "../../components/CustomToast";
+import CustomButton from "../../components/CustomButton";
+import CustomTextfield from "../../components/CustomTextfield";
+import HeaderTitle from "../../components/Header/HeaderTitle";
 
-import styles from './styles';
+import { authOperations } from "./../../state/ducks/auth";
 
-export default class ResetPassword extends Component {
-  static navigationOptions = ({}) => {
+import styles from "./styles";
+
+const INITIAL_STATE = {
+  hideNewPassword: true,
+  hideConfirmPassword: true,
+  newPassword: {
+    value: "",
+    message: [],
+    isValid: false,
+  },
+  confirmPassword: {
+    value: "",
+    message: [],
+    isValid: false,
+  },
+};
+
+export class ResetPassword extends Component {
+  static navigationOptions = () => {
     return {
-      headerTitle: () => <HeaderTitle title={'Reset password'} />,
+      headerTitle: () => <HeaderTitle title={"Reset password"} />,
     };
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-      hasError: true,
-      isModalVisible: false,
-      isToastVisible: false,
-      hidePassword: true,
-      passVisible: true,
-      email: {
-        value: '',
-        message: [],
-        isValid: false,
-      },
-      password: {
-        value: '',
-        message: [],
-        isValid: false,
-      },
-      confirmPassword: {
-        value: '',
-        message: [],
-        isValid: false,
-      },
-    };
+    this.state = cloneDeep(INITIAL_STATE);
   }
 
-  onPasswordChange = (text) => {
-    const password = this.state.password;
-    password.value = text;
-    password.message = [];
-    password.isValid = true;
+  onNewPasswordChange = (text) => {
+    const newPassword = this.state.newPassword;
+    newPassword.value = text;
+    newPassword.message = [];
+    newPassword.isValid = true;
 
-    if (password.value.length == 0 || password.value == '') {
-      // email.message = ErrorMsg.emailRequired // import
-      password.message.push(ErrorMessage.EMPTY_PASS);
-      password.isValid = false;
-    } else {
-      if (password.value.length < 8) {
-        password.message.push(ErrorMessage.PASSWORD_LENGTH);
-        password.isValid = false;
-      }
-      if (
-        !password.value.match(REGEX.LOWERCASE) ||
-        !password.value.match(REGEX.UPPERCASE)
-      ) {
-        password.message.push(ErrorMessage.LOWER_UPPER);
-        password.isValid = false;
-      }
-      if (password.value.match(REGEX.SPECIAL_CHARECTERS)) {
-        // email.message = ErrorMsg.emailInvalid
-        password.message.push(ErrorMessage.SPECIAL_CHARACTER);
-        password.isValid = false;
-      }
-      if (!password.value.match(REGEX.MIN_NUMBERS)) {
-        // email.message = ErrorMsg.emailInvalid
-        password.message.push(ErrorMessage.MIN_NUMBER);
-        password.isValid = false;
-      }
+    if (newPassword.value.length == 0 || newPassword.value == "") {
+      newPassword.message.push(ErrorMessage.NEW_PASS_EMPTY);
+      newPassword.isValid = false;
+    }
+    if (
+      !newPassword.value.match(REGEX.LOWERCASE) ||
+      !newPassword.value.match(REGEX.UPPERCASE)
+    ) {
+      newPassword.message.push(ErrorMessage.LOWER_UPPER);
+      newPassword.isValid = false;
+    }
+    if (newPassword.value.length < 8) {
+      newPassword.message.push(ErrorMessage.PASSWORD_LENGTH);
+      newPassword.isValid = false;
+    }
+    if (
+      !newPassword.value.match(REGEX.LOWERCASE) ||
+      !newPassword.value.match(REGEX.UPPERCASE)
+    ) {
+      newPassword.message.push(ErrorMessage.LOWER_UPPER);
+      newPassword.isValid = false;
+    }
+    if (newPassword.value.match(REGEX.SPECIAL_CHARECTERS)) {
+      newPassword.message.push(ErrorMessage.SPECIAL_CHARACTER);
+      newPassword.isValid = false;
+    }
+    if (!newPassword.value.match(REGEX.MIN_NUMBERS)) {
+      newPassword.message.push(ErrorMessage.MIN_NUMBER);
+      newPassword.isValid = false;
     }
 
-    this.setState({password});
+    this.setState({ newPassword });
   };
+
   onConfrimPasswordChange = (text) => {
-    const confirmPassword = this.state.confirmPassword;
+    const { confirmPassword, newPassword } = this.state;
     confirmPassword.value = text;
     confirmPassword.message = [];
     confirmPassword.isValid = true;
 
-    if (this.state.password.value != confirmPassword.value) {
-      // email.message = ErrorMsg.emailRequired // import
+    if (confirmPassword.value.length == 0 || confirmPassword.value == "") {
       confirmPassword.message.push(ErrorMessage.CONFIRM_PASS);
       confirmPassword.isValid = false;
     }
-    this.setState({confirmPassword});
+
+    if (newPassword.value != confirmPassword.value) {
+      confirmPassword.message.push(ErrorMessage.CONFIRM_PASS_NOT_MATCH);
+      confirmPassword.isValid = false;
+    }
+
+    this.setState({ confirmPassword });
   };
 
-  onPassVisi = () => {
+  onNewPasswordVisible = () => {
+    const { hideNewPassword } = this.state;
+    this.setState({ hideNewPassword: !hideNewPassword });
+  };
+
+  onConfirmPasswordVisible = () => {
+    const { hideConfirmPassword } = this.state;
+    this.setState({ hideConfirmPassword: !hideConfirmPassword });
+  };
+
+  onResetPassword = async () => {
+    let toastMessage = "",
+      toastType = "";
+    try {
+      const { newPassword } = this.state;
+      const token = get(this.props, 'navigation.state.params.token',  '');
+      const response = await this.props.resetPassword(token, {
+        password: newPassword.value,
+      });
+      toastMessage = response.message;
+      await AsyncStorage.clear();
+      this.props.navigation.navigate("Login");
+    } catch (err) {
+      toastMessage = get(err, "response.data.message", "Something went wrong!");
+      toastType = "warning";
+    }
     this.setState({
-      passVisible: !this.state.passVisible,
+      showToast: true,
+      toastMessage,
+      toastType,
     });
   };
 
   render() {
-    const {email, password, confirmPassword} = this.state;
-    const {navigate} = this.props.navigation;
+    const {
+      newPassword,
+      confirmPassword,
+      hideNewPassword,
+      hideConfirmPassword,
+      toastMessage,
+      showToast,
+      toastType,
+    } = this.state;
+
+    const isValid = newPassword.isValid && confirmPassword.isValid;
 
     return (
       <View style={styles.safeareaview}>
-        <SafeAreaView style={styles.contentcenter}>
-          <View style={styles.container}>
-            <View style={styles.form}>
+        <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+          onHide={() => this.setState({ showToast: false })}
+        />
+        <KeyboardAwareScrollView
+          contentContainerStyle={{
+            alignItems: "center",
+            flexGrow: 1,
+          }}
+          scrollEnabled={true}
+          enableOnAndroid={false}
+          showsVerticalScrollIndicator={true}
+        >
+          <View style={styles.contentcenter}>
+            <View style={styles.container}>
               <Text style={styles.logintxt}>
                 Please enter new password to reset your password
               </Text>
               <View style={styles.form}>
                 <CustomTextfield
                   placeholder="New Password"
-                  inputmainstyle={{marginBottom: 25}}
-                  inputstyle={{paddingRight: 40}}
+                  inputmainstyle={{ marginBottom: 25 }}
+                  inputstyle={{ paddingRight: 40 }}
                   editable={true}
                   passwordField={true}
-                  passVisible={this.state.passVisible}
-                  onPassVisi={this.onPassVisi}
+                  passVisible={hideNewPassword}
+                  onPassVisi={this.onNewPasswordVisible}
                   isPassword={true}
-                  onChangeText={this.onPasswordChange}
-                  value={password.value}
-                  errorMsgs={password.message}></CustomTextfield>
+                  onChangeText={this.onNewPasswordChange}
+                  value={newPassword.value}
+                  txtvalue={newPassword.value}
+                  errorMsgs={newPassword.message}
+                ></CustomTextfield>
                 <CustomTextfield
                   placeholder="Confirm Password"
-                  inputstyle={{paddingRight: 40}}
+                  inputstyle={{ paddingRight: 40 }}
                   editable={true}
                   passwordField={true}
+                  passVisible={hideConfirmPassword}
+                  onPassVisi={this.onConfirmPasswordVisible}
+                  isPassword={true}
                   onChangeText={this.onConfrimPasswordChange}
                   value={confirmPassword.value}
-                  errorMsgs={confirmPassword.message}></CustomTextfield>
+                  txtvalue={confirmPassword.value}
+                  errorMsgs={confirmPassword.message}
+                ></CustomTextfield>
 
                 <View style={styles.loginbtnmain}>
                   <CustomButton
-                    btnText="Reset"
-                    mainStyle={styles.loginyellow}
-                    btnStyle={styles.withlogin}
-                    // mainStyle={[
-                    //   this.state.email.isValid
-                    //     ? styles.loginyellow
-                    //     : styles.logingray,
-                    //   styles.loginbtn,
-                    // ]}
-                    // btnStyle={
-                    //   this.state.email.isValid
-                    //     ? styles.withlogin
-                    //     : styles.withoutlogin
-                    // }
-                    //value={false}
-                    //disabled={!this.state.email.isValid}
-                    onClick={() => {
-                      // this.setState({isToastVisible: true});
-                      // setTimeout(
-                      //   () =>
-                      //     this.setState({
-                      //       isToastVisible: false,
-                      //     }),
-                      //   2000,
-                      // );
-                      this.props.navigation.navigate('ResetPassword');
-                    }}
+                    btnText="Submit"
+                    mainStyle={[
+                      isValid ? styles.loginyellow : styles.logingray,
+                      styles.loginbtn,
+                    ]}
+                    btnStyle={isValid ? styles.withlogin : styles.withoutlogin}
+                    disabled={!isValid}
+                    onClick={this.onResetPassword}
                   />
                 </View>
               </View>
             </View>
           </View>
-        </SafeAreaView>
+        </KeyboardAwareScrollView>
       </View>
     );
   }
 }
+
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = {
+  resetPassword: authOperations.resetPassword,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPassword);

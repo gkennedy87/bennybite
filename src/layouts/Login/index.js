@@ -1,28 +1,40 @@
-import React, {Component} from 'react';
-import {View, Image, SafeAreaView, Text} from 'react-native';
-import CustomTextfield from '../../components/CustomTextfield';
-import {REGEX} from '../../utils/validation';
-import {ErrorMessage} from '../../utils/message';
-import CustomButton from '../../components/CustomButton';
+import React, { Component } from "react";
+import { toLower, get, pickBy, identity } from "lodash";
+import { connect } from "react-redux";
+import { View, Image, Text, TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-community/async-storage";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-import styles from './styles';
+import { authOperations } from "./../../state/ducks/auth";
+import { Globals } from "../../utils/variable";
 
-export default class Login extends Component {
+import CustomButton from "../../components/CustomButton";
+import CustomTextfield from "../../components/CustomTextfield";
+
+import { REGEX } from "../../utils/validation";
+import { ErrorMessage } from "../../utils/message";
+
+import CustomToast from "../../components/CustomToast";
+
+import Logo from "../../assets/Images/logo.svg";
+
+import styles from "./styles";
+
+export class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hasError: true,
-      // isModalVisible: false,
-      // isToastVisible: false,
+      showToast: false,
+      toastMessage: "",
+      toastType: "",
       hidePassword: true,
-      passVisible: true,
       email: {
-        value: '',
+        value: "",
         message: [],
         isValid: false,
       },
       password: {
-        value: '',
+        value: "",
         message: [],
         isValid: false,
       },
@@ -39,16 +51,12 @@ export default class Login extends Component {
     password.message = [];
     password.isValid = true;
 
-    if (password.value.length == 0 || password.value == '') {
-      // email.message = ErrorMsg.emailRequired // import
+    if (password.value.length == 0 || password.value == "") {
       password.message.push(ErrorMessage.EMPTY_PASS);
-      password.isValid = false;
-    } else if (password.value.length < 8) {
-      password.message.push(ErrorMessage.WRONG_PASS);
       password.isValid = false;
     }
 
-    this.setState({password});
+    this.setState({ password });
   };
 
   onEmailTextChange = (text) => {
@@ -57,114 +65,160 @@ export default class Login extends Component {
     email.message = [];
     email.isValid = true;
 
-    if (email.value.length == 0 || email.value == '') {
-      // email.message = ErrorMsg.emailRequired // import
+    if (email.value.length == 0 || email.value == "") {
       email.message.push(ErrorMessage.EMPTY_EMAIL);
       email.isValid = false;
     } else if (!email.value.match(REGEX.EMAIL)) {
-      // email.message = ErrorMsg.emailInvalid
       email.message.push(ErrorMessage.EMAIL_VALID);
       email.isValid = false;
     }
-    this.setState({email});
+    this.setState({ email });
   };
+
   onPassVisi = () => {
     this.setState({
-      passVisible: !this.state.passVisible,
+      hidePassword: !this.state.hidePassword,
     });
   };
 
-  // onChangeValue = () => {
-  //   this.setState({
-  //     isChecked: !this.state.isChecked,
-  //   });
-  // };
+  onLogin = async () => {
+    try {
+      const device_token = await AsyncStorage.getItem(Globals.kDeviceToken);
+      const device_type = await AsyncStorage.getItem(Globals.kDeviceType);
+      // const device_token = 'dddc1d378d18cc562e61d4951536af719c9480abea10bd8c5b234253f1f3803e';
+      // const device_type = 'ios';
+      let { user, tokens } = await this.props.login(pickBy({
+        email: toLower(this.state.email.value),
+        password: this.state.password.value,
+        device_token,
+        device_type,
+      }, identity));
+      await AsyncStorage.setItem("isAuthenticated", "true");
+      await AsyncStorage.setItem("user", JSON.stringify(user));
+      await AsyncStorage.setItem("tokens", JSON.stringify(tokens));
+      this.props.navigation.navigate("Events");
+    } catch (err) {
+      this.setState({
+        showToast: true,
+        toastMessage: get(
+          err,
+          "response.data.message",
+          "Something went wrong!"
+        ),
+        toastType: "warning",
+      });
+    }
+  };
 
   render() {
-    const {email, password} = this.state;
-    const {navigate} = this.props.navigation;
+    const {
+      email,
+      password,
+      hidePassword,
+      toastMessage,
+      toastType,
+      showToast,
+    } = this.state;
+    const { navigate } = this.props.navigation;
+    const isValid = email.isValid && password.isValid;
 
     return (
       <View style={styles.safeareaview}>
-        <SafeAreaView style={styles.contentcenter}>
-          <View style={styles.container}>
-            <View style={styles.logocenter}>
-              <Image
-                style={styles.logo}
-                source={require('../../assets/Images/logo.png')}></Image>
+        <CustomToast
+          message={toastMessage}
+          isToastVisible={showToast}
+          type={toastType}
+          onHide={() => this.setState({ showToast: false })}
+        />
+        <KeyboardAwareScrollView
+          contentContainerStyle={{
+            alignItems: "center",
+            justifyContent: "center",
+            flexGrow: 1,
+          }}
+          scrollEnabled={true}
+          enableOnAndroid={false}
+          showsVerticalScrollIndicator={true}
+        >
+          <View style={styles.contentcenter}>
+            <View style={styles.container}>
+              <View style={styles.logocenter}>
+                <Logo width={265} height={58} />
+              </View>
+              <Text style={styles.logintxt}>
+                Enter your credentials to login
+              </Text>
+              <View style={styles.form}>
+                <CustomTextfield
+                  placeholder="Email Id"
+                  editable={true}
+                  inputmainstyle={{ marginBottom: 25 }}
+                  inputstyle={{ paddingRight: 40 }}
+                  ifIcon={true}
+                  iconname={"email"}
+                  keyboardType={"email-address"}
+                  onChangeText={this.onEmailTextChange}
+                  value={email.value}
+                  errorMsgs={email.message}
+                />
+
+                <CustomTextfield
+                  placeholder="Password"
+                  inputmainstyle={{ marginBottom: 25 }}
+                  inputstyle={{ paddingRight: 40 }}
+                  editable={true}
+                  passwordField={true}
+                  passVisible={hidePassword}
+                  onPassVisi={this.onPassVisi}
+                  isPassword={true}
+                  onChangeText={this.onPasswordChange}
+                  value={password.value}
+                  errorMsgs={password.message}
+                />
+
+                <View style={styles.forgotbtn}>
+                  <CustomButton
+                    btnText="Forgot Password?"
+                    btnStyle={styles.forgotbtntxt}
+                    value={false}
+                    onClick={() => navigate("ForgotPassword")}
+                  />
+                </View>
+
+                <View style={styles.loginbtnmain}>
+                  <CustomButton
+                    btnText="Login"
+                    mainStyle={[
+                      isValid ? styles.loginyellow : styles.logingray,
+                      styles.loginbtn,
+                    ]}
+                    btnStyle={isValid ? styles.withlogin : styles.withoutlogin}
+                    value={false}
+                    disabled={!isValid}
+                    onClick={this.onLogin}
+                  />
+                </View>
+              </View>
             </View>
-            <Text style={styles.logintxt}>Enter your credentials to login</Text>
-            <View style={styles.form}>
-              <CustomTextfield
-                placeholder="Email Id"
-                editable={true}
-                inputmainstyle={{marginBottom: 25}}
-                inputstyle={{paddingRight: 40}}
-                ifIcon={true}
-                iconname={'email'}
-                onChangeText={this.onEmailTextChange}
-                value={email.value}
-                errorMsgs={email.message}></CustomTextfield>
-
-              <CustomTextfield
-                placeholder="Password"
-                inputmainstyle={{marginBottom: 25}}
-                inputstyle={{paddingRight: 40}}
-                editable={true}
-                passwordField={true}
-                passVisible={this.state.passVisible}
-                onPassVisi={this.onPassVisi}
-                isPassword={true}
-                onChangeText={this.onPasswordChange}
-                value={password.value}
-                errorMsgs={password.message}></CustomTextfield>
-
-              <View style={styles.forgotbtn}>
-                <CustomButton
-                  btnText="Forgot Password?"
-                  btnStyle={styles.forgotbtntxt}
-                  value={false}
-                  onClick={() => navigate('ForgotPassword')}
-                />
-              </View>
-
-              <View style={styles.loginbtnmain}>
-                <CustomButton
-                  btnText="Login"
-                  mainStyle={styles.loginyellow}
-                  btnStyle={styles.withlogin}
-                  // mainStyle={[
-                  //   this.state.email.isValid && this.state.password.isValid
-                  //     ? styles.loginyellow
-                  //     : styles.logingray,
-                  //   styles.loginbtn,
-                  // ]}
-                  // btnStyle={
-                  //   this.state.email.isValid && this.state.password.isValid
-                  //     ? styles.withlogin
-                  //     : styles.withoutlogin
-                  // }
-                  // value={false}
-                  // disabled={
-                  //   !(this.state.email.isValid && this.state.password.isValid)
-                  // }
-                  onClick={() => {
-                    // this.setState({isToastVisible: true});
-                    // setTimeout(
-                    //   () =>
-                    //     this.setState({
-                    //       isToastVisible: false,
-                    //     }),
-                    //   2000,
-                    // );
-                    this.props.navigation.navigate('Events');
-                  }}
-                />
-              </View>
+            <View style={styles.signupmain}>
+              <Text style={styles.newusertxt}>New user ?</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate("Signup");
+                }}
+              >
+                <Text style={styles.signuptxt}>Signup</Text>
+              </TouchableOpacity>
             </View>
           </View>
-        </SafeAreaView>
+        </KeyboardAwareScrollView>
       </View>
     );
   }
 }
+
+export const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = { login: authOperations.login };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
